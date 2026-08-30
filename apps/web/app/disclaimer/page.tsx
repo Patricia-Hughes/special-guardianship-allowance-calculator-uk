@@ -41,10 +41,20 @@ export default function DisclaimerPage() {
       <h2>Where our data has gaps, we say so</h2>
       <p>
         We do not publish figures we have not verified against their original source, and we do not
-        work missing figures out from percentages. That is why some things this site could plausibly
-        offer — Welsh rates, backdating across 2024/25 — are not here yet. A number that looks
-        precise and is slightly wrong is worse than no number, because you might take it to your
-        council.
+        work missing figures out from percentages. A number that looks precise and is slightly wrong
+        is worse than no number, because you might take it to your council.
+      </p>
+      <p>
+        So <strong>working out what you were underpaid in past years is not here yet</strong>. It
+        needs the 2024/25 rate tables as they were published, and we have not been able to find
+        them. We could get close by taking this year&rsquo;s figures and removing the increase, but
+        close is not good enough for a claim you are going to put to your council.
+      </p>
+      <p>
+        The <strong>Welsh rates</strong> are here, with one caveat we would rather you heard from
+        us: in Wales the rate for a child under 5 is higher than for a child aged 5 to 15. That is
+        genuinely how they are published, and we have checked it against two years of figures — but
+        we have not seen the Welsh Government&rsquo;s own circular, only reports of it.
       </p>
 
       <h2>Rates change</h2>

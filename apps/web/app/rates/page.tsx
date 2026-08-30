@@ -44,12 +44,15 @@ export default function RatesPage() {
       <h2>Wales</h2>
       <Callout type="important">
         <p style={{ marginBottom: 0 }}>
-          We are not publishing Welsh figures yet. In the sources available to us, the 0–4 rate is
-          higher than the 5–15 rate, which does not match the pattern anywhere else and looks like a
-          transcription error. We are checking it against the Welsh Government&apos;s own table. A
-          wrong figure here would be worse than none.
+          In Wales the rate for a child <strong>under 5 is higher</strong> than for a child aged 5
+          to 15. That is the opposite of every other table on this page, so it looks like a mistake
+          — but it is how the rates are published, and the same pattern appears in the previous
+          year. What we have not been able to do is check it against the Welsh Government&apos;s own
+          circular, only against reports of it, so we are telling you rather than quietly
+          &ldquo;correcting&rdquo; a government figure.
         </p>
       </Callout>
+      <RateTable nation="wales" />
 
       {historic.length > 0 && (
         <>
