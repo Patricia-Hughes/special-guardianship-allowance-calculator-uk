@@ -2,8 +2,6 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
-allowBuilds:
-  esbuild: true
-  sharp: true
-  '@tailwindcss/oxide': true
-  'unrs-resolver': true
+overrides:
+  nwsapi: 2.2.24
+  tsx: 4.23.12
