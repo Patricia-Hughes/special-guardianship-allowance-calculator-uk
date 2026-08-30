@@ -9,6 +9,10 @@
     "financialYear": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
     "effectiveFrom": { "type": "string", "format": "date" },
     "effectiveTo": { "type": "string", "format": "date" },
+    "dfeStatedTaxYearFrom": { "type": "string", "format": "date" },
+    "dfeStatedTaxYearTo": { "type": "string", "format": "date" },
+    "councilApplicationFrom": { "type": "string", "format": "date" },
+    "aprilBoundaryNote": { "type": "string" },
     "dataVersion": { "type": "string" },
     "status": { "type": "string", "enum": ["PENDING_SOURCE"] },
     "pendingSourceIssue": { "type": "string", "format": "uri" },
@@ -78,6 +82,23 @@
             "note": { "type": "string" },
             "verify": { "type": "boolean" },
             "verifyNote": { "type": "string" },
+            "anomalyConfirmed": { "type": "boolean" },
+            "anomalyConfirmedOn": { "type": "string", "format": "date" },
+            "anomalyCorroboration": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "required": ["source", "url", "finding"],
+                "properties": {
+                  "source": { "type": "string" },
+                  "url": { "type": "string", "format": "uri" },
+                  "date": { "type": "string" },
+                  "finding": { "type": "string" }
+                }
+              }
+            },
+            "userFacingNote": { "type": "string" },
             "ageBands": { "$ref": "#/definitions/ageBands" },
             "rates": { "$ref": "#/definitions/bandRates" }
           }

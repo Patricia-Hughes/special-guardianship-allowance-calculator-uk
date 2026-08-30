@@ -1,14 +1,16 @@
 {
-  "note": "London = the 32 boroughs + City of London. South East = the DfE NMA South East grouping. Everything else = rest-of-england.",
-  "verificationStatus": "PENDING_DFE_VERIFICATION",
-  "verificationNote": "Built from the standard English children's services authority list and the standard regional groupings. Spec §12 warns the NMA regions are not identical to ONS statistical regions in every edge case, and §42 item 8 requires this map to be rebuilt from the DfE NMA publication's own regional definition before launch. Region choice is always user-overridable in the UI (spec §12 route 3).",
-  "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/8",
+  "note": "London = the 32 boroughs + City of London. South East = the ONS South East Government Office Region. Everything else = rest-of-england.",
+  "verificationStatus": "ONS_GOR_PROXY_DOCUMENTED",
+  "regionSource": "ONS Government Office Region (DfE publishes no authority-level list)",
+  "verificationNote": "Research of 29 August 2026 established that the DfE does not publish a list of which local authority falls in which NMA band. The GOV.UK rate table carries three column headings — London, South East, Rest of England — and no definition of what they contain. That absence is the finding; there is no authoritative list to rebuild this map from, so §42 item 8 cannot be closed as originally written. The map therefore rests on ONS Government Office Regions as a documented proxy, which is what the sector appears to use in practice — Community Care labelled the Kinship Zone authorities by GOR on 27 February 2026. This is disclosed on the site rather than presented as the government's own mapping, and region choice stays user-overridable in the UI (spec §12 route 3).",
+  "resolvedSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/8",
   "knownDiscrepancies": [
     {
       "slug": "wiltshire",
-      "mappedTo": "south-east",
-      "issue": "Spec §8.8 maps Wiltshire to south-east and describes it as being in the South East region; the ONS standard region for Wiltshire is South West. The spec itself flags Wiltshire for verification. Mapped per the spec pending confirmation against the DfE NMA regional definition. A wrong region here changes the answer by up to £42/week (spec §12).",
-      "blocks": "region accuracy for Wiltshire"
+      "mappedTo": "rest-of-england",
+      "sourceConfidence": "inferred-from-GOR",
+      "issue": "Spec §8.8 mapped Wiltshire to south-east. Research of 29 August 2026 found no source for that: no DfE publication lists which authority sits in which NMA band (see regionSource). Everything located puts Wiltshire in the South West — the ONS Government Office Region, and Community Care of 27 February 2026 labelling the Kinship Zone authorities \"Medway (South East), Thurrock (East of England), and Wiltshire (South West)\". Remapped to rest-of-england on 30 August 2026. The previous mapping overstated Wiltshire by £19–£31/week per child, and Wiltshire is a live Kinship Zone, so the error direction was the harmful one.",
+      "blocks": "nothing - corrected, but rests on inference not a DfE list"
     },
     {
       "slug": "isles-of-scilly",
@@ -165,7 +167,7 @@
     "westminster": "london",
     "westmorland-and-furness": "rest-of-england",
     "wigan": "rest-of-england",
-    "wiltshire": "south-east",
+    "wiltshire": "rest-of-england",
     "windsor-and-maidenhead": "south-east",
     "wirral": "rest-of-england",
     "wokingham": "south-east",

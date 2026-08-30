@@ -28,7 +28,7 @@ export {
   runMeansTest,
   applyTaper,
   tariffIncome,
-  incomeSupportApplicableAmount,
+  incomeSupportApplicableAmountWeekly,
   meansTestAvailable,
   COUNTABLE_INCOME,
   DISREGARDED_INCOME,

@@ -11,6 +11,7 @@ import { dedupeFlags, makeFlag, sortFlags } from '../flags.js';
 import {
   LA_REGION_MAP,
   LA_REGION_MAP_META,
+  RATE_TABLES,
   allCitationIds,
   cite,
   hasUnpublishableLaOverride,
@@ -38,6 +39,39 @@ describe('engine — routing and regimes', () => {
     expect(r.regime).toBe('wales-sgo');
     expect(r.perChild[0]!.maximumWeekly).toBe(20800);
     expect(r.perChild[0]!.ageBand).toBe('5-15');
+  });
+
+  it('warns a Welsh carer that the under-5 rate really is higher than 5-15', () => {
+    // £208 for a 7-year-old against £229 for a 3-year-old looks like a bug in
+    // the site. It is not, and saying so is the whole point of the flag.
+    const r = calculate(
+      input({
+        carer: carer({ nation: 'wales', englandRegion: undefined }),
+        children: [child({ ageYears: 7 })],
+      }),
+    );
+    expect(r.flags.some((f) => f.code === 'WALES_BAND_ORDER_ANOMALY')).toBe(true);
+  });
+
+  it('does not show the Welsh band warning to carers in England', () => {
+    const r = calculate(input({ children: [child({ ageYears: 7 })] }));
+    expect(r.flags.some((f) => f.code === 'WALES_BAND_ORDER_ANOMALY')).toBe(false);
+  });
+
+  it('flags 1-5 April, where the council year and the DfE tax year disagree', () => {
+    // Councils uplift from 1 April; DfE states the rates for a tax year running
+    // 6 April to 5 April. Inside that gap both readings are defensible.
+    for (const day of ['2026-04-01', '2026-04-03', '2026-04-05'] as const) {
+      const r = calculate(input({ asAtDate: d(day) }));
+      expect(r.flags.some((f) => f.code === 'APRIL_RATE_BOUNDARY')).toBe(true);
+    }
+  });
+
+  it('does not flag the April boundary once the tax year has caught up', () => {
+    for (const day of ['2026-04-06', '2026-09-01', '2027-03-31'] as const) {
+      const r = calculate(input({ asAtDate: d(day) }));
+      expect(r.flags.some((f) => f.code === 'APRIL_RATE_BOUNDARY')).toBe(false);
+    }
   });
 
   it('calculates the Northern Ireland route', () => {
@@ -161,9 +195,14 @@ describe('engine — routing and regimes', () => {
     expect(r.flags.some((f) => f.code === 'REG7_EXPIRING')).toBe(true);
   });
 
-  it('blocks the means test on the shipped data rather than mislabelling the result', () => {
-    expect(() => calculate(input({ finances: finances() }))).toThrow(DataError);
-    expect(() => calculate(input({ finances: finances() }))).toThrow(/not yet sourced/);
+  it('runs the means test on the shipped data and still says the model is not law', () => {
+    const r = calculate(input({ finances: finances() }));
+    expect(r.meansTestBreakdown).toBeDefined();
+    // The DWP figures being sourced fixes the data gap, not the model. It is
+    // still non-statutory and the taper is still corroborated across only three
+    // councils, so both warnings must survive the unblocking.
+    expect(r.flags.some((f) => f.code === 'MEANS_TEST_MODEL_OUTDATED')).toBe(true);
+    expect(r.flags.some((f) => f.code === 'TAPER_METHOD_ASSUMED')).toBe(true);
   });
 
   it('refuses to deduct Child Benefit from an unsourced benefit table', () => {
@@ -435,11 +474,37 @@ describe('reference data', () => {
     expect(LA_REGION_MAP['devon']).toBe('rest-of-england');
   });
 
-  it('ships Phase 1 flags in their blocked state (§39)', () => {
-    expect(FLAGS.MEANS_TEST_ENABLED).toBe(false);
+  it('ships the flags in the state their data supports (§39)', () => {
+    // Unblocked 30 Aug 2026 by the DWP Income Support figures.
+    expect(FLAGS.MEANS_TEST_ENABLED).toBe(true);
+    // Unblocked once the Welsh band inversion was corroborated as genuine.
+    expect(FLAGS.WALES_ROUTE_ENABLED).toBe(true);
+    // Still blocked: the full 2024/25 rate table has not been located, and it
+    // must not be reconstructed from the published 6.88% uplift.
     expect(FLAGS.BACKDATING_ENABLED).toBe(false);
-    expect(FLAGS.WALES_ROUTE_ENABLED).toBe(false);
     expect(FLAGS.KINSHIP_ZONE_PATH).toBe(true);
+  });
+
+  it('ships the figures to the browser but not the prose about them', () => {
+    // sync-engine-data strips maintainer-only fields from the copy that gets
+    // bundled. /data keeps them, and validate-data still reads /data, so the
+    // gates that insist on them are unaffected. Pinned here so nobody starts
+    // rendering a field that will not be there at runtime.
+    const wales = RATE_TABLES[0]!.wales!;
+    expect(wales.rates['0-4']).toBe(22900);
+    expect(wales.anomalyConfirmed).toBe(true);
+    expect(wales.verifyNote).toBeUndefined();
+    expect(wales.anomalyCorroboration).toBeUndefined();
+    // The one note that is meant for a carer survives.
+    expect(wales.userFacingNote).toBeDefined();
+  });
+
+  it('keeps Wiltshire out of the South East until a DfE list says otherwise', () => {
+    // The DfE publishes no authority-level region list, so this map rests on
+    // ONS Government Office Regions. Everything located puts Wiltshire in the
+    // South West; the previous south-east mapping overstated it by up to £31/wk
+    // in a council that is a live Kinship Zone.
+    expect(LA_REGION_MAP['wiltshire']).toBe('rest-of-england');
   });
 });
 

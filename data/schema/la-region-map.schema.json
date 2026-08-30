@@ -7,7 +7,9 @@
     "note": { "type": "string" },
     "verificationStatus": { "type": "string" },
     "verificationNote": { "type": "string" },
+    "regionSource": { "type": "string" },
     "pendingSourceIssue": { "type": "string", "format": "uri" },
+    "resolvedSourceIssue": { "type": "string", "format": "uri" },
     "knownDiscrepancies": {
       "type": "array",
       "items": {
@@ -17,7 +19,8 @@
           "slug": { "type": "string" },
           "mappedTo": { "type": "string" },
           "issue": { "type": "string" },
-          "blocks": { "type": "string" }
+          "blocks": { "type": "string" },
+          "sourceConfidence": { "type": "string" }
         }
       }
     },

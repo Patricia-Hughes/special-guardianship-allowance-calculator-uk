@@ -23,17 +23,39 @@
     "disregardedForClaimantsOwnMeansTestedBenefits": true
   },
   "incomeSupportApplicableAmounts": {
-    "status": "PENDING_SOURCE",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/3",
-    "note": "REQUIRED for the 125% core living-costs calculation. Source from the DWP 'Benefit and pension rates' publication. DO NOT ESTIMATE.",
+    "status": "SOURCED",
+    "sourceId": "dwp-benefit-rates-2026-27",
+    "note": "Weekly rates exactly as printed in DWP 'Benefit and pension rates 2026 to 2027' (updated 16 February 2026), which publishes both years side by side. Sourced independently of the rest of this file, which is still PENDING_SOURCE: the means test needs only these figures, so it can run for 2025/26 while Child Benefit and Guardian's Allowance for that year remain unsourced. Anything that does need those still raises a DataError rather than guessing.",
     "schema": {
-      "singleUnder25Pence": null,
-      "single25PlusPence": null,
-      "couplePence": null,
-      "dependentChildPence": null,
-      "familyPremiumPence": null,
-      "disabilityPremiumPence": null,
-      "carerPremiumPence": null
+      "singleUnder25Pence": 7290,
+      "single25PlusPence": 9205,
+      "couplePence": 14465,
+      "dependentChildPence": 8466,
+      "familyPremiumPence": 1948,
+      "disabilityPremiumPence": 4320,
+      "disabilityPremiumCouplePence": 6165,
+      "carerPremiumPence": 4640
+    },
+    "sourcedButUnused": {
+      "note": "Published in the same table and recorded so nobody has to re-source them. Not read by the engine.",
+      "disabledChildPremiumPence": 8137,
+      "enhancedDisabilitySinglePence": 2120,
+      "enhancedDisabilityCouplePence": 3025,
+      "enhancedDisabilityDisabledChildPence": 3275,
+      "severeDisabilitySinglePence": 8290,
+      "severeDisabilityCoupleLowerPence": 8290,
+      "severeDisabilityCoupleHigherPence": 16580,
+      "pensionerCouplePence": 20195
     }
+  },
+  "capitalRules": {
+    "sourceId": "dwp-benefit-rates-2026-27",
+    "note": "Unchanged between the two years.",
+    "upperLimitPence": 1600000,
+    "disregardedPence": 600000,
+    "childDisregardPence": 300000,
+    "tariffPerBlockPence": 100,
+    "blockSizePence": 25000,
+    "tariffAsPrinted": "£1 for every £250, or part thereof, between the amount of capital disregarded and the capital upper limit."
   }
 }

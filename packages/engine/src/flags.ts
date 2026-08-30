@@ -237,6 +237,24 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
       `We have assumed ${c.taperMethod === 'pound-for-pound' ? 'pound-for-pound, which is the most common approach' : `the "${c.taperMethod}" method`}. Your council may use another. Ask it which it uses.`,
     actionUrl: '/guidance/how-the-means-test-works',
   },
+  APRIL_RATE_BOUNDARY: {
+    severity: 'info',
+    title: 'You are in the few days of April where the rules disagree',
+    body: () =>
+      'The government sets these rates for a **tax year running 6 April to 5 April**. Most councils put their increase in from **1 April**.\n\n' +
+      'Between 1 and 5 April the two do not line up. We have shown you the new rate, because that is what councils normally pay from 1 April — but if your council follows the tax year, it may still be paying last year\'s rate for a few more days.\n\n' +
+      'It is worth a few pounds, not a few hundred. If you are checking a backdated claim, it is worth getting right.',
+    actionUrl: '/guidance/rates',
+  },
+  WALES_BAND_ORDER_ANOMALY: {
+    severity: 'info',
+    title: 'In Wales, under-5s get more than 5 to 15 year olds',
+    body: () =>
+      'The Welsh rates pay **more for a child under 5 than for a child aged 5 to 15**. Everywhere else in the UK the rate rises with age, so this looks like a mistake.\n\n' +
+      'It is not a mistake on this site. That is how the rates are published, and the same pattern appears in the previous year too.\n\n' +
+      'We have not been able to check this against the Welsh Government\'s own circular, only against reports of it, so we are telling you rather than quietly correcting it.',
+    actionUrl: '/guidance/rates',
+  },
   CAPITAL_RULE_MAY_APPLY: {
     severity: 'info',
     title: 'Your council may have a savings rule',

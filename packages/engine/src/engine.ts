@@ -227,6 +227,27 @@ function standingFlags(
     flags.push(makeFlag('RATES_STALE', { effectiveTo: rates.effectiveTo }));
   }
 
+  // Wales pays more for an under-5 than for a 5-15 year old, which reads as a
+  // bug to anyone who has seen any other UK rate table. Driven off the data so
+  // the warning disappears by itself the day the Welsh Government's own
+  // circular either confirms the figures or corrects them.
+  if (input.carer.nation === 'wales' && rates.wales?.anomalyConfirmed === true) {
+    flags.push(makeFlag('WALES_BAND_ORDER_ANOMALY'));
+  }
+
+  // 1-5 April: councils uplift from 1 April, DfE states the rates for a tax
+  // year starting 6 April. Both are right, so rather than pick a side silently
+  // we serve the council convention — what the carer is actually paid — and
+  // say that the other reading exists.
+  if (
+    rates.councilApplicationFrom !== undefined &&
+    rates.dfeStatedTaxYearFrom !== undefined &&
+    asAt >= rates.councilApplicationFrom &&
+    asAt < rates.dfeStatedTaxYearFrom
+  ) {
+    flags.push(makeFlag('APRIL_RATE_BOUNDARY'));
+  }
+
   for (const child of input.children) {
     if (child.wasLookedAfterImmediatelyBeforeOrder === false) {
       flags.push(makeFlag('NOT_LOOKED_AFTER_BEFORE_ORDER'));

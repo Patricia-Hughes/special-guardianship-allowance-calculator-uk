@@ -2,6 +2,10 @@
   "financialYear": "2026-27",
   "effectiveFrom": "2026-04-01",
   "effectiveTo": "2027-03-31",
+  "dfeStatedTaxYearFrom": "2026-04-06",
+  "dfeStatedTaxYearTo": "2027-04-05",
+  "councilApplicationFrom": "2026-04-01",
+  "aprilBoundaryNote": "Two years are in play and both are right in their own frame. DfE states the National Minimum Allowance on a TAX year — GOV.UK heads the table 'Weekly allowances for the tax year from 6 April 2026 to 5 April 2027'. Councils apply their uplifts from 1 April: North Tyneside's decision record of 21 March 2025 says 'all uplifts in Allowances will take effect from 1 April 2025', and Rotherham's of 26 March 2024 says changes are 'implemented from or back dated to 1st April 2024'. effectiveFrom and effectiveTo follow the COUNCIL convention, because that is what decides what a carer is actually paid. For 1-5 April the two disagree, and the calculator says so on screen rather than picking a side. Backdating must segment on both dates once it is unblocked.",
   "dataVersion": "2026-27.1",
   "england": {
     "sourceId": "dfe-nma-2026-27",
@@ -25,7 +29,23 @@
     "unit": "weekly-pence",
     "upliftPercent": 2.2,
     "verify": true,
-    "verifyNote": "0-4 band exceeds 5-15 band in secondary sources. CONFIRM against Welsh Government original before shipping the Wales route.",
+    "verifyNote": "0-4 band exceeds 5-15 band. Corroborated across two independent years (see anomalyCorroboration) but still not confirmed against the Welsh Government's own circular. Keep chasing the primary source.",
+    "anomalyConfirmed": true,
+    "anomalyConfirmedOn": "2026-08-29",
+    "anomalyCorroboration": [
+      {
+        "source": "Fostering news, '2025 Allowance Uplifts Across the UK'",
+        "url": "https://fosteringnews.co.uk/fostering/2025-allowance-uplifts-across-the-uk-england-wales-scotland-ni/",
+        "date": "2025-09-15",
+        "finding": "Records the 2025/26 Welsh NMA as £224 (0-4), £204 (5-10 and 11-15), £255 (16-17) — the same inversion, in an independent year."
+      },
+      {
+        "source": "The Fostering Network, Foster Care Allowances",
+        "url": "https://www.thefosteringnetwork.org.uk/policy-and-campaigns/empowering-children-and-young-people/allowances/",
+        "finding": "Confirms the Welsh Government announced a 2.2% uplift for 2026/27. Applying 2.2% to the 2025/26 figures reproduces this table to the pound: 224 -> 228.9 (£229), 204 -> 208.5 (£208), 255 -> 260.6 (£260)."
+      }
+    ],
+    "userFacingNote": "In Wales the rate for a child under 5 is higher than for a child aged 5 to 15. That is not a mistake on this site — it is how the rates are published.",
     "ageBands": [
       { "id": "0-4",   "minAge": 0,  "maxAge": 4 },
       { "id": "5-15",  "minAge": 5,  "maxAge": 15 },

@@ -15,6 +15,16 @@ async function setAge(page: Page, age: string, index = 0): Promise<void> {
   await page.getByLabel('How old are they?').nth(index).fill(age);
 }
 
+/**
+ * The finances step sits between "benefits" and "council". Nobody should be
+ * made to hand over their income to find out their council's lawful maximum, so
+ * skipping it has to work — these journeys check that it does by using it.
+ */
+async function skipFinances(page: Page): Promise<void> {
+  await expect(page.getByText(/You can skip this/i)).toBeVisible();
+  await page.getByRole('button', { name: 'Skip this step' }).click();
+}
+
 test.describe('journeys', () => {
   test('1: grandmother, one 12-year-old, South East, no finances → £255/week, prints', async ({
     page,
@@ -86,6 +96,8 @@ test.describe('journeys', () => {
     await page.getByRole('checkbox', { name: 'Universal Credit' }).check();
     await page.getByRole('button', { name: 'Continue' }).click();
 
+    await skipFinances(page);
+
     await page.getByRole('checkbox', { name: /takes Child Benefit off/i }).check();
     await page.getByRole('button', { name: 'Update my result' }).click();
 
@@ -108,6 +120,8 @@ test.describe('journeys', () => {
     await page.getByRole('button', { name: 'Continue' }).click();
     await page.getByRole('button', { name: 'Continue' }).click();
 
+    await skipFinances(page);
+
     await page.getByRole('checkbox', { name: /would be in local authority care/i }).check();
     await page.getByRole('button', { name: 'Update my result' }).click();
 
@@ -115,6 +129,41 @@ test.describe('journeys', () => {
     await expect(page.getByText('£201', { exact: false }).first()).toBeVisible();
     await expect(page.getByText(/Kinship Zones pilot/i).first()).toBeVisible();
     await expect(page.getByText(/pilot in seven councils|seven councils/i).first()).toBeVisible();
+  });
+
+  test('6: carer who wants the means test → arithmetic shown, both caveats survive', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await chooseNation(page, 'England');
+    await page.getByRole('radio', { name: /Anywhere else in England/ }).check();
+    await page.getByRole('button', { name: 'Continue' }).click();
+
+    await setAge(page, '9');
+    await page.getByRole('button', { name: 'Show me the figure' }).click();
+    await page.getByRole('button', { name: 'Answer a few more questions' }).click();
+    await page.getByRole('button', { name: 'Continue' }).click();
+    await page.getByRole('button', { name: 'Continue' }).click();
+
+    // The step this journey exists for. Unblocked once the DWP Income Support
+    // applicable amounts were sourced; before that it threw rather than guess.
+    await expect(page.getByText(/You can skip this/i)).toBeVisible();
+    await page.getByLabel(/Take-home pay, per month/).fill('2000');
+    await page.getByLabel(/Rent or mortgage, per month/).fill('800');
+    await page.getByRole('button', { name: 'Continue' }).click();
+
+    await page.getByRole('button', { name: 'Update my result' }).click();
+
+    // The carer must be able to see the sum, not just its answer — an estimate
+    // she cannot check is one she cannot challenge. It is a disclosure, closed
+    // on screen and forced open when printed.
+    await page.locator('summary', { hasText: 'Show the arithmetic' }).click();
+    await expect(page.getByText(/20% of your income is ignored/i).first()).toBeVisible();
+    await expect(page.getByText(/Basic living costs/i).first()).toBeVisible();
+
+    // Sourcing the figures fixed the data gap, not the model. Both warnings
+    // must still be in front of her.
+    await expect(page.getByText(/no published national rule|had to assume/i).first()).toBeVisible();
   });
 
   test('5: carer in Scotland → kinship regime, no English citations anywhere', async ({ page }) => {

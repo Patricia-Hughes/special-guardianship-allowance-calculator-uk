@@ -76,6 +76,12 @@ interface AgeBand {
   minAge: number;
   maxAge: number;
 }
+interface AnomalySource {
+  source?: string;
+  url?: string;
+  date?: string;
+  finding?: string;
+}
 interface RateSection {
   ageBands: AgeBand[];
   regions?: Record<string, Record<string, number>>;
@@ -83,6 +89,9 @@ interface RateSection {
   sourceId?: string;
   verify?: boolean;
   verifyNote?: string;
+  anomalyConfirmed?: boolean;
+  anomalyCorroboration?: AnomalySource[];
+  userFacingNote?: string;
 }
 interface RateDoc {
   financialYear: string;
@@ -107,6 +116,8 @@ interface RateSet {
   rates: Record<string, number>;
   /** Marked in the data as known-suspect and awaiting confirmation. */
   unverified: boolean;
+  /** Suspect-looking, but corroborated as genuinely published. */
+  anomalyConfirmed: boolean;
 }
 
 function rateSets(doc: RateDoc): RateSet[] {
@@ -115,12 +126,13 @@ function rateSets(doc: RateDoc): RateSet[] {
     const section = doc[nation] as RateSection | null | undefined;
     if (!section) continue;
     const unverified = section.verify === true;
+    const anomalyConfirmed = section.anomalyConfirmed === true;
     if (section.regions) {
       for (const [region, rates] of Object.entries(section.regions)) {
-        out.push({ label: `${nation}/${region}`, nation, bands: section.ageBands, rates, unverified });
+        out.push({ label: `${nation}/${region}`, nation, bands: section.ageBands, rates, unverified, anomalyConfirmed });
       }
     } else if (section.rates) {
-      out.push({ label: nation, nation, bands: section.ageBands, rates: section.rates, unverified });
+      out.push({ label: nation, nation, bands: section.ageBands, rates: section.rates, unverified, anomalyConfirmed });
     }
   }
   return out;
@@ -157,9 +169,13 @@ for (const [file, doc] of rateDocs) {
           `${file} ${set.label}: band ${band.id} (${value}p) is lower than ${previousBand} (${previous}p). ` +
           'Rates must not fall as age rises — this is usually a transcription error.';
         if (set.unverified) {
-          // Known-suspect and explicitly marked. Allowed to sit in the data, but
-          // check 12 below enforces that the route stays switched off.
-          note(`${message} Marked verify: true — route must stay disabled.`);
+          // Known-suspect and explicitly marked. Check 12 below decides whether
+          // it may be served: only if the anomaly has been corroborated.
+          note(
+            set.anomalyConfirmed
+              ? `${message} Corroborated as genuinely published — served with an on-screen explanation.`
+              : `${message} Marked verify: true — route must stay disabled.`,
+          );
         } else {
           fail('2 monotonic', message);
         }
@@ -212,11 +228,53 @@ for (const [, doc] of rateDocs) {
       continue;
     }
     const enabled = new RegExp(`${flagName}:\\s*true`).test(featureFlagsSource);
-    if (enabled) {
+
+    // An odd-looking figure has two quite different states, and conflating them
+    // either strands a whole nation or ships a number nobody has checked.
+    //
+    //   verify: true alone            — suspect. Hold the data, do not serve it.
+    //   + anomalyConfirmed: true      — independently corroborated. May be
+    //                                   served, because the alternative is
+    //                                   telling every carer in that nation
+    //                                   nothing at all. Still not a primary
+    //                                   source, so verify stays true and the
+    //                                   hunt for the original continues.
+    //
+    // Confirming an anomaly is deliberately expensive: two independent
+    // corroborating sources, and a plain-English line shown to the user, since
+    // a figure that looks wrong reads as a bug in the site unless we say
+    // otherwise.
+    if (section.anomalyConfirmed === true) {
+      const sources = section.anomalyCorroboration ?? [];
+      if (sources.length < 2) {
+        fail(
+          '12 verify',
+          `${nation} rates are marked anomalyConfirmed: true with ${sources.length} corroborating source(s). ` +
+            'Confirming an anomaly takes at least two independent sources.',
+        );
+      }
+      for (const s of sources) {
+        if (!s.url || !s.finding) {
+          fail('12 verify', `${nation} anomalyCorroboration entry "${s.source ?? '?'}" needs both a url and a finding`);
+        }
+      }
+      if (!section.userFacingNote) {
+        fail(
+          '12 verify',
+          `${nation} rates are marked anomalyConfirmed: true with no userFacingNote. ` +
+            'A rate that looks wrong must be explained on screen, or carers will read it as a bug.',
+        );
+      }
+      note(
+        `${nation} rates carry a confirmed anomaly, corroborated by ${sources.length} sources; ` +
+          `${flagName} may be on. Primary source still outstanding.`,
+      );
+    } else if (enabled) {
       fail(
         '12 verify',
         `${nation} rates are marked verify: true but ${flagName} is true. ` +
-          'Unverified rates must not be served — confirm them against the original source first.',
+          'Unverified rates must not be served — confirm them against the original source first, ' +
+          'or corroborate the anomaly and set anomalyConfirmed.',
       );
     } else {
       note(`${nation} rates are unverified; ${flagName} is off, so the route is not served.`);
@@ -470,6 +528,51 @@ for (const [file, doc] of rateDocs) {
         fail('11 pence', `${file} ${set.label} ${band} = ${value} is not an integer number of pence`);
       }
     }
+  }
+}
+
+// ── 13. Every sourceId in the data resolves to a citation ─────────────────
+// Gate 7 checks the ids that code and content cite. Nothing checked the ids the
+// DATA points at, so a rate table could name a source that did not exist and
+// nothing would notice — the figure would look sourced and be unattributable.
+function checkSourceIds(value: unknown, path: string, file: string): void {
+  if (Array.isArray(value)) {
+    value.forEach((v, i) => checkSourceIds(v, `${path}[${i}]`, file));
+    return;
+  }
+  if (value === null || typeof value !== 'object') return;
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    const p = `${path}.${k}`;
+    if (k === 'sourceId' && typeof v === 'string' && !citationIds.has(v)) {
+      fail('13 sourceId', `${file}${p} names source "${v}", which is not in citations.json`);
+    }
+    checkSourceIds(v, p, file);
+  }
+}
+
+for (const file of dataFiles) {
+  if (file === 'citations.json') continue;
+  checkSourceIds(readJson(join(dataDir, file)), '', file);
+}
+
+// ── 14. A sourced lawfulness finding must not sit in the pending slot ──────
+// pendingLawfulnessFlag exists so that an unsourced allegation against a named
+// council cannot be served while the rest of that council's entry publishes.
+// Once someone finds the decision, it has to be promoted — otherwise the
+// holding pen quietly becomes where findings go to be forgotten.
+for (const la of authorities) {
+  const pending = la.pendingLawfulnessFlag as
+    | { sourceUrl?: string; decisionDate?: string }
+    | undefined;
+  if (!pending) continue;
+  if (pending.sourceUrl && pending.decisionDate) {
+    fail(
+      '14 lawfulness',
+      `la-overrides "${la.slug}" has a pendingLawfulnessFlag that is now fully sourced. ` +
+        'Promote it to lawfulnessFlag so it is actually served, or drop it.',
+    );
+  } else {
+    note(`la-overrides "${la.slug}" holds an unsourced lawfulness finding back from publication`);
   }
 }
 

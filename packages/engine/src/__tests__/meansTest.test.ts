@@ -7,7 +7,7 @@ import {
   DEFAULT_TAPER,
   DISREGARD_RATE,
   applyTaper,
-  incomeSupportApplicableAmount,
+  incomeSupportApplicableAmountWeekly,
   meansTestAvailable,
   runMeansTest,
   tariffIncome,
@@ -36,11 +36,70 @@ const sourcedBenefits = (over: Partial<Record<string, number>> = {}): BenefitTab
 });
 
 describe('means test', () => {
-  it('is blocked while the Income Support amounts are PENDING_SOURCE [HARD §14.5]', () => {
+  it('runs on the shipped 2026/27 data now the DWP figures are sourced [§14.5]', () => {
     const shipped = BENEFIT_TABLES[0]!;
-    expect(meansTestAvailable(shipped)).toBe(false);
-    expect(() => incomeSupportApplicableAmount(finances(), shipped)).toThrow(DataError);
-    expect(() => incomeSupportApplicableAmount(finances(), shipped)).toThrow(/not yet sourced/);
+    expect(meansTestAvailable(shipped)).toBe(true);
+    // Single claimant, 25 or over, one dependent child. As printed by DWP:
+    // personal 95.55 + dependent child 87.88 + family premium 20.22 = 203.65.
+    expect(incomeSupportApplicableAmountWeekly(finances(), shipped)).toBe(20365);
+  });
+
+  it('still refuses a table whose Income Support amounts are PENDING_SOURCE [HARD §14.5]', () => {
+    const pendingTable: BenefitTable = {
+      ...ZERO_IS_BENEFITS,
+      incomeSupportApplicableAmounts: {
+        status: 'PENDING_SOURCE',
+        schema: {
+          singleUnder25Pence: null,
+          single25PlusPence: null,
+          couplePence: null,
+          dependentChildPence: null,
+          familyPremiumPence: null,
+          disabilityPremiumPence: null,
+          carerPremiumPence: null,
+        },
+      },
+    };
+    expect(meansTestAvailable(pendingTable)).toBe(false);
+    expect(() => incomeSupportApplicableAmountWeekly(finances(), pendingTable)).toThrow(DataError);
+    expect(() => incomeSupportApplicableAmountWeekly(finances(), pendingTable)).toThrow(/not yet sourced/);
+  });
+
+  it('charges a couple the couple disability premium, not the single rate', () => {
+    // DWP publishes both. Using the single rate for a couple understates the
+    // applicable amount, which overstates what the council expects the carer to
+    // contribute — the error direction that costs them money.
+    const table = sourcedBenefits({ disabilityPremiumPence: 4485, disabilityPremiumCouplePence: 6400 });
+    const single = incomeSupportApplicableAmountWeekly(
+      finances({ adultsInHousehold: 1, dependentChildrenInHousehold: 0, householdHasDisabilityPremium: true }),
+      table,
+    );
+    const couple = incomeSupportApplicableAmountWeekly(
+      finances({ adultsInHousehold: 2, dependentChildrenInHousehold: 0, householdHasDisabilityPremium: true }),
+      table,
+    );
+    expect(single).toBe(4485);
+    expect(couple).toBe(6400);
+  });
+
+  it('falls back to the single disability premium when no couple rate is sourced', () => {
+    const table = sourcedBenefits({ disabilityPremiumPence: 4485 });
+    expect(
+      incomeSupportApplicableAmountWeekly(
+        finances({ adultsInHousehold: 2, dependentChildrenInHousehold: 0, householdHasDisabilityPremium: true }),
+        table,
+      ),
+    ).toBe(4485);
+  });
+
+  it('keeps DEFAULT_CAPITAL in step with the DWP capital rules in the data', () => {
+    // The spec carried these as an unsourced assumption; DWP has since confirmed
+    // them. Two copies of the same numbers drift, so assert they agree.
+    const rules = BENEFIT_TABLES[0]!.capitalRules;
+    expect(rules).toBeDefined();
+    expect(DEFAULT_CAPITAL.thresholdPence).toBe(rules!.disregardedPence);
+    expect(DEFAULT_CAPITAL.tariffPerBlockPence).toBe(rules!.tariffPerBlockPence);
+    expect(DEFAULT_CAPITAL.blockSizePence).toBe(rules!.blockSizePence);
   });
 
   it('refuses to run on a partially-sourced table rather than treating a gap as zero', () => {
@@ -59,7 +118,7 @@ describe('means test', () => {
         },
       },
     };
-    expect(() => incomeSupportApplicableAmount(finances(), partial)).toThrow(/single25PlusPence/);
+    expect(() => incomeSupportApplicableAmountWeekly(finances(), partial)).toThrow(/single25PlusPence/);
   });
 
   it('builds the applicable amount from household composition', () => {
@@ -74,18 +133,18 @@ describe('means test', () => {
     });
     // Single, 25+, two dependent children: 10000 + 2×5000 + 2000 family premium.
     expect(
-      incomeSupportApplicableAmount(finances({ dependentChildrenInHousehold: 2 }), b),
+      incomeSupportApplicableAmountWeekly(finances({ dependentChildrenInHousehold: 2 }), b),
     ).toBe(22000);
     // Under 25.
     expect(
-      incomeSupportApplicableAmount(
+      incomeSupportApplicableAmountWeekly(
         finances({ dependentChildrenInHousehold: 0, claimantUnder25: true }),
         b,
       ),
     ).toBe(8000);
     // Couple with a disability and a carer premium, one child.
     expect(
-      incomeSupportApplicableAmount(
+      incomeSupportApplicableAmountWeekly(
         finances({
           adultsInHousehold: 2,
           dependentChildrenInHousehold: 1,
@@ -109,7 +168,18 @@ describe('means test', () => {
     expect(mt.disposableIncomeMonthly).toBe(40000);
   });
 
-  it('multiplies the applicable amount by 1.25 for core living costs', () => {
+  it('converts the applicable amount to monthly BEFORE the 1.25 multiplier', () => {
+    // [HARD] DWP publishes the applicable amounts WEEKLY; every other figure in
+    // the means test is monthly. This test previously asserted 125000 — the
+    // weekly figure multiplied by 1.25 and then subtracted from monthly income,
+    // which is the bug it was written to describe rather than catch. It went
+    // unnoticed because the function threw on the shipped data until the DWP
+    // figures were sourced.
+    //
+    // The error is not academic: core living costs are the largest line of
+    // allowable expenditure, so shrinking them 4.33x inflates disposable
+    // income, inflates the contribution the council expects, and cuts the
+    // carer's allowance. Always in that direction.
     const mt = runMeansTest(
       finances({ netEarnings: p(500000) }),
       sourcedBenefits({ single25PlusPence: 100000, dependentChildPence: 0, familyPremiumPence: 0 }),
@@ -117,8 +187,27 @@ describe('means test', () => {
       DEFAULT_CAPITAL,
     );
     expect(CORE_LIVING_COSTS_MULTIPLIER).toBe(1.25);
-    expect(mt.coreLivingCostsMonthly).toBe(125000);
-    expect(mt.totalExpenditureMonthly).toBe(125000);
+    // £1,000/wk -> £4,333.33/mo -> x1.25 = £5,416.66/mo.
+    expect(mt.coreLivingCostsMonthly).toBe(541666);
+    expect(mt.totalExpenditureMonthly).toBe(541666);
+  });
+
+  it('leaves a carer on a modest income nothing to contribute', () => {
+    // A real shape of case, using the shipped 2026/27 figures: single carer,
+    // one child, £2,000/mo take-home, £800/mo rent. Under the weekly/monthly
+    // bug this produced a contribution of over £100 a week.
+    const mt = runMeansTest(
+      finances({ netEarnings: p(200000), housingCosts: p(80000) }),
+      BENEFIT_TABLES[0]!,
+      DEFAULT_TAPER,
+      DEFAULT_CAPITAL,
+    );
+    // Applicable amount £203.65/wk -> £882.48/mo -> x1.25 = £1,103.10/mo.
+    expect(mt.coreLivingCostsMonthly).toBe(110310);
+    // £2,000 less the 20% disregard is £1,600, against £800 rent plus £1,103.10
+    // of living costs. There is nothing left over.
+    expect(mt.disposableIncomeMonthly).toBe(0);
+    expect(mt.assessedContributionWeekly).toBe(0);
   });
 
   it('never returns a negative disposable income', () => {

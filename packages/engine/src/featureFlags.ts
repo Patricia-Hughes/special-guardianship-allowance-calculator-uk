@@ -11,11 +11,23 @@
  */
 
 export interface FeatureFlags {
-  /** Blocked on the DWP Income Support applicable amounts (spec §8.4). */
+  /**
+   * Unblocked 30 Aug 2026: the DWP Income Support applicable amounts are
+   * sourced for both years from 'Benefit and pension rates 2026 to 2027'.
+   * Every result using it still carries MEANS_TEST_MODEL_OUTDATED and
+   * TAPER_METHOD_ASSUMED — the model is non-statutory and the taper is still
+   * only corroborated across three councils.
+   */
   MEANS_TEST_ENABLED: boolean;
-  /** Blocked on 2024/25 rate data (spec §8.3). */
+  /** Still blocked on 2024/25 rate data (spec §8.3). The full table has not been located. */
   BACKDATING_ENABLED: boolean;
-  /** Blocked on the Welsh 0–4 vs 5–15 verification (spec §8.1). */
+  /**
+   * Unblocked 30 Aug 2026. The Welsh 0–4 > 5–15 inversion is real, not a
+   * transcription error: it reproduces in the 2025/26 figures and the
+   * announced 2.2% uplift regenerates our table to the pound. The Welsh
+   * Government's own circular is still outstanding, so the rates keep
+   * verify: true and carry anomalyConfirmed with an on-screen explanation.
+   */
   WALES_ROUTE_ENABLED: boolean;
   /** Phase 2. */
   LETTER_GENERATOR: boolean;
@@ -28,9 +40,9 @@ export interface FeatureFlags {
 }
 
 export const FLAGS: FeatureFlags = {
-  MEANS_TEST_ENABLED: false,
+  MEANS_TEST_ENABLED: true,
   BACKDATING_ENABLED: false,
-  WALES_ROUTE_ENABLED: false,
+  WALES_ROUTE_ENABLED: true,
   LETTER_GENERATOR: false,
   POSTCODE_LOOKUP: true,
   KINSHIP_ZONE_PATH: true,

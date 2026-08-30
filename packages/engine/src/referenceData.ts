@@ -95,10 +95,16 @@ export function hasUnpublishableLaOverride(slug: string | undefined): boolean {
 
 export const LA_REGION_MAP = laRegionMapJson.map as Record<string, EnglandRegion>;
 export const LA_NAMES = laRegionMapJson.names as Record<string, string>;
+/**
+ * verificationNote and knownDiscrepancies are maintainer prose and are stripped
+ * from the shipped copy by sync-engine-data. They live in /data if you want the
+ * reasoning; what the browser needs is the short statement of what the mapping
+ * rests on, which is regionSource.
+ */
 export const LA_REGION_MAP_META = {
   verificationStatus: laRegionMapJson.verificationStatus,
-  verificationNote: laRegionMapJson.verificationNote,
-  knownDiscrepancies: laRegionMapJson.knownDiscrepancies,
+  /** What the mapping actually rests on. The DfE publishes no authority-level list. */
+  regionSource: laRegionMapJson.regionSource,
   expectedAuthorityCount: laRegionMapJson.expectedAuthorityCount,
 };
 

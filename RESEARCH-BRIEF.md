@@ -2,6 +2,23 @@
 
 **Research brief — special guardianship allowance calculator**
 
+> **Answered on 29 August 2026.** Most of this brief has been researched and the
+> findings are built in. See `OPEN-ITEMS.md` for the current state. In short:
+>
+> - **Done** — Income Support amounts (both years, means test now live);
+>   Kinship Zones confirmed; DfE guidance URL and paragraph 65 unchanged.
+> - **Corrected** — Wiltshire moved to rest-of-England; three DWP benefit
+>   figures fixed.
+> - **Answered in the negative** — no DfE authority-level region list exists, so
+>   the map now rests on ONS regions and says so on screen.
+> - **Shipping with a caveat** — the Welsh band inversion is real, corroborated
+>   across two years, so Wales is live with an on-screen explanation.
+> - **Still open** — the 2024/25 rate table (try the National Archives
+>   snapshot), Devon and Leeds policy URLs, more councils for the taper, and the
+>   LGSCO decisions at citable URLs.
+>
+> The brief is kept below as the specification of what was asked for.
+
 Nine things we need sourced before features that are built but switched off can
 go live. Each one is a lookup in a published document — none of them needs a
 judgement call.

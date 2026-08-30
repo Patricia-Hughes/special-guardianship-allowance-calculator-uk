@@ -210,7 +210,9 @@ export type FlagCode =
   | 'SCOTLAND_FOSTER_KINSHIP_PARITY'
   | 'SCOTLAND_NO_WORSE_OFF'
   | 'KINSHIP_ZONE_PILOT_CAVEAT'
-  | 'KINSHIP_ZONE_COMPARISON';
+  | 'KINSHIP_ZONE_COMPARISON'
+  | 'WALES_BAND_ORDER_ANOMALY'
+  | 'APRIL_RATE_BOUNDARY';
 
 export type FlagSeverity = 'info' | 'important' | 'critical';
 
@@ -267,14 +269,31 @@ export interface FlatNationRates {
   note?: string;
   verify?: boolean;
   verifyNote?: string;
+  /**
+   * A figure that looks like an error but has been corroborated as genuinely
+   * published. Distinct from `verify`, which means "suspect, do not serve".
+   * Set, the route may ship — with an on-screen explanation, because a rate
+   * that looks wrong reads as a bug in the site unless we say otherwise.
+   */
+  anomalyConfirmed?: boolean;
+  anomalyConfirmedOn?: string;
+  anomalyCorroboration?: Array<{ source: string; url: string; date?: string; finding: string }>;
+  userFacingNote?: string;
   ageBands: AgeBand[];
   rates: Record<string, number>;
 }
 
 export interface RateTable {
   financialYear: string;
+  /** Council convention: 1 April. This is the operative window — see aprilBoundaryNote. */
   effectiveFrom: IsoDate;
   effectiveTo: IsoDate;
+  /** DfE states the NMA on a tax year, 6 April to 5 April. Differs from the above. */
+  dfeStatedTaxYearFrom?: IsoDate;
+  dfeStatedTaxYearTo?: IsoDate;
+  /** The date councils actually apply the uplift from. Same as effectiveFrom. */
+  councilApplicationFrom?: IsoDate;
+  aprilBoundaryNote?: string;
   dataVersion: string;
   status?: 'PENDING_SOURCE';
   pendingSourceIssue?: string;
@@ -288,6 +307,7 @@ export interface RateTable {
 export interface IncomeSupportApplicableAmounts {
   status: 'PENDING_SOURCE' | 'SOURCED';
   pendingSourceIssue?: string;
+  sourceId?: string;
   note?: string;
   schema: {
     singleUnder25Pence: number | null;
@@ -295,9 +315,14 @@ export interface IncomeSupportApplicableAmounts {
     couplePence: number | null;
     dependentChildPence: number | null;
     familyPremiumPence: number | null;
+    /** The single rate. DWP publishes a separate, higher couple rate. */
     disabilityPremiumPence: number | null;
+    /** Optional: pre-dates the couple rate being sourced. Falls back to the single rate. */
+    disabilityPremiumCouplePence?: number | null;
     carerPremiumPence: number | null;
   };
+  /** Published in the same table, recorded for future use, not read by the engine. */
+  sourcedButUnused?: Record<string, unknown>;
 }
 
 export interface BenefitTable {
@@ -316,6 +341,15 @@ export interface BenefitTable {
   benefitCap?: { annualOutsideLondonPence: number; annualLondonPence: number };
   carersAllowance?: Record<string, unknown>;
   incomeSupportApplicableAmounts: IncomeSupportApplicableAmounts;
+  /** DWP capital rules. DEFAULT_CAPITAL must agree with these — a test asserts it. */
+  capitalRules?: {
+    upperLimitPence: number;
+    disregardedPence: number;
+    childDisregardPence: number;
+    tariffPerBlockPence: number;
+    blockSizePence: number;
+    [k: string]: unknown;
+  };
   [k: string]: unknown;
 }
 

@@ -40,11 +40,10 @@
   },
   "dfe-guidance-2017-para65": {
     "label": "DfE Special Guardianship Guidance (Jan 2017), para 65",
-    "url": "",
+    "url": "https://www.gov.uk/government/publications/special-guardianship-guidance",
     "kind": "guidance",
     "retrieved": "2026-08-29",
-    "note": "Under review - updated guidance expected Summer 2026 after the Children's Wellbeing and Schools Act 2026.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "note": "Statutory guidance for local authorities on the Special Guardianship Regulations 2005 (as amended 2016), January 2017. Published 30 December 2005, last updated 26 January 2017. The Summer 2026 update has NOT landed as at 29 August 2026, so paragraph numbering is unchanged and this citation still lands correctly. The guidance's own front matter says it 'will next be reviewed in 2018' — it is eight years past its stated review date, and predates the full rollout of Universal Credit."
   },
   "lewisham-2008": {
     "label": "R (B) v Lewisham LBC [2008] EWHC 738 (Admin)",
@@ -112,10 +111,10 @@
   },
   "dfe-nma-2026-27": {
     "label": "DfE National Minimum Allowance for foster carers, 2026 to 2027",
-    "url": "",
+    "url": "https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
     "kind": "dataset",
     "retrieved": "2026-08-29",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "note": "Headed 'Weekly allowances for the tax year from 6 April 2026 to 5 April 2027'. Publishes three regional columns — London, South East, Rest of England — and no list of which authority sits in which."
   },
   "dfe-nma-2025-26": {
     "label": "DfE National Minimum Allowance for foster carers, 2025 to 2026",
@@ -129,7 +128,8 @@
     "url": "",
     "kind": "dataset",
     "retrieved": "2026-08-29",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2"
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2",
+    "note": "The Welsh Government's own circular has NOT been located. The 2026/27 figures are corroborated, not primary-sourced: Fostering news of 15 September 2025 records the same band inversion in 2025/26, and applying the announced 2.2% uplift reproduces our table to the pound. See rates.2026-27.json wales.anomalyCorroboration. Keep looking for the circular."
   },
   "hsc-fostering-2026-27": {
     "label": "HSC (Northern Ireland) fostering allowances, 2026 to 2027",
@@ -169,10 +169,95 @@
   },
   "kinship-zones-2026": {
     "label": "Kinship Zones - kinship allowance pilot (2026-2029)",
-    "url": "",
+    "url": "https://www.communitycare.co.uk/content/news/councils-to-test-paying-kinship-carers-to-look-after-children-who-would-otherwise-go-into-care",
     "kind": "dataset",
     "retrieved": "2026-08-29",
     "holding": "A pilot in seven English councils paying a non-means-tested allowance equal to the fostering National Minimum Allowance.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/7"
+    "note": "Community Care, 'Councils to test paying kinship carers an allowance', 27 February 2026. Seven authorities, up to three and a half years, evaluated by Foundations and Alma Economics. Labels the authorities by Government Office Region, including Wiltshire (South West)."
+  },
+  "dwp-benefit-rates-2026-27": {
+    "label": "DWP, Benefit and pension rates 2026 to 2027",
+    "url": "https://www.gov.uk/government/publications/benefit-and-pension-rates-2026-to-2027/proposed-benefit-and-pension-rates-2026-to-2027",
+    "kind": "dataset",
+    "retrieved": "2026-08-29",
+    "note": "First published 12 January 2026, updated 16 February 2026. Publishes 2025/26 and 2026/27 side by side. Source for the Income Support applicable amounts, the capital rules, the benefit cap and the Universal Credit child elements."
+  },
+  "kinship-care-guidance-2024": {
+    "label": "DfE, Kinship Care: statutory guidance for local authorities (October 2024)",
+    "url": "https://assets.publishing.service.gov.uk/media/670d3ed5e84ae1fd8592f2fa/Kinship_Care_-_statutory_guidance_for_local_authorities__October_2024.pdf",
+    "kind": "guidance",
+    "retrieved": "2026-08-29",
+    "holding": "In calculating ongoing special guardianship financial support, the local authority should have regard to the fostering allowance that would have been paid if the child was fostered.",
+    "note": "Published 11 October 2024, replacing the 2010 Family and Friends Care guidance. A 2024 restatement of the para 65 principle, and so a fresher citation than the 2017 guidance for the single most important rule on this site."
+  },
+  "lgsco-rochdale-2019": {
+    "label": "LGSCO decision, Rochdale MBC (December 2019)",
+    "url": "https://shropshire.gov.uk/committee-services/documents/s26540/Special Guardianship Allowances Policy.pdf",
+    "kind": "ombudsman",
+    "retrieved": "2026-08-29",
+    "holding": "Rochdale was found at fault for failing to act in accordance with the law and statutory guidance on special guardianship allowances.",
+    "note": "Rochdale applied to the High Court for judicial review of the Ombudsman's findings. Cited here via Shropshire Council's Cabinet report of 8 February 2021, which gives the decision as its reason for reviewing its own policy; the LGSCO decision itself has not been located at a stable URL."
+  },
+  "sg-regs-2005-reg13": {
+    "label": "Special Guardianship Regulations 2005, reg 13(2)",
+    "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/13",
+    "kind": "regulation",
+    "retrieved": "2026-08-29",
+    "holding": "The local authority must take account of any other grant, benefit, allowance or resource available to the person in respect of their needs as a result of becoming a special guardian of the child.",
+    "note": "The actual statutory hook for the means test, and the provision councils rely on to deduct Child Benefit. Cited directly on the Child Benefit page rather than left to reg 6 and reg 7."
+  },
+  "north-tyneside-decision-2025": {
+    "label": "North Tyneside Council, Decision Record: Foster Care, Special Guardianship, Adoption and Child Arrangement Order Allowance Increases",
+    "url": "https://northtyneside.gov.uk/sites/default/files/web-page-related-files/20250321%20-%20Decision%20Record%20-%20Fostering%20Allowance.pdf",
+    "kind": "guidance",
+    "retrieved": "2026-08-29",
+    "holding": "Special guardianship allowances are uplifted alongside fostering allowances, with London and South East weighting applied in line with the recommended minimum levels. All uplifts take effect from 1 April 2025.",
+    "note": "Julie Firth, Director of Children's Services, 21 March 2025. Confirms the post-2018 equivalence-to-fostering position, and that this council applies uplifts from 1 April rather than the DfE's 6 April tax year."
+  },
+  "shropshire-sg-policy-2021": {
+    "label": "Shropshire Council, Special Guardianship Allowances Policy (Cabinet, 8 February 2021)",
+    "url": "https://shropshire.gov.uk/committee-services/documents/s26540/Special Guardianship Allowances Policy.pdf",
+    "kind": "guidance",
+    "retrieved": "2026-08-29",
+    "note": "Includes backdated payments to special guardians of previously looked-after children, and cites the Rochdale LGSCO report as the reason for the policy review."
+  },
+  "lincolnshire-sg-framework": {
+    "label": "Lincolnshire County Council, Special Guardianship Allowance Assessment Framework",
+    "url": "https://www.lincolnshire.gov.uk/directory-record/82363/special-guardianship-allowance-assessment-framework",
+    "kind": "guidance",
+    "retrieved": "2026-08-29",
+    "holding": "Distinguishes the statutory 'Special Guardianship Guidance' from the non-statutory 'Standardised means test model for adoption and special guardianship financial support'.",
+    "note": "A council, in its own published policy, classifying the DfE means-test model as non-statutory. The best available citation for MEANS_TEST_MODEL_OUTDATED. Also publishes a full worked example of the calculation."
+  },
+  "derby-sg-scheme": {
+    "label": "Derby City Council, Special Guardianship Orders and Derby Support Scheme",
+    "url": "https://derbycsc.trixonline.co.uk/chapter/special-guardianship-orders-and-derby-support-scheme",
+    "kind": "guidance",
+    "retrieved": "2026-08-29",
+    "holding": "A Special Guardianship Order allowance is set at the equivalent of Derby's basic fostering rate for a child of that age."
+  },
+  "fostering-news-2025-uplifts": {
+    "label": "Fostering news, '2025 Allowance Uplifts Across the UK'",
+    "url": "https://fosteringnews.co.uk/fostering/2025-allowance-uplifts-across-the-uk-england-wales-scotland-ni/",
+    "kind": "dataset",
+    "retrieved": "2026-08-29",
+    "holding": "Records the 2025/26 Welsh National Minimum Allowance as £224 (0-4), £204 (5-10 and 11-15), £255 (16-17).",
+    "note": "Secondary source, 15 September 2025. Used only to corroborate that the Welsh band inversion is genuinely published, not to set a rate."
+  },
+  "fostering-network-allowances": {
+    "label": "The Fostering Network, Foster Care Allowances",
+    "url": "https://www.thefosteringnetwork.org.uk/policy-and-campaigns/empowering-children-and-young-people/allowances/",
+    "kind": "dataset",
+    "retrieved": "2026-08-29",
+    "holding": "In February 2026 the Welsh Government announced an uplift of 2.2% to allowances for 2026/27.",
+    "note": "Secondary source, used to corroborate the Welsh uplift percentage."
+  },
+  "parliament-wq-14259": {
+    "label": "UK Parliament written question 14259 (National Minimum Allowance uplifts)",
+    "url": "https://questions-statements.parliament.uk/written-questions/detail/2024-11-13/14259",
+    "kind": "dataset",
+    "retrieved": "2026-08-29",
+    "holding": "The National Minimum Allowance was uplifted by 6.88% for 2024/25, following 12.43% in 2023/24.",
+    "note": "DfE answer of 13 November 2024. Records the uplift percentage only — the 2024/25 table itself is still unsourced, and must NOT be reconstructed from this figure."
   }
 }

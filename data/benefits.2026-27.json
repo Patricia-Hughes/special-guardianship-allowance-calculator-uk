@@ -16,14 +16,18 @@
     "eligibilityNote": "Both parents dead, or one dead and the other untraceable / serving 2+ years / whereabouts unknown. Parental UK residence condition applies."
   },
   "universalCredit": {
-    "childElementMonthlyPence": 29281,
+    "childElementMonthlyPence": 30394,
+    "firstChildBornBefore6Apr2017MonthlyPence": 35188,
+    "childElementNote": "Two rates, not one. A first child born before 6 April 2017 keeps the higher protected rate; every other child gets the standard element.",
     "twoChildLimitAbolished": true,
     "twoChildLimitAbolishedFrom": "2026-04-06",
-    "statute": "Universal Credit (Removal of Two Child Limit) Act 2026 c.13"
+    "statute": "Universal Credit (Removal of Two Child Limit) Act 2026 c.13",
+    "sourceId": "dwp-benefit-rates-2026-27"
   },
   "benefitCap": {
     "annualOutsideLondonPence": 2202000,
-    "annualLondonPence": 2535300
+    "annualLondonPence": 2532300,
+    "sourceId": "dwp-benefit-rates-2026-27"
   },
   "carersAllowance": {
     "weeklyPence": 8645,
@@ -39,17 +43,40 @@
     "disregardedForClaimantsOwnMeansTestedBenefits": true
   },
   "incomeSupportApplicableAmounts": {
-    "status": "PENDING_SOURCE",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/3",
-    "note": "REQUIRED for the 125% core living-costs calculation in the means test. Source from the current DWP 'Benefit and pension rates' publication. DO NOT ESTIMATE.",
+    "status": "SOURCED",
+    "sourceId": "dwp-benefit-rates-2026-27",
+    "note": "Weekly rates exactly as printed in DWP 'Benefit and pension rates 2026 to 2027' (updated 16 February 2026). Income Support is a legacy benefit largely closed to new claims, yet the DfE model anchors core living costs to it. That is a fair criticism of the model rather than a reason not to implement it, and it is why MEANS_TEST_MODEL_OUTDATED fires on every result that uses this.",
     "schema": {
-      "singleUnder25Pence": null,
-      "single25PlusPence": null,
-      "couplePence": null,
-      "dependentChildPence": null,
-      "familyPremiumPence": null,
-      "disabilityPremiumPence": null,
-      "carerPremiumPence": null
+      "singleUnder25Pence": 7565,
+      "single25PlusPence": 9555,
+      "couplePence": 15015,
+      "dependentChildPence": 8788,
+      "familyPremiumPence": 2022,
+      "disabilityPremiumPence": 4485,
+      "disabilityPremiumCouplePence": 6400,
+      "carerPremiumPence": 4815
+    },
+    "sourcedButUnused": {
+      "note": "Published in the same table and recorded so nobody has to re-source them. Not read by the engine: each would need its own question in the finances step before it could be applied honestly.",
+      "disabledChildPremiumPence": 8446,
+      "enhancedDisabilitySinglePence": 2200,
+      "enhancedDisabilityCouplePence": 3140,
+      "enhancedDisabilityDisabledChildPence": 3399,
+      "severeDisabilitySinglePence": 8605,
+      "severeDisabilityCoupleLowerPence": 8605,
+      "severeDisabilityCoupleHigherPence": 17210,
+      "pensionerCouplePence": 21310
     }
+  },
+  "capitalRules": {
+    "sourceId": "dwp-benefit-rates-2026-27",
+    "note": "Confirms the capital model the spec carried as an unsourced assumption. DEFAULT_CAPITAL in meansTest.ts must agree with these; a unit test asserts it.",
+    "upperLimitPence": 1600000,
+    "disregardedPence": 600000,
+    "childDisregardPence": 300000,
+    "tariffPerBlockPence": 100,
+    "blockSizePence": 25000,
+    "tariffAsPrinted": "£1 for every £250, or part thereof, between the amount of capital disregarded and the capital upper limit.",
+    "universalCreditTariffPer250MonthlyPence": 435
   }
 }

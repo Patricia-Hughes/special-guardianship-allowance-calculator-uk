@@ -13,7 +13,16 @@
  */
 
 import { DataError } from './errors.js';
-import { add, clampMin0, monthlyToWeekly, mul, pence, sub, type Pence } from './money.js';
+import {
+  add,
+  clampMin0,
+  monthlyToWeekly,
+  mul,
+  pence,
+  sub,
+  weeklyToMonthly,
+  type Pence,
+} from './money.js';
 import type {
   BenefitTable,
   BreakdownStep,
@@ -76,12 +85,22 @@ export const DEFAULT_CAPITAL: CapitalConfig = {
 };
 
 /**
- * The Income Support applicable amount for this household.
+ * The Income Support applicable amount for this household, WEEKLY.
+ *
+ * The unit is in the name because getting it wrong is expensive and silent:
+ * DWP publishes these figures weekly, the means test works monthly, and the
+ * applicable amount feeds the single largest line of allowable expenditure.
+ * Treating a weekly figure as monthly shrinks that line by a factor of 4.33,
+ * which inflates disposable income, which inflates the contribution the council
+ * expects, which cuts the carer's allowance. See runMeansTest, which converts.
  *
  * [HARD] Throws while the DWP figures are PENDING_SOURCE. Do not estimate:
  * a wrong applicable amount silently shifts every means-tested result.
  */
-export function incomeSupportApplicableAmount(f: FinancesInput, benefits: BenefitTable): Pence {
+export function incomeSupportApplicableAmountWeekly(
+  f: FinancesInput,
+  benefits: BenefitTable,
+): Pence {
   const isa = benefits.incomeSupportApplicableAmounts;
   if (isa.status === 'PENDING_SOURCE') {
     throw new DataError(
@@ -110,7 +129,16 @@ export function incomeSupportApplicableAmount(f: FinancesInput, benefits: Benefi
     total += need(s.familyPremiumPence, 'familyPremiumPence');
   }
   if (f.householdHasDisabilityPremium === true) {
-    total += need(s.disabilityPremiumPence, 'disabilityPremiumPence');
+    // DWP publishes a separate, higher couple rate. Charging a couple the
+    // single rate understates the applicable amount, which understates
+    // allowable expenditure, which overstates the contribution the council
+    // expects — the direction of error that costs the carer money. Falls back
+    // to the single rate for a table sourced before the couple rate was.
+    const coupleRate = s.disabilityPremiumCouplePence;
+    total +=
+      couple && coupleRate != null && coupleRate !== undefined
+        ? coupleRate
+        : need(s.disabilityPremiumPence, 'disabilityPremiumPence');
   }
   if (f.householdHasCarerPremium === true) {
     total += need(s.carerPremiumPence, 'carerPremiumPence');
@@ -211,8 +239,10 @@ export function runMeansTest(
   );
 
   // ── Step 3: allowable expenditure ───────────────────────────────────────
-  const applicableAmount = incomeSupportApplicableAmount(f, benefits);
-  const coreLiving = mul(applicableAmount, CORE_LIVING_COSTS_MULTIPLIER);
+  // DWP publishes the applicable amounts weekly; everything else in this
+  // function is monthly. Convert before applying the 25% uplift.
+  const applicableWeekly = incomeSupportApplicableAmountWeekly(f, benefits);
+  const coreLiving = mul(weeklyToMonthly(applicableWeekly), CORE_LIVING_COSTS_MULTIPLIER);
 
   let expenditure = pence(0);
   const spend = (label: string, v: Pence, note?: string): void => {

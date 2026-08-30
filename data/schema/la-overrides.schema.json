@@ -6,6 +6,7 @@
   "properties": {
     "schemaNote": { "type": "string" },
     "publishableNote": { "type": "string" },
+    "lawfulnessNote": { "type": "string" },
     "authorities": {
       "type": "array",
       "items": {
@@ -68,7 +69,21 @@
               }
             ]
           },
+          "pendingLawfulnessFlag": {
+            "type": "object",
+            "required": ["code", "summary", "sourceUrl", "decisionDate"],
+            "properties": {
+              "code": { "type": "string" },
+              "summary": { "type": "string" },
+              "sourceUrl": { "type": "string" },
+              "decisionDate": { "type": "string" },
+              "pendingSourceIssue": { "type": "string", "format": "uri" },
+              "note": { "type": "string" }
+            }
+          },
+          "councilApplicationDate": { "type": "string" },
           "policySourceUrl": { "type": "string" },
+          "policySourceDate": { "type": "string", "format": "date" },
           "verifiedOn": { "type": "string", "format": "date" }
         }
       }

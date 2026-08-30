@@ -384,6 +384,19 @@ export function CalculatorShell() {
                       <span>{label}</span>
                     </label>
                   ))}
+                  {/*
+                    The government publishes rates by region but no list of
+                    which council is in which region, so the mapping above is
+                    ours, not theirs. Saying so is both honest and practical:
+                    it pre-empts the complaint from a carer near a boundary,
+                    and it tells them the fix is the radio buttons they are
+                    already looking at.
+                  */}
+                  <p className="field__hint">
+                    The government publishes rates by region but does not publish a list of which
+                    council is in which region. We use the standard national regions. If you think
+                    yours is wrong, choose it here — your choice overrides ours.
+                  </p>
                 </fieldset>
               </>
             )}

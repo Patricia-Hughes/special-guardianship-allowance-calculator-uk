@@ -30,6 +30,7 @@
       "properties": {
         "status": { "type": "string", "enum": ["PENDING_SOURCE", "SOURCED"] },
         "pendingSourceIssue": { "type": "string", "format": "uri" },
+        "sourceId": { "type": "string" },
         "note": { "type": "string" },
         "schema": {
           "type": "object",
@@ -40,9 +41,40 @@
             "dependentChildPence": { "type": ["integer", "null"], "minimum": 0 },
             "familyPremiumPence": { "type": ["integer", "null"], "minimum": 0 },
             "disabilityPremiumPence": { "type": ["integer", "null"], "minimum": 0 },
+            "disabilityPremiumCouplePence": { "type": ["integer", "null"], "minimum": 0 },
             "carerPremiumPence": { "type": ["integer", "null"], "minimum": 0 }
           }
-        }
+        },
+        "sourcedButUnused": { "type": "object" }
+      }
+    },
+    "capitalRules": {
+      "type": "object",
+      "required": ["upperLimitPence", "disregardedPence", "tariffPerBlockPence", "blockSizePence"],
+      "properties": {
+        "sourceId": { "type": "string" },
+        "note": { "type": "string" },
+        "upperLimitPence": { "type": "integer", "minimum": 0 },
+        "disregardedPence": { "type": "integer", "minimum": 0 },
+        "childDisregardPence": { "type": "integer", "minimum": 0 },
+        "tariffPerBlockPence": { "type": "integer", "minimum": 0 },
+        "blockSizePence": { "type": "integer", "minimum": 1 },
+        "tariffAsPrinted": { "type": "string" },
+        "universalCreditTariffPer250MonthlyPence": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "universalCredit": {
+      "type": "object",
+      "properties": {
+        "childElementMonthlyPence": { "type": ["integer", "null"], "minimum": 0 },
+        "firstChildBornBefore6Apr2017MonthlyPence": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "benefitCap": {
+      "type": "object",
+      "properties": {
+        "annualOutsideLondonPence": { "type": "integer", "minimum": 0 },
+        "annualLondonPence": { "type": "integer", "minimum": 0 }
       }
     }
   }

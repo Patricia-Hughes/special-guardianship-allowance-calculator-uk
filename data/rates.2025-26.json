@@ -2,6 +2,9 @@
   "financialYear": "2025-26",
   "effectiveFrom": "2025-04-01",
   "effectiveTo": "2026-03-31",
+  "dfeStatedTaxYearFrom": "2025-04-06",
+  "dfeStatedTaxYearTo": "2026-04-05",
+  "councilApplicationFrom": "2025-04-01",
   "dataVersion": "2025-26.1",
   "england": {
     "sourceId": "dfe-nma-2025-26",
