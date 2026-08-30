@@ -6,8 +6,25 @@
 # `form-action 'none'` is deliberate: nothing on this site should ever POST
 # anywhere. There is no backend to POST to, and the day someone adds a contact
 # form, this header should be what stops them shipping it by accident.
+#
+# `script-src` carries 'unsafe-inline', which needs justifying rather than
+# assuming. Next.js App Router ships the page's data to the browser inside
+# inline <script> tags; without them React never hydrates and every page is
+# blank. Hashing them instead is not workable here: this build emits 244 unique
+# inline blocks across 26 pages, so the header would run to ~13KB, change on
+# every build, and produce a blank site the first time one hash was missed.
+#
+# What makes it an acceptable trade here, and would stop being true if any of
+# these changed:
+#   - No user-generated content. Nothing is stored, and there is no backend.
+#   - No third-party scripts, so 'self' still blocks every external origin.
+#   - Everything a user types is rendered through React, which escapes it.
+#   - The one dangerouslySetInnerHTML is build-time JSON-LD from our own data,
+#     with `<` escaped.
+# The other directives still do real work: no framing, no form posts, no
+# base-uri hijack, and connect-src limited to the postcode lookup.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.postcodes.io; frame-ancestors 'none'; base-uri 'self'; form-action 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.postcodes.io; frame-ancestors 'none'; base-uri 'self'; form-action 'none'
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer

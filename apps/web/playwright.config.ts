@@ -40,7 +40,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npx --yes serve@14 out -l 4321 --no-clipboard',
+    // Not a plain file server: this applies the real security headers from
+    // public/_headers, so the tests run under the CSP that actually ships. A
+    // policy that breaks the site now breaks the build.
+    command: 'node e2e/static-server.mjs 4321',
     url: 'http://127.0.0.1:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

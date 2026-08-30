@@ -63,7 +63,7 @@ for (const { label, path, parse } of sources) {
 }
 
 const CSP =
-  "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; " +
+  "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; " +
   "img-src 'self' data:; connect-src 'self' https://api.postcodes.io; " +
   "frame-ancestors 'none'; base-uri 'self'; form-action 'none'";
 

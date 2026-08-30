@@ -16,7 +16,14 @@
   # `form-action 'none'` is deliberate: nothing here should ever POST anywhere.
   # There is no backend to POST to, and the day someone adds a contact form,
   # this header should be what stops them shipping it by accident.
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.postcodes.io; frame-ancestors 'none'; base-uri 'self'; form-action 'none'"
+  #
+  # On 'unsafe-inline' in script-src, and why it is not laziness: Next.js ships
+  # each page's data in inline <script> tags, so blocking them leaves a blank
+  # page. Hashing is impractical (244 unique blocks, ~13KB of header, changing
+  # every build). There is no user-generated content, no third-party script and
+  # no backend here, and React escapes everything a user types — see the fuller
+  # note in public/_headers, which this file must stay in step with.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.postcodes.io; frame-ancestors 'none'; base-uri 'self'; form-action 'none'"
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "no-referrer"
