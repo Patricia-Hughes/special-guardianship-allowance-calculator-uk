@@ -61,6 +61,35 @@ describe('engine — routing and regimes', () => {
     ).toBe('london');
   });
 
+  it('resolves the region from the council alone, for any English authority', () => {
+    // Spec §12 route 1: picking a council is the default and most reliable path.
+    // la-region-map covers every authority; la-overrides covers a handful. The
+    // engine must consult the map, or picking a council would only work for the
+    // few councils whose policy we happen to hold.
+    const r = calculate(
+      input({
+        carer: carer({ englandRegion: undefined, localAuthoritySlug: 'camden' }),
+        children: [child({ ageYears: 12 })],
+      }),
+    );
+    expect(r.perChild[0]!.coreAllowanceWeekly).toBe(26600); // London 11-15
+    expect(resolveEnglandRegion(carer({ englandRegion: undefined, localAuthoritySlug: 'kent' }))).toBe(
+      'south-east',
+    );
+    expect(resolveEnglandRegion(carer({ englandRegion: undefined, localAuthoritySlug: 'devon' }))).toBe(
+      'rest-of-england',
+    );
+  });
+
+  it('lets an explicit region override the council mapping', () => {
+    // §12 route 3 is always available, including where our mapping is wrong —
+    // and §42 item 8 says the mapping is not yet verified against the DfE's own
+    // regional definition.
+    expect(
+      resolveEnglandRegion(carer({ englandRegion: 'london', localAuthoritySlug: 'devon' })),
+    ).toBe('london');
+  });
+
   it('refuses to guess an England region', () => {
     expect(() => resolveEnglandRegion(carer({ englandRegion: undefined }))).toThrow(DataError);
   });
@@ -191,6 +220,26 @@ describe('engine — standing flags', () => {
       }),
     );
     expect(r.flags.some((f) => f.code === 'TWO_CHILD_LIMIT_ABOLISHED')).toBe(true);
+  });
+
+  it('[§33] flags any council we hold no publishable policy for', () => {
+    // Not an error: use the national minimums and tell the carer how to ask.
+    // Camden is in the region map but not in la-overrides at all.
+    const absent = calculate(
+      input({ carer: carer({ localAuthoritySlug: 'camden', englandRegion: 'london' }) }),
+    );
+    expect(absent.flags.some((f) => f.code === 'COUNCIL_POLICY_UNKNOWN')).toBe(true);
+
+    // …and it does NOT fire where we do hold a publishable policy.
+    const known = calculate(
+      input({ carer: carer({ localAuthoritySlug: 'knownshire', englandRegion: 'rest-of-england' }) }),
+      { laOverrides: { knownshire: publishableLa({ slug: 'knownshire' }) } },
+    );
+    expect(known.flags.some((f) => f.code === 'COUNCIL_POLICY_UNKNOWN')).toBe(false);
+
+    // …nor where no council was given at all.
+    const noCouncil = calculate(input());
+    expect(noCouncil.flags.some((f) => f.code === 'COUNCIL_POLICY_UNKNOWN')).toBe(false);
   });
 
   it('flags a council whose policy we hold but cannot yet publish', () => {

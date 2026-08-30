@@ -38,9 +38,9 @@ import {
   KINSHIP_ZONES,
   LA_NAMES,
   LA_OVERRIDES_ALL,
+  LA_REGION_MAP,
   RATE_TABLES,
   cite,
-  hasUnpublishableLaOverrideIn,
   publishableLaOverrideIn,
 } from './referenceData.js';
 import { parseCalculatorInput } from './schema.js';
@@ -162,7 +162,18 @@ export function lookupRate(
   return pence(value);
 }
 
-/** England region, from the explicit choice or from the council the carer picked. */
+/**
+ * England region, from the explicit choice or from the council the carer picked.
+ *
+ * Spec §12 makes picking a council the default and most reliable path, and
+ * la-region-map.json is what makes that work — it covers every English
+ * children's services authority, whereas la-overrides holds policy detail for a
+ * handful. So the region map is consulted for every council, not just the ones
+ * we hold a policy for.
+ *
+ * An explicit region always wins: §12 route 3 is the fallback that must always
+ * be available, including where our mapping is wrong.
+ */
 export function resolveEnglandRegion(
   carer: CarerInput,
   deps: EngineDeps = defaultDeps(),
@@ -170,6 +181,10 @@ export function resolveEnglandRegion(
   if (carer.englandRegion) return carer.englandRegion;
   const la = publishableLaOverrideIn(deps.laOverrides, carer.localAuthoritySlug);
   if (la) return la.region;
+  if (carer.localAuthoritySlug) {
+    const mapped = LA_REGION_MAP[carer.localAuthoritySlug];
+    if (mapped) return mapped;
+  }
   throw new DataError('An England region is required. Choose a region or a council.');
 }
 
@@ -241,7 +256,14 @@ function standingFlags(
     input.finances?.dependentChildrenInHousehold ?? input.children.length;
   if (householdChildren >= 3) flags.push(makeFlag('TWO_CHILD_LIMIT_ABOLISHED'));
 
-  if (hasUnpublishableLaOverrideIn(deps.laOverrides, input.carer.localAuthoritySlug)) {
+  // [§33] A council we hold no PUBLISHABLE policy for is not an error. Use the
+  // national minimums and say so. This covers both cases: a council absent from
+  // la-overrides entirely, and one seeded but held back for want of a source
+  // URL (ADR-0001). From the carer's point of view they are the same situation.
+  if (
+    input.carer.localAuthoritySlug &&
+    !publishableLaOverrideIn(deps.laOverrides, input.carer.localAuthoritySlug)
+  ) {
     flags.push(
       makeFlag('COUNCIL_POLICY_UNKNOWN', {
         councilName: councilNameFor(input.carer.localAuthoritySlug, deps),
