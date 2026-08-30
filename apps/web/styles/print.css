@@ -1,0 +1,147 @@
+/**
+ * Print stylesheet — spec §19 and §25.
+ *
+ * Print is a FIRST-CLASS OUTPUT, not an afterthought. The printed page a carer
+ * hands to their social worker — with the arithmetic and the citations on it —
+ * is what changes outcomes. A Playwright test renders this to PDF and asserts
+ * the maximum figure, the arithmetic table and the citations block all appear.
+ */
+
+@media print {
+  /* A4 and US Letter safe. */
+  @page {
+    margin: 15mm;
+  }
+
+  :root {
+    /* Minimum 11pt body text. This audience is older. */
+    --font-size-base: 11pt;
+    --font-size-sm: 11pt;
+  }
+
+  html,
+  body {
+    font-size: 11pt;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Black on white. No background colours that eat toner. */
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Hide nav, footer, the calculator form and every interactive control. */
+  .print-hide,
+  nav,
+  footer,
+  .site-header,
+  .site-footer,
+  .calculator-form,
+  button,
+  .btn,
+  input,
+  select,
+  textarea,
+  [role='button'],
+  .skip-link {
+    display: none !important;
+  }
+
+  /* …but a control we deliberately print (a checked answer, say) can opt back in. */
+  .print-show {
+    display: block !important;
+  }
+
+  /* Expand every collapsed accordion — the arithmetic panel must print open. */
+  details {
+    display: block !important;
+    border: 1px solid #000 !important;
+    page-break-inside: avoid;
+  }
+  details > summary {
+    display: block !important;
+    list-style: none;
+    font-weight: 700;
+  }
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+  details > *:not(summary) {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Keep flag cards and table row groups whole across a page break. */
+  .flag-card,
+  .citation-item,
+  thead,
+  tbody tr,
+  tfoot,
+  .avoid-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Show link URLs, so a printed page is still followable. */
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 9pt;
+    word-break: break-all;
+  }
+  /* …but not where the URL is already printed next to the label. */
+  .no-print-url a[href^='http']::after {
+    content: '';
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  th,
+  td {
+    border: 1px solid #000 !important;
+    padding: 4pt 6pt;
+  }
+
+  .callout,
+  .flag-card {
+    border: 1px solid #000 !important;
+    border-left-width: 3pt !important;
+    padding: 6pt 8pt;
+  }
+
+  .wrap {
+    max-width: none;
+    padding: 0;
+  }
+
+  p,
+  li {
+    max-width: none;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* The print-only header and footer blocks. */
+  .print-only {
+    display: block !important;
+  }
+}
+
+/* Off-screen until printed. */
+.print-only {
+  display: none;
+}
