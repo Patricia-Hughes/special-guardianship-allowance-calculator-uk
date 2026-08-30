@@ -1,0 +1,15 @@
+# Security headers — spec §29.2.
+#
+# Format understood by Cloudflare Pages and Netlify. On another CDN, translate
+# these into its own configuration; they are not optional.
+#
+# `form-action 'none'` is deliberate: nothing on this site should ever POST
+# anywhere. There is no backend to POST to, and the day someone adds a contact
+# form, this header should be what stops them shipping it by accident.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.postcodes.io; frame-ancestors 'none'; base-uri 'self'; form-action 'none'
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
+  X-Frame-Options: DENY

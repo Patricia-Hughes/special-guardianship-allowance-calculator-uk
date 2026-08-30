@@ -1,0 +1,54 @@
+# Weekly scheduled checks — spec §36 and §38.
+#
+# These warn rather than fail: a moved gov.uk link must not block a deploy that
+# fixes something else. They open an issue instead, so the report lands
+# somewhere a person will see it.
+name: Weekly checks
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  health:
+    name: Link health and review dates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Citation link health (warn only — gov sites move)
+        id: citations
+        continue-on-error: true
+        run: pnpm check:citations 2>&1 | tee citation-report.txt
+
+      - name: Content overdue for review
+        id: reviews
+        continue-on-error: true
+        run: pnpm check:review-dates 2>&1 | tee review-report.txt
+
+      - name: Rate staleness — this one is allowed to shout
+        run: pnpm check:staleness
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: weekly-health-report
+          path: |
+            citation-report.txt
+            review-report.txt
+          retention-days: 30

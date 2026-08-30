@@ -1,0 +1,3 @@
+# Netlify / Cloudflare Pages redirects.
+# Canonical URLs have no trailing slash (§27), so strip duplicates.
+/*/  /:splat  301

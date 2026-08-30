@@ -1,0 +1,118 @@
+# CI/CD — spec §36.
+#
+# Branch protection: no merge to main without every `validate` and `build` job
+# green. The legal test cases in §35 are not skippable, ever, including for a
+# hotfix — that is what the `legal-cases` step exists to make visible.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: ['**']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: '1'
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (strict, zero errors)
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Unit tests, including ALL of the §35 legal cases
+        run: pnpm test:unit
+
+      - name: Data integrity gates (§9)
+        run: pnpm validate:data
+
+      - name: Rate staleness (§9)
+        run: pnpm check:staleness
+
+      - name: Content gates — no literal money in MDX (§26)
+        run: pnpm check:content
+
+      - name: Security headers (§29.2)
+        run: pnpm check:headers
+
+  build:
+    name: Build and test end to end
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Performance budget (§31)
+        run: pnpm check:bundle
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @sgo/web exec playwright install --with-deps chromium
+
+      - name: End-to-end journeys (§34)
+        run: pnpm test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 14
+
+  deploy-preview:
+    name: Deploy preview
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Deploy the static export to a preview URL
+        run: |
+          echo "Wire this to your CDN's preview deploy (Cloudflare Pages, Netlify, Vercel)."
+          echo "The artefact is apps/web/out — a plain static directory."
+          echo "Set NEXT_PUBLIC_NOINDEX=1 on previews so they cannot be indexed (§27)."
+
+  deploy-production:
+    name: Deploy production
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    steps:
+      - name: Deploy the static export
+        run: |
+          echo "Wire this to your CDN's production deploy."
+          echo "Serve apps/web/out, and apply apps/web/public/_headers (§29.2)."
