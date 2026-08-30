@@ -27,8 +27,10 @@ it does not go in the product. Flag it, open an issue, ship without it.
 and describes it as being in the South East region; the ONS standard region for
 Wiltshire is the **South West**. The spec itself singles Wiltshire out for
 verification. It is mapped per the spec pending confirmation against the DfE's
-own regional definition. A wrong region here changes the answer by up to £42 a
-week, and Wiltshire is also a Kinship Zone, so it gets traffic.
+own regional definition. A wrong region here changes the answer by £19 to £31 a
+week depending on the child's age — the gap between the South East and
+rest-of-England columns of the 2026/27 table, widest at the 16–17 band — and
+Wiltshire is also a Kinship Zone, so it gets traffic.
 
 **The authority count is 153, not 152.** §9 gate 6 asks for coverage of "all 152
 English children's services authorities". The full upper-tier list — 33 London
