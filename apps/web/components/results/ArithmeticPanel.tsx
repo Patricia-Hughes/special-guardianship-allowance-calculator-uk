@@ -1,4 +1,5 @@
 import { formatMoney, type MeansTestBreakdown } from '@sgo/engine';
+import { ScrollableTable } from '../ui/ScrollableTable';
 
 /**
  * "Show the arithmetic" — spec §21 item 5, printed open (§19).
@@ -15,7 +16,7 @@ export function ArithmeticPanel({ breakdown }: { breakdown: MeansTestBreakdown }
         Every step of the calculation, with your figures in it. All amounts are monthly unless the
         line says otherwise.
       </p>
-      <div className="scroll-x">
+      <ScrollableTable label="Step-by-step means test calculation">
         <table>
           <caption className="sr-only">Step-by-step means test calculation</caption>
           <thead>
@@ -54,7 +55,7 @@ export function ArithmeticPanel({ breakdown }: { breakdown: MeansTestBreakdown }
             ))}
           </tbody>
         </table>
-      </div>
+      </ScrollableTable>
       <p>
         The 20% disregard comes off your income <strong>before</strong> your outgoings are taken
         into account. Councils sometimes do this the other way round, which produces a much larger

@@ -83,7 +83,7 @@ export default function HomePage() {
         </ol>
       </section>
 
-      <AdviceLines />
+      <AdviceLines headingId="advice-lines-page" />
     </>
   );
 }

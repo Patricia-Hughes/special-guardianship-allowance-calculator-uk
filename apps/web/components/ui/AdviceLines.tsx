@@ -4,10 +4,10 @@
  * details are deliberately not stored as data because they are not figures the
  * engine uses, but they must be checked at each content review.
  */
-export function AdviceLines() {
+export function AdviceLines({ headingId = 'advice-lines-heading' }: { headingId?: string } = {}) {
   return (
-    <section className="avoid-break" aria-labelledby="advice-lines-heading">
-      <h2 id="advice-lines-heading">Who can help</h2>
+    <section className="avoid-break" aria-labelledby={headingId}>
+      <h2 id={headingId}>Who can help</h2>
       <p>
         These organisations give free, independent advice on kinship care and special
         guardianship. They are not part of your council.

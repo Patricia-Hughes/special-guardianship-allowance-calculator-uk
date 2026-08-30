@@ -15,3 +15,5 @@ lighthouse-report/
 # generated: copies of /data for the engine build (see scripts/sync-engine-data.ts)
 packages/engine/src/data/
 next-env.d.ts
+apps/web/test-results/
+apps/web/playwright-report/

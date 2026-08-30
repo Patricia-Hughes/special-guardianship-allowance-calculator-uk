@@ -82,9 +82,20 @@ p { margin: 0 0 1em; }
 
 a {
   color: var(--colour-info);
+  /* Explicit, because Tailwind's preflight sets text-decoration: inherit on
+     anchors, which removes the browser default. Links inside body text must be
+     distinguishable without relying on colour (WCAG 1.4.1). */
+  text-decoration: underline;
   text-underline-offset: 3px;
 }
 a:hover { text-decoration-thickness: 2px; }
+/* Buttons and nav items are distinguishable by shape and position instead. */
+.btn,
+.skip-link,
+nav a {
+  text-decoration: none;
+}
+nav a:hover { text-decoration: underline; }
 
 /* Every interactive control meets the 48×48 target with 8px spacing. */
 button,
@@ -235,8 +246,11 @@ th, td { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid var
 th { font-weight: 600; background: var(--colour-surface-sunken); }
 caption { text-align: left; font-weight: 600; padding-bottom: 0.5rem; }
 
-/* Wide content scrolls inside its own container; the page body never does. */
+/* Wide content scrolls inside its own container; the page body never does.
+   The container is focusable (see ScrollableTable) so a keyboard user can
+   actually scroll it, which means it needs a focus ring too. */
 .scroll-x { overflow-x: auto; }
+.scroll-x:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 
 details {
   border: 2px solid var(--colour-line);

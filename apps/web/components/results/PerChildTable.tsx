@@ -1,4 +1,5 @@
 import { formatMoney, type CalculatorResult } from '@sgo/engine';
+import { ScrollableTable } from '../ui/ScrollableTable';
 
 const FLOOR_LABEL: Record<string, string> = {
   'reg7-former-foster-carer': 'Held at your previous fostering allowance (reg 7)',
@@ -12,7 +13,7 @@ export function PerChildTable({ result }: { result: CalculatorResult }) {
   return (
     <section aria-labelledby="per-child-heading" className="avoid-break">
       <h2 id="per-child-heading">Each child</h2>
-      <div className="scroll-x">
+      <ScrollableTable label="Weekly figures for each child">
         <table>
           <caption className="sr-only">
             Weekly figures for each child, in pounds
@@ -70,7 +71,7 @@ export function PerChildTable({ result }: { result: CalculatorResult }) {
             </tr>
           </tfoot>
         </table>
-      </div>
+      </ScrollableTable>
     </section>
   );
 }

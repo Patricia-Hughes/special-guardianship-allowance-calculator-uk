@@ -6,6 +6,7 @@ import {
   type Nation,
   type RegionalRates,
 } from '@sgo/engine';
+import { ScrollableTable } from './ScrollableTable';
 
 /**
  * The national minimum allowance table, rendered from the versioned data.
@@ -42,8 +43,10 @@ export function RateTable({
   const regional = 'regions' in section ? (section as RegionalRates) : null;
   const flat = regional ? null : (section as FlatNationRates);
 
+  const label = `${NATION_LABEL[nation]} weekly minimum allowance, ${table.financialYear.replace('-', '/')}`;
+
   return (
-    <div className="scroll-x">
+    <ScrollableTable label={label}>
       <table>
         <caption>
           {NATION_LABEL[nation]} — weekly minimum allowance, financial year{' '}
@@ -80,7 +83,7 @@ export function RateTable({
           ))}
         </tbody>
       </table>
-    </div>
+    </ScrollableTable>
   );
 }
 
