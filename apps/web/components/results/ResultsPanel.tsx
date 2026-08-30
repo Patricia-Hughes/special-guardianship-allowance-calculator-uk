@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import type { CalculatorResult, Citation } from '@sgo/engine';
+import type { CalculatorInput, CalculatorResult, Citation } from '@sgo/engine';
 import { MaximumHero } from './MaximumHero';
+import { PrintedInputs } from './PrintedInputs';
 import { EstimateCard } from './EstimateCard';
 import { PerChildTable } from './PerChildTable';
 import { ArithmeticPanel } from './ArithmeticPanel';
@@ -24,11 +25,15 @@ import { SHARE_EXPLANATION } from '../../lib/urlState';
  */
 export function ResultsPanel({
   result,
+  input,
   regionLabel,
+  councilName,
   shareUrl,
 }: {
   result: CalculatorResult;
+  input: CalculatorInput;
   regionLabel?: string;
+  councilName?: string;
   shareUrl?: string;
 }) {
   const citations: Citation[] = result.perChild.flatMap((c) => c.citations);
@@ -37,6 +42,7 @@ export function ResultsPanel({
   return (
     <div style={{ marginTop: '2.5rem', borderTop: '3px solid var(--colour-line)', paddingTop: '1.5rem' }}>
       <PrintHeader result={result} />
+      <PrintedInputs input={input} {...(councilName ? { councilName } : {})} />
 
       <MaximumHero result={result} {...(regionLabel ? { regionLabel } : {})} />
       <EstimateCard result={result} />

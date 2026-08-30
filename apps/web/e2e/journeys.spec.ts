@@ -59,9 +59,16 @@ test.describe('journeys', () => {
     await page.getByRole('button', { name: 'Continue' }).click();
 
     // The floor holds the figure at the previous fostering allowance, above the
-    // South East 5-10 maximum of £223.
-    await expect(page.getByText('£300', { exact: false }).first()).toBeVisible();
-    await expect(page.getByRole('heading', { name: /two-year protection|previous fostering allowance/i }).first()).toBeVisible();
+    // South East 5-10 maximum of £223 — and the protected figure is shown as a
+    // headline, not buried in a flag.
+    await expect(
+      page.getByRole('heading', { name: /your figure is protected at a higher amount/i }),
+    ).toBeVisible();
+    await expect(page.getByText('£300 a week').first()).toBeVisible();
+    await expect(page.getByText('£223', { exact: false }).first()).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /two-year protection|previous fostering allowance/i }).first(),
+    ).toBeVisible();
   });
 
   test('3: carer on Universal Credit whose council deducts Child Benefit', async ({ page }) => {

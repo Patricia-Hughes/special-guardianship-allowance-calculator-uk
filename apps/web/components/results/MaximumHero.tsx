@@ -2,6 +2,12 @@
 
 import { formatMoney, weeklyToAnnual, type CalculatorResult, type Pence } from '@sgo/engine';
 
+const FLOOR_HEADING: Record<string, string> = {
+  'reg7-former-foster-carer': 'But your figure is protected at a higher amount',
+  'kinship-zone-nma': 'The pilot rate applies to you',
+  'scottish-recommended-allowance': 'This is the recommended minimum',
+};
+
 const REGION_LABEL: Record<string, string> = {
   london: 'London',
   'south-east': 'the South East',
@@ -15,6 +21,52 @@ const REGION_LABEL: Record<string, string> = {
  * This is what most users came for, and it is shown before any finances are
  * asked for.
  */
+/**
+ * Where a floor has raised the figure above the area maximum — reg 7 is the
+ * case that matters — the protected amount is the number the carer needs, and
+ * it must not be left buried in a flag underneath the area maximum. §21 says
+ * lead with the ceiling; for these carers the ceiling is not the whole story.
+ */
+function FloorNotice({ result }: { result: CalculatorResult }) {
+  const floored = result.perChild.filter(
+    (c) => c.floorApplied === 'reg7-former-foster-carer' && c.estimatedAllowanceWeekly > c.maximumWeekly,
+  );
+  if (floored.length === 0) return null;
+
+  const total = result.totalWeekly;
+  return (
+    <div
+      className="avoid-break"
+      style={{
+        border: '3px solid var(--colour-money)',
+        borderRadius: 'var(--radius)',
+        padding: '1rem 1.25rem',
+        margin: '1.5rem 0',
+      }}
+    >
+      <h3 style={{ marginTop: 0 }}>{FLOOR_HEADING['reg7-former-foster-carer']}</h3>
+      <p
+        style={{
+          color: 'var(--colour-money)',
+          fontSize: '2.25rem',
+          lineHeight: 1.1,
+          fontWeight: 700,
+          margin: '0 0 0.25rem',
+        }}
+      >
+        {formatMoney(total)}
+        <span style={{ fontSize: '1.1rem', fontWeight: 600 }}> a week</span>
+      </p>
+      <p style={{ margin: 0 }}>
+        You fostered this child before the order, and it was made less than two years ago. For that
+        period the reward part of your fostering allowance is protected, so your figure should not
+        drop below what you were being paid — even though that is more than the standard rate for
+        your area.
+      </p>
+    </div>
+  );
+}
+
 export function MaximumHero({
   result,
   regionLabel,
@@ -64,6 +116,8 @@ export function MaximumHero({
           </>
         )}
       </p>
+      <FloorNotice result={result} />
+
       <p>
         <strong>This is an estimate.</strong>{' '}
         {result.regime === 'scotland-kinship'

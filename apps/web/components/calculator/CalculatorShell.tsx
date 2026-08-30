@@ -7,6 +7,7 @@ import {
   DataError,
   ValidationError,
   calculate,
+  LA_NAMES,
   type CalculatorInput,
   type CalculatorResult,
   type EnglandRegion,
@@ -81,6 +82,9 @@ export function CalculatorShell() {
   const [la, setLa] = useState('');
   const [children, setChildren] = useState<ChildForm[]>([emptyChild()]);
   const [eldestIndex, setEldestIndex] = useState(0);
+  // The carer can override which child is the eldest; until they do, we work it
+  // out from the ages they entered.
+  const [eldestOverridden, setEldestOverridden] = useState(false);
 
   const [wasFosterCarer, setWasFosterCarer] = useState(false);
   const [previousAllowance, setPreviousAllowance] = useState<{ raw: string; pence: number | null }>({
@@ -111,6 +115,7 @@ export function CalculatorShell() {
   const [errors, setErrors] = useState<Array<{ path: string; message: string }>>([]);
   const [engineError, setEngineError] = useState<'guardrail' | 'data' | null>(null);
   const [result, setResult] = useState<CalculatorResult | null>(null);
+  const [resultInput, setResultInput] = useState<CalculatorInput | null>(null);
 
   const errorSummaryRef = useRef<HTMLDivElement>(null);
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
@@ -137,6 +142,23 @@ export function CalculatorShell() {
     }
     if (s.formerFosterCarer) setWasFosterCarer(true);
   }, []);
+
+  // [§20] Auto-mark the eldest by age. Only the eldest attracts the higher
+  // Child Benefit rate, so getting it wrong shifts the figure — but the carer
+  // knows their household better than we do, so an explicit choice always wins.
+  useEffect(() => {
+    if (eldestOverridden) return;
+    let best = 0;
+    let bestAge = -1;
+    children.forEach((c, i) => {
+      const age = Number.parseInt(c.ageYears, 10);
+      if (Number.isInteger(age) && age > bestAge) {
+        bestAge = age;
+        best = i;
+      }
+    });
+    setEldestIndex((prev) => (prev === best ? prev : best));
+  }, [children, eldestOverridden]);
 
   // Results are announced on render (§24).
   useEffect(() => {
@@ -222,10 +244,13 @@ export function CalculatorShell() {
     (withFinances: boolean): void => {
       setErrors([]);
       setEngineError(null);
+      const built = buildInput(withFinances);
       try {
-        setResult(calculate(buildInput(withFinances)));
+        setResult(calculate(built));
+        setResultInput(built);
       } catch (e) {
         setResult(null);
+        setResultInput(null);
         if (e instanceof ValidationError) {
           setErrors(e.issues.length > 0 ? [...e.issues] : [{ path: '', message: e.message }]);
           queueMicrotask(() => errorSummaryRef.current?.focus());
@@ -268,9 +293,14 @@ export function CalculatorShell() {
             There is a problem
           </h2>
           <ul style={{ margin: 0 }}>
-            {errors.map((e, i) => (
-              <li key={i}>{e.message}</li>
-            ))}
+            {errors.map((e, i) => {
+              const target = FIELD_ANCHORS[e.path];
+              return (
+                <li key={i}>
+                  {target ? <a href={`#${target}`}>{e.message}</a> : e.message}
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
@@ -444,7 +474,10 @@ export function CalculatorShell() {
                         type="radio"
                         name="eldest"
                         checked={eldestIndex === i}
-                        onChange={() => setEldestIndex(i)}
+                        onChange={() => {
+                          setEldestIndex(i);
+                          setEldestOverridden(true);
+                        }}
                       />
                       <span>This is the eldest child in the household</span>
                     </label>
@@ -453,7 +486,7 @@ export function CalculatorShell() {
                       className="btn btn--secondary"
                       onClick={() => {
                         setChildren((prev) => prev.filter((_, j) => j !== i));
-                        setEldestIndex(0);
+                        setEldestOverridden(false);
                       }}
                     >
                       Remove child {i + 1}
@@ -702,9 +735,15 @@ export function CalculatorShell() {
         )}
       </div>
 
-      {result && !engineError && (
+      {result && resultInput && !engineError && (
         <div aria-live="polite">
-          <ResultsPanel result={result} regionLabel={region || undefined} shareUrl={shareUrl} />
+          <ResultsPanel
+            result={result}
+            input={resultInput}
+            regionLabel={region || undefined}
+            councilName={la ? LA_NAMES[la] : undefined}
+            shareUrl={shareUrl}
+          />
         </div>
       )}
 
@@ -725,6 +764,28 @@ export function CalculatorShell() {
 }
 
 const ORDER: StepId[] = ['where', 'children', 'result', 'history', 'benefits', 'finances', 'council'];
+
+/**
+ * [§24] The error summary links to the field that failed. A list of messages
+ * with no way to reach the input is close to useless to a screen-reader or
+ * keyboard user on a six-step form.
+ *
+ * Keys are the Zod issue paths from the shared schema; children.N.field paths
+ * are normalised to the repeated field's id.
+ */
+const FIELD_ANCHORS: Record<string, string> = {
+  'carer.englandRegion': 'council-select',
+  'carer.previousWeeklyFosteringAllowance': 'months-since',
+  'carer.orderDate': 'order-date',
+  'carer.monthsSinceOrderMade': 'months-since',
+  'finances.adultsInHousehold': 'adults',
+  'finances.dependentChildrenInHousehold': 'household-children',
+  children: 'age-0',
+  'children.0.ageYears': 'age-0',
+  'children.1.ageYears': 'age-1',
+  'children.2.ageYears': 'age-2',
+  'children.3.ageYears': 'age-3',
+};
 
 function StepPanel({
   heading,
