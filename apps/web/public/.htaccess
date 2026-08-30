@@ -1,0 +1,77 @@
+# Apache / LiteSpeed configuration — the same contract as `_headers` and
+# `_redirects`, which only Cloudflare Pages and Netlify understand.
+#
+# Hostinger, cPanel and most shared hosts run LiteSpeed or Apache and ignore
+# those two files entirely. Without this file the site still *works* there, but
+# every security header in §29.2 silently disappears and /about 404s. Both
+# failures are invisible in a browser smoke test, which is exactly why this is
+# committed rather than left as a deployment note.
+#
+# Keep the header list here in step with public/_headers.
+
+# ---------------------------------------------------------------------------
+# Security headers (§29.2)
+# ---------------------------------------------------------------------------
+<IfModule mod_headers.c>
+  # `form-action 'none'` is deliberate: nothing here should ever POST anywhere.
+  # There is no backend to POST to, and the day someone adds a contact form,
+  # this header should be what stops them shipping it by accident.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.postcodes.io; frame-ancestors 'none'; base-uri 'self'; form-action 'none'"
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "no-referrer"
+  Header always set Permissions-Policy "geolocation=(), camera=(), microphone=(), interest-cohort=()"
+  Header always set X-Frame-Options "DENY"
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# Clean URLs
+# ---------------------------------------------------------------------------
+# next.config.mjs sets `trailingSlash: false`, so the export writes about.html,
+# not about/index.html. Apache needs telling that /about means about.html.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Canonical URLs carry no trailing slash (§27). Strip it, once, with a 301.
+  RewriteCond %{REQUEST_URI} !^/$
+  RewriteRule ^(.*)/$ /$1 [R=301,L]
+
+  # /about -> about.html, /guidance/annual-reviews -> guidance/annual-reviews.html
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^(.+)$ /$1.html [L]
+</IfModule>
+
+ErrorDocument 404 /404.html
+
+# ---------------------------------------------------------------------------
+# Caching
+# ---------------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+
+  # Everything under _next/static carries a content hash in its filename, so a
+  # changed file is always a changed URL. Safe to cache for a year.
+  <FilesMatch "\.(js|css|woff2)$">
+    ExpiresDefault "access plus 1 year"
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # HTML must revalidate, or an April rate change would sit stale in caches
+  # while carers read last year's figures (§9 staleness).
+  <FilesMatch "\.html$">
+    ExpiresDefault "access plus 0 seconds"
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# Compression
+# ---------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json image/svg+xml
+</IfModule>
+
+# Serve the print-oriented .txt companions as UTF-8 rather than latin-1.
+AddDefaultCharset UTF-8

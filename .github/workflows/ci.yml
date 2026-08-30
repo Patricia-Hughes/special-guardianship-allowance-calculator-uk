@@ -24,9 +24,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No `version:` here on purpose. action-setup errors out with
+      # "Multiple versions of pnpm specified" if it is given one AND
+      # package.json has a `packageManager` field. That field is the single
+      # source of truth, so the action reads it.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - uses: actions/setup-node@v4
         with:
@@ -63,9 +65,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No `version:` here on purpose. action-setup errors out with
+      # "Multiple versions of pnpm specified" if it is given one AND
+      # package.json has a `packageManager` field. That field is the single
+      # source of truth, so the action reads it.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - uses: actions/setup-node@v4
         with:

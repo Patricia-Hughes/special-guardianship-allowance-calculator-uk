@@ -1,0 +1,81 @@
+# Builds the static export and publishes it somewhere a plain web host can eat.
+#
+# Why this exists: the site is `output: 'export'` — 2.5 MB of HTML, CSS and JS
+# with no server behind it. Shared hosts (Hostinger, cPanel) do not need to
+# install a single dependency to serve it, and asking them to run pnpm is how
+# you end up debugging corepack instead of shipping. This workflow does the
+# build on a runner that is known to work, and hands over finished files.
+#
+# Manual trigger only. It writes to a branch, so it should run when you say so,
+# not on every push.
+name: Deploy static site
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish_branch:
+        description: 'Branch to publish the built site to (Hostinger points at this). Leave blank to only produce a downloadable zip.'
+        required: false
+        default: 'deploy'
+
+concurrency:
+  group: deploy-static
+  cancel-in-progress: false
+
+env:
+  NEXT_TELEMETRY_DISABLED: '1'
+
+jobs:
+  build-and-publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # No `version:` — package.json's `packageManager` field is the source of
+      # truth, and passing both makes action-setup fail.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build the static export
+        run: pnpm build
+
+      - name: Check the export looks sane
+        run: |
+          test -f apps/web/out/index.html || { echo "::error::no index.html — the export did not run"; exit 1; }
+          test -f apps/web/out/.htaccess || { echo "::error::no .htaccess — security headers would be silently dropped on Apache/LiteSpeed"; exit 1; }
+          echo "Exported $(find apps/web/out -name '*.html' | wc -l) HTML files, $(du -sh apps/web/out | cut -f1) total."
+
+      # Download this from the run's summary page, unzip, upload to public_html.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: static-site
+          path: apps/web/out/
+          include-hidden-files: true
+          retention-days: 30
+
+      - name: Publish to the deploy branch
+        if: inputs.publish_branch != ''
+        run: |
+          set -euo pipefail
+          cd apps/web/out
+          git init -q
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Build of ${GITHUB_SHA::7}"
+          git push -q --force \
+            "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            "HEAD:refs/heads/${PUBLISH_BRANCH}"
+          echo "Published to ${PUBLISH_BRANCH}. Point Hostinger at that branch with no build command."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: ${{ inputs.publish_branch }}
