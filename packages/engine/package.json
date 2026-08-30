@@ -1,0 +1,39 @@
+{
+  "name": "@sgo/engine",
+  "version": "0.1.0",
+  "description": "Pure TypeScript calculation engine for the Special Guardianship allowance calculator. No DOM, no network, integer pence arithmetic.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "syncdata": "tsx ../../scripts/sync-engine-data.ts",
+    "prebuild": "pnpm run syncdata",
+    "build": "tsc -p tsconfig.json",
+    "pretypecheck": "pnpm run syncdata",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "pretest:unit": "pnpm run syncdata",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "pnpm run syncdata && vitest run --coverage"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.8",
+    "fast-check": "^3.23.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

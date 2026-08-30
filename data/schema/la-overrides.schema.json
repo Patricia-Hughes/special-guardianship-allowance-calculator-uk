@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://sgo-calculator.example/schema/la-overrides.schema.json",
+  "type": "object",
+  "required": ["authorities"],
+  "properties": {
+    "schemaNote": { "type": "string" },
+    "publishableNote": { "type": "string" },
+    "authorities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug", "name", "nation", "region", "publishable", "corePolicy", "verifiedOn", "policySourceUrl"],
+        "properties": {
+          "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "name": { "type": "string" },
+          "nation": { "type": "string", "enum": ["england", "wales", "scotland", "northern-ireland"] },
+          "region": { "type": "string", "enum": ["london", "south-east", "rest-of-england"] },
+          "publishable": { "type": "boolean" },
+          "pendingSourceIssue": { "type": "string", "format": "uri" },
+          "corePolicy": { "type": "string" },
+          "flatCoreRateWeeklyPence": { "type": "integer", "minimum": 0 },
+          "enhancementWeeklyPence": { "type": "integer", "minimum": 0 },
+          "deductsChildBenefit": { "type": "boolean" },
+          "deductsChildBenefitFromMeansTestedClaimants": { "type": "boolean" },
+          "taper": {
+            "oneOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "required": ["method"],
+                "properties": {
+                  "method": { "type": "string", "enum": ["pound-for-pound", "percentage", "threshold"] },
+                  "percentage": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "thresholdMonthly": { "type": "integer", "minimum": 0 }
+                }
+              }
+            ]
+          },
+          "capital": {
+            "oneOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "required": ["thresholdPence", "tariffPerBlockPence", "blockSizePence", "period", "enabled"],
+                "properties": {
+                  "thresholdPence": { "type": "integer", "minimum": 0 },
+                  "tariffPerBlockPence": { "type": "integer", "minimum": 0 },
+                  "blockSizePence": { "type": "integer", "minimum": 1 },
+                  "period": { "type": "string", "enum": ["weekly", "monthly"] },
+                  "enabled": { "type": "boolean" }
+                }
+              }
+            ]
+          },
+          "lawfulnessFlag": {
+            "oneOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "required": ["code", "summary", "sourceUrl", "decisionDate"],
+                "properties": {
+                  "code": { "type": "string" },
+                  "summary": { "type": "string" },
+                  "sourceUrl": { "type": "string" },
+                  "decisionDate": { "type": "string" }
+                }
+              }
+            ]
+          },
+          "policySourceUrl": { "type": "string" },
+          "verifiedOn": { "type": "string", "format": "date" }
+        }
+      }
+    }
+  }
+}

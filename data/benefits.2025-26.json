@@ -1,0 +1,39 @@
+{
+  "financialYear": "2025-26",
+  "effectiveFrom": "2025-04-07",
+  "dataVersion": "2025-26.0",
+  "status": "PENDING_SOURCE",
+  "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2",
+  "note": "Exists so that benefit-table selection is genuinely INDEPENDENT of rate-table selection across the 1-6 April boundary (spec §11, test T22). Figures are NOT sourced yet and must never be estimated: source Child Benefit, Guardian's Allowance, Carer's Allowance and UC rates from the relevant HMRC/DWP uprating order. Any calculation that actually needs a figure from this table raises a DataError rather than guessing.",
+  "childBenefit": {
+    "eldestWeeklyPence": null,
+    "additionalChildWeeklyPence": null,
+    "sourceId": "cb-ga-uprating-order-2025"
+  },
+  "guardiansAllowance": {
+    "weeklyPerChildPence": null,
+    "taxFree": true,
+    "disregardedForMeansTestedBenefits": true,
+    "exemptFromBenefitCap": true,
+    "eligibilityNote": "Both parents dead, or one dead and the other untraceable / serving 2+ years / whereabouts unknown. Parental UK residence condition applies."
+  },
+  "sgoAllowanceTaxTreatment": {
+    "taxable": false,
+    "note": "Treated as a residence-order allowance; exempt from income tax since 6 April 2010.",
+    "disregardedForClaimantsOwnMeansTestedBenefits": true
+  },
+  "incomeSupportApplicableAmounts": {
+    "status": "PENDING_SOURCE",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/3",
+    "note": "REQUIRED for the 125% core living-costs calculation. Source from the DWP 'Benefit and pension rates' publication. DO NOT ESTIMATE.",
+    "schema": {
+      "singleUnder25Pence": null,
+      "single25PlusPence": null,
+      "couplePence": null,
+      "dependentChildPence": null,
+      "familyPremiumPence": null,
+      "disabilityPremiumPence": null,
+      "carerPremiumPence": null
+    }
+  }
+}

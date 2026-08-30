@@ -1,0 +1,10 @@
+{
+  "financialYear": "2024-25",
+  "effectiveFrom": "2024-04-01",
+  "effectiveTo": "2025-03-31",
+  "dataVersion": "2024-25.0",
+  "status": "PENDING_SOURCE",
+  "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/1",
+  "note": "[HARD §8.3] Do NOT back-calculate from the uplift percentage. Rounding rules are not published and a wrong historic rate produces a wrong backdating claim. Source directly from the DfE publication or The Fostering Network archive.",
+  "england": null
+}

@@ -1,0 +1,37 @@
+{
+  "name": "sgo-calculator",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "test:unit": "turbo run test:unit",
+    "validate:data": "tsx scripts/validate-data.ts",
+    "check:staleness": "tsx scripts/check-staleness.ts",
+    "check:citations": "tsx scripts/check-citations.ts",
+    "test:e2e": "pnpm --filter @sgo/web test:e2e",
+    "test:a11y": "pnpm --filter @sgo/web test:a11y"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "tsx": "^4.19.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "@tailwindcss/oxide",
+      "unrs-resolver"
+    ]
+  }
+}

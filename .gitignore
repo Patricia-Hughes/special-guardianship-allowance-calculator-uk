@@ -1,0 +1,16 @@
+node_modules/
+.next/
+out/
+dist/
+.turbo/
+coverage/
+*.tsbuildinfo
+.env*
+!.env.example
+playwright-report/
+test-results/
+.DS_Store
+lighthouse-report/
+
+# generated: copies of /data for the engine build (see scripts/sync-engine-data.ts)
+packages/engine/src/data/

@@ -1,0 +1,55 @@
+{
+  "financialYear": "2026-27",
+  "effectiveFrom": "2026-04-06",
+  "dataVersion": "2026-27.1",
+  "note": "Benefit rates change in the first full week of April, NOT 1 April. See spec §11 for the boundary problem.",
+  "childBenefit": {
+    "eldestWeeklyPence": 2705,
+    "additionalChildWeeklyPence": 1790,
+    "sourceId": "cb-ga-uprating-order-2026"
+  },
+  "guardiansAllowance": {
+    "weeklyPerChildPence": 2295,
+    "taxFree": true,
+    "disregardedForMeansTestedBenefits": true,
+    "exemptFromBenefitCap": true,
+    "eligibilityNote": "Both parents dead, or one dead and the other untraceable / serving 2+ years / whereabouts unknown. Parental UK residence condition applies."
+  },
+  "universalCredit": {
+    "childElementMonthlyPence": 29281,
+    "twoChildLimitAbolished": true,
+    "twoChildLimitAbolishedFrom": "2026-04-06",
+    "statute": "Universal Credit (Removal of Two Child Limit) Act 2026 c.13"
+  },
+  "benefitCap": {
+    "annualOutsideLondonPence": 2202000,
+    "annualLondonPence": 2535300
+  },
+  "carersAllowance": {
+    "weeklyPence": 8645,
+    "earningsLimitWeeklyPence": 20400
+  },
+  "qualifyingCareRelief": {
+    "appliesToSpecialGuardians": false,
+    "note": "QCR is for foster and shared-lives carers. A former foster carer still fostering OTHER children uses QCR for that income only."
+  },
+  "sgoAllowanceTaxTreatment": {
+    "taxable": false,
+    "note": "Treated as a residence-order allowance; exempt from income tax since 6 April 2010.",
+    "disregardedForClaimantsOwnMeansTestedBenefits": true
+  },
+  "incomeSupportApplicableAmounts": {
+    "status": "PENDING_SOURCE",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/3",
+    "note": "REQUIRED for the 125% core living-costs calculation in the means test. Source from the current DWP 'Benefit and pension rates' publication. DO NOT ESTIMATE.",
+    "schema": {
+      "singleUnder25Pence": null,
+      "single25PlusPence": null,
+      "couplePence": null,
+      "dependentChildPence": null,
+      "familyPremiumPence": null,
+      "disabilityPremiumPence": null,
+      "carerPremiumPence": null
+    }
+  }
+}

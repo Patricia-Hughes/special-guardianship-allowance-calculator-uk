@@ -1,0 +1,21 @@
+{
+  "programme": "Kinship Zones (kinship allowance pilot)",
+  "liveFrom": "2026-04-01",
+  "runsUntil": "2029",
+  "fundingFirstTwoYearsPence": 12600000000,
+  "approxChildren": 5000,
+  "allowanceBasis": "non-means-tested, equal to the fostering National Minimum Allowance",
+  "evaluator": "Foundations / Alma Economics",
+  "localAuthorities": [
+    "bexley", "bolton", "newcastle-upon-tyne", "north-east-lincolnshire",
+    "medway", "thurrock", "wiltshire"
+  ],
+  "eligibility": {
+    "orderTypes": ["special-guardianship-order", "lives-with-child-arrangements-order"],
+    "childWouldOtherwiseBeInCare": true,
+    "excludesThoseAlreadyOnReg6Support": true
+  },
+  "lastVerified": "2026-08-29",
+  "reviewEvery": "P3M",
+  "warning": "PILOT ONLY. Does not change the law in other authorities. Councils already paying NMA-equivalent were ineligible to apply."
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://sgo-calculator.example/schema/benefits.schema.json",
+  "title": "Benefit rate table. Effective date is INDEPENDENT of the rate table (spec §11).",
+  "type": "object",
+  "required": ["financialYear", "effectiveFrom", "dataVersion"],
+  "properties": {
+    "financialYear": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
+    "effectiveFrom": { "type": "string", "format": "date" },
+    "dataVersion": { "type": "string" },
+    "status": { "type": "string", "enum": ["PENDING_SOURCE"] },
+    "pendingSourceIssue": { "type": "string", "format": "uri" },
+    "note": { "type": "string" },
+    "childBenefit": {
+      "type": "object",
+      "required": ["eldestWeeklyPence", "additionalChildWeeklyPence", "sourceId"],
+      "properties": {
+        "eldestWeeklyPence": { "type": ["integer", "null"], "minimum": 0 },
+        "additionalChildWeeklyPence": { "type": ["integer", "null"], "minimum": 0 },
+        "sourceId": { "type": "string" }
+      }
+    },
+    "guardiansAllowance": {
+      "type": "object",
+      "properties": { "weeklyPerChildPence": { "type": ["integer", "null"], "minimum": 0 } }
+    },
+    "incomeSupportApplicableAmounts": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": { "type": "string", "enum": ["PENDING_SOURCE", "SOURCED"] },
+        "pendingSourceIssue": { "type": "string", "format": "uri" },
+        "note": { "type": "string" },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "singleUnder25Pence": { "type": ["integer", "null"], "minimum": 0 },
+            "single25PlusPence": { "type": ["integer", "null"], "minimum": 0 },
+            "couplePence": { "type": ["integer", "null"], "minimum": 0 },
+            "dependentChildPence": { "type": ["integer", "null"], "minimum": 0 },
+            "familyPremiumPence": { "type": ["integer", "null"], "minimum": 0 },
+            "disabilityPremiumPence": { "type": ["integer", "null"], "minimum": 0 },
+            "carerPremiumPence": { "type": ["integer", "null"], "minimum": 0 }
+          }
+        }
+      }
+    }
+  }
+}

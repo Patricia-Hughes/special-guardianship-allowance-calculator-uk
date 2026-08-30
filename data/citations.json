@@ -1,0 +1,178 @@
+{
+  "ca1989-s14a": {
+    "label": "Children Act 1989, s.14A",
+    "url": "https://www.legislation.gov.uk/ukpga/1989/41/section/14A",
+    "kind": "statute",
+    "retrieved": "2026-08-29"
+  },
+  "sg-regs-2005-reg5": {
+    "label": "Special Guardianship Regulations 2005, reg 5",
+    "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/5",
+    "kind": "regulation",
+    "retrieved": "2026-08-29",
+    "holding": "The council remains responsible for assessing support needs for three years from the making of the order."
+  },
+  "sg-regs-2005-reg6": {
+    "label": "Special Guardianship Regulations 2005, reg 6",
+    "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/6",
+    "kind": "regulation",
+    "retrieved": "2026-08-29"
+  },
+  "sg-regs-2005-reg7": {
+    "label": "Special Guardianship Regulations 2005, reg 7",
+    "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/7",
+    "kind": "regulation",
+    "retrieved": "2026-08-29"
+  },
+  "sg-regs-2005-reg9": {
+    "label": "Special Guardianship Regulations 2005, reg 9",
+    "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/9",
+    "kind": "regulation",
+    "retrieved": "2026-08-29",
+    "holding": "Financial support ceases in the circumstances set out in the regulation, including when the child reaches 18 unless the conditions for continuing are met."
+  },
+  "sg-regs-2005-reg10-11": {
+    "label": "Special Guardianship Regulations 2005, regs 10-11",
+    "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/10",
+    "kind": "regulation",
+    "retrieved": "2026-08-29",
+    "holding": "Financial support is subject to annual review, and the council must notify the special guardian of any proposed variation."
+  },
+  "dfe-guidance-2017-para65": {
+    "label": "DfE Special Guardianship Guidance (Jan 2017), para 65",
+    "url": "",
+    "kind": "guidance",
+    "retrieved": "2026-08-29",
+    "note": "Under review - updated guidance expected Summer 2026 after the Children's Wellbeing and Schools Act 2026.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "lewisham-2008": {
+    "label": "R (B) v Lewisham LBC [2008] EWHC 738 (Admin)",
+    "url": "",
+    "kind": "case",
+    "retrieved": "2026-08-29",
+    "holding": "Using the lower adoption allowance model was unlawful. Fostering allowances are the starting point.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "kirklees-2010": {
+    "label": "Barrett v Kirklees MBC [2010] EWHC 467 (Admin)",
+    "url": "",
+    "kind": "case",
+    "retrieved": "2026-08-29",
+    "holding": "A flat two-thirds of the core fostering allowance was an unjustified departure from guidance.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "merton-2012": {
+    "label": "R (TT) v Merton LBC [2012] EWHC 2055 (Admin)",
+    "url": "",
+    "kind": "case",
+    "retrieved": "2026-08-29",
+    "holding": "Blanket percentage deduction unlawful. BUT: no duty to pay every special guardian an allowance, and the means-test methodology itself was upheld as lawful.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "tower-hamlets-2013": {
+    "label": "R (X) v Tower Hamlets LBC [2013] EWCA Civ 904",
+    "url": "",
+    "kind": "case",
+    "retrieved": "2026-08-29",
+    "holding": "Paying family foster carers less than unrelated foster carers was unlawful. Former foster carers should not be worse off.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "lgsco-devon-2024": {
+    "label": "LGSCO decision, Devon County Council (2024)",
+    "url": "",
+    "kind": "ombudsman",
+    "retrieved": "2026-08-29",
+    "holding": "Blanket Child Benefit deduction including from carers on means-tested benefits was unlawful.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "lgsco-southend-2020": {
+    "label": "LGSCO decision, Southend-on-Sea (Dec 2020)",
+    "url": "",
+    "kind": "ombudsman",
+    "retrieved": "2026-08-29",
+    "holding": "Tapering the whole allowance to 75% then 50% misapplied reg 7, which covers only the reward element.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "lgsco-north-tyneside-17002928": {
+    "label": "LGSCO decision, North Tyneside Council (17 002 928)",
+    "url": "",
+    "kind": "ombudsman",
+    "retrieved": "2026-08-29",
+    "holding": "A fixed-percentage special guardianship allowance policy was unlawful; backdating was ordered.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "corambaaf-pn75": {
+    "label": "CoramBAAF Practice Note 75 - special guardianship financial support",
+    "url": "",
+    "kind": "guidance",
+    "retrieved": "2026-08-29",
+    "holding": "The DfE standardised means-test model is non-statutory and pre-dates Universal Credit.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "dfe-nma-2026-27": {
+    "label": "DfE National Minimum Allowance for foster carers, 2026 to 2027",
+    "url": "",
+    "kind": "dataset",
+    "retrieved": "2026-08-29",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "dfe-nma-2025-26": {
+    "label": "DfE National Minimum Allowance for foster carers, 2025 to 2026",
+    "url": "",
+    "kind": "dataset",
+    "retrieved": "2026-08-29",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "wg-nma-2026-27": {
+    "label": "Welsh Government National Minimum Allowance, 2026 to 2027",
+    "url": "",
+    "kind": "dataset",
+    "retrieved": "2026-08-29",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2"
+  },
+  "hsc-fostering-2026-27": {
+    "label": "HSC (Northern Ireland) fostering allowances, 2026 to 2027",
+    "url": "",
+    "kind": "dataset",
+    "retrieved": "2026-08-29",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "sra-2026-27": {
+    "label": "Scottish Recommended Allowance, 2026 to 2027",
+    "url": "",
+    "kind": "dataset",
+    "retrieved": "2026-08-29",
+    "holding": "A national minimum for foster and kinship carers alike. Councils may pay more.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "cb-ga-uprating-order-2026": {
+    "label": "Child Benefit and Guardian's Allowance Up-rating Order 2026",
+    "url": "",
+    "kind": "regulation",
+    "retrieved": "2026-08-29",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "cb-ga-uprating-order-2025": {
+    "label": "Child Benefit and Guardian's Allowance Up-rating Order 2025",
+    "url": "",
+    "kind": "regulation",
+    "retrieved": "2026-08-29",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2"
+  },
+  "uc-two-child-limit-act-2026": {
+    "label": "Universal Credit (Removal of Two Child Limit) Act 2026 c.13",
+    "url": "",
+    "kind": "statute",
+    "retrieved": "2026-08-29",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+  },
+  "kinship-zones-2026": {
+    "label": "Kinship Zones - kinship allowance pilot (2026-2029)",
+    "url": "",
+    "kind": "dataset",
+    "retrieved": "2026-08-29",
+    "holding": "A pilot in seven English councils paying a non-means-tested allowance equal to the fostering National Minimum Allowance.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/7"
+  }
+}

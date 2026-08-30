@@ -1,0 +1,58 @@
+{
+  "schemaNote": "corePolicy = what the LA SAYS it does. lawfulnessFlag = whether that survives scrutiny.",
+  "publishableNote": "[HARD R9] An entry may only be used in a user-facing calculation or page when publishable === true, which requires a non-empty, dated policySourceUrl (and, where a lawfulnessFlag is present, a non-empty sourceUrl and decisionDate). CI enforces this. Entries below are seeded from research but their URLs have not been re-sourced, so all are publishable: false and the engine ignores them, falling back to national minimums plus the COUNCIL_POLICY_UNKNOWN flag. See spec §42 item 5.",
+  "authorities": [
+    {
+      "slug": "devon",
+      "name": "Devon County Council",
+      "nation": "england",
+      "region": "rest-of-england",
+      "publishable": false,
+      "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/5",
+      "corePolicy": "100% of core fostering allowance as maximum; DfE-model means test",
+      "flatCoreRateWeeklyPence": 21301,
+      "deductsChildBenefit": true,
+      "deductsChildBenefitFromMeansTestedClaimants": false,
+      "taper": null,
+      "capital": null,
+      "lawfulnessFlag": {
+        "code": "LGSCO_UPHELD",
+        "summary": "LGSCO 2024: blanket Child Benefit deduction from carers on means-tested benefits found unlawful. Recalculation and refunds ordered for approx. 170 carers, plus £300 + £300 remedy payments.",
+        "sourceUrl": "",
+        "decisionDate": ""
+      },
+      "policySourceUrl": "",
+      "verifiedOn": "2026-08-29"
+    },
+    {
+      "slug": "leeds",
+      "name": "Leeds City Council",
+      "nation": "england",
+      "region": "rest-of-england",
+      "publishable": false,
+      "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/5",
+      "corePolicy": "Does not use the DfE means-test model; individualised needs assessment",
+      "deductsChildBenefit": false,
+      "lawfulnessFlag": null,
+      "policySourceUrl": "",
+      "verifiedOn": "2026-08-29"
+    },
+    {
+      "slug": "north-tyneside",
+      "name": "North Tyneside Council",
+      "nation": "england",
+      "region": "rest-of-england",
+      "publishable": false,
+      "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/5",
+      "corePolicy": "Percentage model abolished 2018; equivalence to maximum fostering allowance, means tested",
+      "lawfulnessFlag": {
+        "code": "LGSCO_UPHELD",
+        "summary": "LGSCO 17 002 928: previous fixed-percentage policy unlawful; backdating ordered.",
+        "sourceUrl": "",
+        "decisionDate": ""
+      },
+      "policySourceUrl": "",
+      "verifiedOn": "2026-08-29"
+    }
+  ]
+}
