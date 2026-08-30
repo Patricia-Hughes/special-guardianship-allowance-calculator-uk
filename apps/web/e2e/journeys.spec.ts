@@ -166,6 +166,37 @@ test.describe('journeys', () => {
     await expect(page.getByText(/no published national rule|had to assume/i).first()).toBeVisible();
   });
 
+  test('7: carer asks what they were underpaid since 2024 → year-by-year figure', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await chooseNation(page, 'England');
+    await page.getByRole('radio', { name: /South East England/ }).check();
+    await page.getByRole('button', { name: 'Continue' }).click();
+
+    await setAge(page, '12');
+    await page.getByRole('button', { name: 'Show me the figure' }).click();
+
+    // The backdating question is a disclosure on the result, not another step —
+    // most people come for one number and leave.
+    await page.locator('summary', { hasText: 'Were you underpaid in the past?' }).click();
+
+    await page.getByLabel('Count from').fill('2024-06-01');
+    await page.getByLabel('Count until').fill('2026-08-01');
+    await page.getByLabel(/actually paid you, per week/i).fill('100');
+    await page.getByRole('button', { name: 'Work out the difference' }).click();
+
+    // 2024/25 is covered now the archived GOV.UK table is in, so the period
+    // spans three financial years and none is left out.
+    await expect(page.getByRole('heading', { name: 'The difference' })).toBeVisible();
+    await expect(page.getByText('2024/25').first()).toBeVisible();
+    await expect(page.getByText(/rates changed in April/i).first()).toBeVisible();
+    await expect(page.getByText(/not included/i)).toHaveCount(0);
+
+    // And the caveats that stop someone treating it as a guaranteed debt.
+    await expect(page.getByText(/not a guaranteed entitlement/i).first()).toBeVisible();
+  });
+
   test('5: carer in Scotland → kinship regime, no English citations anywhere', async ({ page }) => {
     await page.goto('/');
     await chooseNation(page, 'Scotland');

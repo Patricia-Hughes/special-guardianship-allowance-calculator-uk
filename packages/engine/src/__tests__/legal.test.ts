@@ -371,7 +371,28 @@ describe('SGO engine — legal correctness', () => {
     expect(r.shortfall).toBeGreaterThan(0);
   });
 
-  it('T24 backdating refuses to estimate across a PENDING_SOURCE year', () => {
+  it('T24 backdating refuses to estimate across a year it has no verified rates for', () => {
+    // The archived GOV.UK table that unblocked 2024/25 says in terms that it
+    // applies to England. Wales has no 2024/25 or 2025/26 figures at all, so
+    // those years must be left out — never filled in from England's.
+    const r = calculateBackdating({
+      base: input({
+        carer: carer({ nation: 'wales', englandRegion: undefined, orderDate: d('2024-06-01') }),
+        children: [child({ dateOfBirth: d('2014-01-10'), ageYears: 12 })],
+      }),
+      fromDate: d('2024-06-01'),
+      toDate: d('2026-08-01'),
+      actuallyPaidWeekly: p(10000),
+    });
+    expect(r.blockedYears).toContain('2024-25');
+    expect(r.blockedYears).toContain('2025-26');
+    expect(r.yearsCovered).toEqual(['2026-27']);
+    // No figure is invented for a blocked year: every segment names a covered one.
+    for (const s of r.segments) expect(r.blockedYears).not.toContain(s.financialYear);
+    expect(r.caveats[0]).toMatch(/left out 2024-25, 2025-26/);
+  });
+
+  it('T24b backdating now covers 2024/25 in England, from the archived table', () => {
     const r = calculateBackdating({
       base: input({
         carer: carer({ englandRegion: 'south-east', orderDate: d('2024-06-01') }),
@@ -381,18 +402,31 @@ describe('SGO engine — legal correctness', () => {
       toDate: d('2026-08-01'),
       actuallyPaidWeekly: p(10000),
     });
-    expect(r.blockedYears).toContain('2024-25');
-    expect(r.yearsCovered).toEqual(['2025-26', '2026-27']);
-    // No figure is invented for the blocked year: every segment names a covered year.
-    for (const s of r.segments) expect(r.blockedYears).not.toContain(s.financialYear);
-    expect(r.caveats[0]).toMatch(/left out 2024-25/);
+    expect(r.blockedYears).toHaveLength(0);
+    expect(r.yearsCovered).toEqual(['2024-25', '2025-26', '2026-27']);
+    // A 10-year-old in the South East in June 2024: £208/wk as published, against
+    // £100 actually paid. The 2024/25 figure must be the printed one, not one
+    // derived by removing an uplift from a later year.
+    const first = r.segments[0]!;
+    expect(first.financialYear).toBe('2024-25');
+    expect(first.maximumWeekly).toBe(20800);
+    expect(r.shortfall).toBeGreaterThan(0);
   });
 
   it('T25 [R10] throws if a rate table is stale for the requested date', () => {
     expect(() => calculate(input({ asAtDate: d('2028-01-01') }))).toThrow(DataError);
     expect(() => selectRateTable(RATE_TABLES, d('2028-01-01'))).toThrow(/No rate table effective/);
-    // A PENDING_SOURCE table is refused rather than used.
-    expect(() => selectRateTable(RATE_TABLES, d('2024-06-01'))).toThrow(/not yet sourced/);
+    // A PENDING_SOURCE table is still refused rather than used. Every shipped
+    // year is now sourced, so this uses a synthetic one — the rule outlives the
+    // particular year that happened to be missing when it was written.
+    const pendingTable = {
+      ...RATE_TABLES[0]!,
+      financialYear: '2099-00',
+      effectiveFrom: d('2099-04-01'),
+      effectiveTo: d('2100-03-31'),
+      status: 'PENDING_SOURCE' as const,
+    };
+    expect(() => selectRateTable([pendingTable], d('2099-06-01'))).toThrow(/not yet sourced/);
   });
 
   it('T26 a below-NMA LA flat rate raises BELOW_NMA as critical', () => {

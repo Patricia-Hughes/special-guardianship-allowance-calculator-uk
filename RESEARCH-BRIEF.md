@@ -13,9 +13,11 @@
 >   the map now rests on ONS regions and says so on screen.
 > - **Shipping with a caveat** — the Welsh band inversion is real, corroborated
 >   across two years, so Wales is live with an on-screen explanation.
-> - **Still open** — the 2024/25 rate table (try the National Archives
->   snapshot), Devon and Leeds policy URLs, more councils for the taper, and the
->   LGSCO decisions at citable URLs.
+> - **Done since** — the 2024/25 England rate table was recovered from the
+>   National Archives snapshot, so **backdating is now live**.
+> - **Still open** — 2024/25 rates for Wales, Scotland and NI; Devon and Leeds
+>   policy URLs; more councils for the taper; the LGSCO decisions at citable
+>   URLs.
 >
 > The brief is kept below as the specification of what was asked for.
 

@@ -24,7 +24,7 @@ import {
 import { DataError } from './errors.js';
 import { add, clampMin0, mul, pence, sub, type Pence } from './money.js';
 import { defaultDeps, lookupRate, resolveAgeBand, type EngineDeps } from './engine.js';
-import type { CalculatorInput, IsoDate, RateTable } from './types.js';
+import type { CalculatorInput, IsoDate, Nation, RateTable } from './types.js';
 
 export interface BackdatingInput {
   base: CalculatorInput;
@@ -123,10 +123,19 @@ function addMonthsIso(date: IsoDate, months: number): IsoDate {
   return d.toISOString().slice(0, 10) as IsoDate;
 }
 
-function rateTableFor(tables: RateTable[], asAt: IsoDate): RateTable | { blocked: string } {
+function rateTableFor(
+  tables: RateTable[],
+  asAt: IsoDate,
+  nation: Nation,
+): RateTable | { blocked: string } {
   const match = tables.find((t) => asAt >= t.effectiveFrom && asAt <= t.effectiveTo);
   if (!match) return { blocked: financialYearOf(asAt) };
   if (match.status === 'PENDING_SOURCE') return { blocked: match.financialYear };
+  // A year can be sourced for one nation and not another — the archived GOV.UK
+  // table for 2024/25 says in terms that it applies to England. Block the year
+  // for the others, so an English carer still gets their figure and a Welsh one
+  // gets an honest gap instead of a thrown error.
+  if (!match[nation]) return { blocked: match.financialYear };
   return match;
 }
 
@@ -180,7 +189,7 @@ export function calculateBackdating(
     const days = daysBetween(start.date, endExclusive);
     const weeks = days / 7;
 
-    const table = rateTableFor(deps.rateTables, start.date);
+    const table = rateTableFor(deps.rateTables, start.date, base.carer.nation);
     if ('blocked' in table) {
       blockedYears.add(table.blocked);
       continue;

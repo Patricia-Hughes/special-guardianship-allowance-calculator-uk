@@ -479,9 +479,9 @@ describe('reference data', () => {
     expect(FLAGS.MEANS_TEST_ENABLED).toBe(true);
     // Unblocked once the Welsh band inversion was corroborated as genuine.
     expect(FLAGS.WALES_ROUTE_ENABLED).toBe(true);
-    // Still blocked: the full 2024/25 rate table has not been located, and it
-    // must not be reconstructed from the published 6.88% uplift.
-    expect(FLAGS.BACKDATING_ENABLED).toBe(false);
+    // Unblocked once the 2024/25 England table was recovered from the National
+    // Archives snapshot — as published, not reconstructed from the 6.88% uplift.
+    expect(FLAGS.BACKDATING_ENABLED).toBe(true);
     expect(FLAGS.KINSHIP_ZONE_PATH).toBe(true);
   });
 

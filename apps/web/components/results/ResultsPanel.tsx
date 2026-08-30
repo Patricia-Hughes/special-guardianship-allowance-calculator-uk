@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import type { CalculatorInput, CalculatorResult, Citation } from '@sgo/engine';
+import { FLAGS, type CalculatorInput, type CalculatorResult, type Citation } from '@sgo/engine';
 import { MaximumHero } from './MaximumHero';
 import { PrintedInputs } from './PrintedInputs';
 import { EstimateCard } from './EstimateCard';
 import { PerChildTable } from './PerChildTable';
 import { ArithmeticPanel } from './ArithmeticPanel';
+import { BackdatingPanel } from './BackdatingPanel';
 import { NextSteps } from './NextSteps';
 import { PrintButton } from './PrintButton';
 import { FlagList } from '../flags/FlagList';
@@ -53,6 +54,8 @@ export function ResultsPanel({
       <FlagList flags={result.flags} />
 
       {result.meansTestBreakdown && <ArithmeticPanel breakdown={result.meansTestBreakdown} />}
+
+      {FLAGS.BACKDATING_ENABLED && <BackdatingPanel input={input} />}
 
       <NextSteps result={result} />
       <CitationsList citations={citations} />

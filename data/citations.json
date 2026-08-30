@@ -259,5 +259,13 @@
     "retrieved": "2026-08-29",
     "holding": "The National Minimum Allowance was uplifted by 6.88% for 2024/25, following 12.43% in 2023/24.",
     "note": "DfE answer of 13 November 2024. Records the uplift percentage only — the 2024/25 table itself is still unsourced, and must NOT be reconstructed from this figure."
+  },
+  "dfe-nma-2024-25": {
+    "label": "DfE National Minimum Allowance for foster carers, 2024 to 2025 (National Archives snapshot)",
+    "url": "https://webarchive.nationalarchives.gov.uk/ukgwa/*/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
+    "kind": "dataset",
+    "retrieved": "2026-08-30",
+    "holding": "Weekly allowances for the tax year from 6 April 2024 to 5 April 2025, by region and age band. This guidance applies to England.",
+    "note": "The live GOV.UK page now shows the current year, so this is the UK Government Web Archive copy captured on 6 September 2024, when the 2024/25 table was current. Open the URL and choose a snapshot from within the 2024/25 year to see it. Figures transcribed as printed, not derived from the 6.88% uplift."
   }
 }

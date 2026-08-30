@@ -5,9 +5,26 @@
   "dfeStatedTaxYearFrom": "2024-04-06",
   "dfeStatedTaxYearTo": "2025-04-05",
   "councilApplicationFrom": "2024-04-01",
-  "dataVersion": "2024-25.0",
-  "status": "PENDING_SOURCE",
-  "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/1",
-  "note": "[HARD §8.3] Do NOT back-calculate from the uplift percentage. Rounding rules are not published and a wrong historic rate produces a wrong backdating claim. Source directly from the DfE publication or The Fostering Network archive.",
-  "england": null
+  "dataVersion": "2024-25.1",
+  "note": "England only. Transcribed from the National Archives snapshot of 6 September 2024 of the GOV.UK page, under the heading 'Weekly allowances for the tax year from 6 April 2024 to 5 April 2025' — the figures as published at the time, NOT back-calculated from the 6.88% uplift. That page states 'This guidance applies to England', so wales, scotland and northern-ireland stay null for this year and backdating blocks 2024/25 for those nations rather than guessing. Cross-check: applying the announced 3.55% uplift to every one of these 15 cells reproduces the 2025/26 table within a pound, and the range £165-£289 matches the endpoints reported independently in secondary sources.",
+  "england": {
+    "sourceId": "dfe-nma-2024-25",
+    "unit": "weekly-pence",
+    "upliftPercent": 6.88,
+    "ageBands": [
+      { "id": "0-2",   "minAge": 0,  "maxAge": 2 },
+      { "id": "3-4",   "minAge": 3,  "maxAge": 4 },
+      { "id": "5-10",  "minAge": 5,  "maxAge": 10 },
+      { "id": "11-15", "minAge": 11, "maxAge": 15 },
+      { "id": "16-17", "minAge": 16, "maxAge": 17 }
+    ],
+    "regions": {
+      "london":          { "0-2": 19100, "3-4": 19500, "5-10": 21700, "11-15": 24800, "16-17": 28900 },
+      "south-east":      { "0-2": 18300, "3-4": 18900, "5-10": 20800, "11-15": 23800, "16-17": 27800 },
+      "rest-of-england": { "0-2": 16500, "3-4": 17000, "5-10": 18700, "11-15": 21300, "16-17": 24900 }
+    }
+  },
+  "wales": null,
+  "northern-ireland": null,
+  "scotland": null
 }

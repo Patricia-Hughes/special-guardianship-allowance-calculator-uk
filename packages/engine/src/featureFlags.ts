@@ -19,7 +19,12 @@ export interface FeatureFlags {
    * only corroborated across three councils.
    */
   MEANS_TEST_ENABLED: boolean;
-  /** Still blocked on 2024/25 rate data (spec §8.3). The full table has not been located. */
+  /**
+   * Unblocked 30 Aug 2026. The 2024/25 England table was recovered from the
+   * National Archives snapshot of the GOV.UK page, as published rather than
+   * back-calculated. Wales, Scotland and NI have no 2024/25 data, so that year
+   * blocks for them instead of throwing.
+   */
   BACKDATING_ENABLED: boolean;
   /**
    * Unblocked 30 Aug 2026. The Welsh 0–4 > 5–15 inversion is real, not a
@@ -41,7 +46,7 @@ export interface FeatureFlags {
 
 export const FLAGS: FeatureFlags = {
   MEANS_TEST_ENABLED: true,
-  BACKDATING_ENABLED: false,
+  BACKDATING_ENABLED: true,
   WALES_ROUTE_ENABLED: true,
   LETTER_GENERATOR: false,
   POSTCODE_LOOKUP: true,
