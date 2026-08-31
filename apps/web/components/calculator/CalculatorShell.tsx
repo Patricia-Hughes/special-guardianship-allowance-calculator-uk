@@ -49,6 +49,9 @@ interface ChildForm {
   wasLookedAfterImmediatelyBeforeOrder: 'yes' | 'no' | 'unknown';
 }
 
+/** Sentinel: land on Add another child, because nothing sits above the gap. */
+const FOCUS_ADD_BUTTON = '__add-child-button__';
+
 let childKeySeq = 0;
 const emptyChild = (): ChildForm => ({
   key: `child-${(childKeySeq += 1)}`,
@@ -135,7 +138,13 @@ export function CalculatorShell() {
   const addChildRef = useRef<HTMLButtonElement>(null);
   /** Key of a child row just added, so the effect can move focus into it. */
   const [childFocusKey, setChildFocusKey] = useState<string | null>(null);
-  const [childRemoved, setChildRemoved] = useState(false);
+  /**
+   * Key of the child to land on after a removal: the one above the gap. Set to
+   * FOCUS_ADD_BUTTON when the first child goes and there is nothing above it.
+   * An empty string will not do as that sentinel: it is falsy, so the effect
+   * skips it and focus is lost to the document body.
+   */
+  const [childRemovedFocusKey, setChildRemovedFocusKey] = useState<string | null>(null);
 
   // ── Restore the shareable (non-sensitive) part of the state from the URL ──
   useEffect(() => {
@@ -203,16 +212,25 @@ export function CalculatorShell() {
   // nothing.
   useEffect(() => {
     if (step === 'where') return;
-    scrollToElementAfterPaint(() => stepHeadingRef.current, { focus: true });
-  }, [step]);
+    const heading = stepHeadingRef.current;
 
-  // When the figure arrives, go to the figure. It renders below the whole form,
-  // so pressing "Show me the figure" otherwise leaves you looking at the button
-  // you just pressed with the answer somewhere off screen.
-  useEffect(() => {
-    if (!result) return;
-    scrollToElementAfterPaint(() => resultsRef.current);
-  }, [result]);
+    // On the result step these two want different places: the heading says
+    // "Your result", the figure itself renders below the whole form. Scrolling
+    // to both meant they raced, and on a short screen the figure lost. The
+    // figure wins, and focus still goes to the heading so a screen reader
+    // announces the step rather than jumping into the middle of the answer.
+    if (step === 'result' && result) {
+      try {
+        heading?.focus({ preventScroll: true });
+      } catch {
+        heading?.focus();
+      }
+      scrollToElementAfterPaint(() => resultsRef.current);
+      return;
+    }
+
+    scrollToElementAfterPaint(() => heading, { focus: true });
+  }, [step, result]);
 
   // Adding a child appends a row below the fold; removing one collapses the
   // list under you and, if focus was on the button that has just gone, strands
@@ -228,13 +246,19 @@ export function CalculatorShell() {
   }, [childFocusKey]);
 
   useEffect(() => {
-    if (!childRemoved) return;
-    setChildRemoved(false);
-    // Focus lands on Add another child: it is always present, it sits at the
-    // bottom of the list where the removal happened, and it is the most likely
-    // next action.
-    scrollToElementAfterPaint(() => addChildRef.current, { focus: true });
-  }, [childRemoved]);
+    if (!childRemovedFocusKey) return;
+    const key = childRemovedFocusKey;
+    setChildRemovedFocusKey(null);
+    // Land on the child above the one just removed, which is where the eye
+    // already is. Removing the first child leaves nothing above it, so fall
+    // back to Add another child rather than dropping focus on the document.
+    scrollToElementAfterPaint(
+      () =>
+        document.querySelector<HTMLElement>(`[data-child-key="${key}"] input`) ??
+        addChildRef.current,
+      { focus: true },
+    );
+  }, [childRemovedFocusKey]);
 
   const shareUrl = useMemo(() => {
     if (typeof window === 'undefined') return '';
@@ -311,14 +335,20 @@ export function CalculatorShell() {
     ],
   );
 
+  /**
+   * Returns whether the calculation succeeded, so callers can decline to move
+   * on. Advancing past a step whose field is wrong leaves the message on a
+   * screen the person has just left, which is how "it shows nothing" happens.
+   */
   const run = useCallback(
-    (withFinances: boolean): void => {
+    (withFinances: boolean): boolean => {
       setErrors([]);
       setEngineError(null);
       const built = buildInput(withFinances);
       try {
         setResult(calculate(built));
         setResultInput(built);
+        return true;
       } catch (e) {
         setResult(null);
         setResultInput(null);
@@ -335,10 +365,15 @@ export function CalculatorShell() {
         } else {
           setEngineError('data');
         }
+        return false;
       }
     },
     [buildInput],
   );
+
+  /** The message for one field, for showing beside it rather than only at the top. */
+  const errorFor = (path: string): string | undefined =>
+    errors.find((e) => e.path === path)?.message;
 
   const goTo = (next: StepId): void => {
     setStep(next);
@@ -346,8 +381,7 @@ export function CalculatorShell() {
   };
 
   const showInterstitial = (): void => {
-    run(false);
-    goTo('result');
+    if (run(false)) goTo('result');
   };
 
   return (
@@ -500,12 +534,27 @@ export function CalculatorShell() {
                   <span className="field__hint" id={`age-hint-${i}`}>
                     In years, from 0 to 17.
                   </span>
+                  {/*
+                    The message goes next to the box as well as in the summary
+                    at the top. Someone who types 80 and presses the button is
+                    looking at the box, not the top of the page.
+                  */}
+                  {errorFor(`children.${i}.ageYears`) && (
+                    <span className="field__error" id={`age-error-${i}`} role="alert">
+                      {errorFor(`children.${i}.ageYears`)}
+                    </span>
+                  )}
                   <input
                     id={`age-${i}`}
                     type="text"
                     inputMode="numeric"
                     value={c.ageYears}
-                    aria-describedby={`age-hint-${i}`}
+                    aria-invalid={errorFor(`children.${i}.ageYears`) ? true : undefined}
+                    aria-describedby={
+                      errorFor(`children.${i}.ageYears`)
+                        ? `age-hint-${i} age-error-${i}`
+                        : `age-hint-${i}`
+                    }
                     onChange={(e) =>
                       setChildren((prev) =>
                         prev.map((x, j) => (j === i ? { ...x, ageYears: e.target.value } : x)),
@@ -570,9 +619,9 @@ export function CalculatorShell() {
                       type="button"
                       className="btn btn--secondary"
                       onClick={() => {
+                        setChildRemovedFocusKey(children[i - 1]?.key ?? FOCUS_ADD_BUTTON);
                         setChildren((prev) => prev.filter((_, j) => j !== i));
                         setEldestOverridden(false);
-                        setChildRemoved(true);
                       }}
                     >
                       Remove child {i + 1}
@@ -673,7 +722,7 @@ export function CalculatorShell() {
               />
             </div>
 
-            <Nav onBack={() => goTo('result')} onNext={() => { run(false); goTo('benefits'); }} />
+            <Nav onBack={() => goTo('result')} onNext={() => { if (run(false)) goTo('benefits'); }} />
           </StepPanel>
         )}
 
@@ -714,7 +763,7 @@ export function CalculatorShell() {
 
             <Nav
               onBack={() => goTo('history')}
-              onNext={() => { run(false); goTo(FLAGS.MEANS_TEST_ENABLED ? 'finances' : 'council'); }}
+              onNext={() => { if (run(false)) goTo(FLAGS.MEANS_TEST_ENABLED ? 'finances' : 'council'); }}
             />
           </StepPanel>
         )}
@@ -771,7 +820,7 @@ export function CalculatorShell() {
 
             <Nav
               onBack={() => goTo('benefits')}
-              onNext={() => { setWantsMeansTest(true); run(true); goTo('council'); }}
+              onNext={() => { setWantsMeansTest(true); if (run(true)) goTo('council'); }}
               onSkip={() => { setWantsMeansTest(false); goTo('council'); }}
             />
           </StepPanel>
@@ -821,7 +870,7 @@ export function CalculatorShell() {
 
             <Nav
               onBack={() => goTo(FLAGS.MEANS_TEST_ENABLED ? 'finances' : 'benefits')}
-              onNext={() => { run(wantsMeansTest && FLAGS.MEANS_TEST_ENABLED); goTo('result'); }}
+              onNext={() => { if (run(wantsMeansTest && FLAGS.MEANS_TEST_ENABLED)) goTo('result'); }}
               nextLabel="Update my result"
             />
           </StepPanel>
@@ -874,10 +923,11 @@ const FIELD_ANCHORS: Record<string, string> = {
   'finances.adultsInHousehold': 'adults',
   'finances.dependentChildrenInHousehold': 'household-children',
   children: 'age-0',
-  'children.0.ageYears': 'age-0',
-  'children.1.ageYears': 'age-1',
-  'children.2.ageYears': 'age-2',
-  'children.3.ageYears': 'age-3',
+  // Ten, because ten is the limit the schema allows. The old list stopped at
+  // four, so an error on a fifth child linked nowhere.
+  ...Object.fromEntries(
+    Array.from({ length: 10 }, (_, i) => [`children.${i}.ageYears`, `age-${i}`]),
+  ),
 };
 
 function StepPanel({

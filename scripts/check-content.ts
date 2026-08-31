@@ -124,6 +124,8 @@ const EM_DASH_ROOTS = [
   join(root, 'apps', 'web', 'app'),
   join(root, 'apps', 'web', 'components'),
   join(root, 'packages', 'engine', 'src', 'flags.ts'),
+  // Validation messages are read by users too, and were missed the first time.
+  join(root, 'packages', 'engine', 'src', 'schema.ts'),
   join(root, 'packages', 'letters', 'src'),
 ];
 

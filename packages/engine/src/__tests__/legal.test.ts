@@ -325,7 +325,7 @@ describe('SGO engine — legal correctness', () => {
     try {
       calculate(input({ children: [child({ ageYears: 18 })] }));
     } catch (e) {
-      expect((e as ValidationError).message).toMatch(/covers children under 18/);
+      expect((e as ValidationError).message).toMatch(/for children under 18/);
     }
   });
 

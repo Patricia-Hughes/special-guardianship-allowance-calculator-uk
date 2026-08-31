@@ -10,10 +10,15 @@
  * here is the core use case, not a compliance exercise.
  */
 :root {
-  --font-size-base: 18px;   /* NOT 16. This audience skews 55–75. */
+  --font-size-base: 18px;   /* NOT 16. This audience skews 55-75. */
   --font-size-sm: 16px;     /* absolute floor anywhere on the site */
-  --line-height: 1.6;
-  --measure: 66ch;          /* max line length for body copy */
+  /* 1.7, not the 1.6 this started at. Presbyopia makes tightly set lines hard
+     to track: the eye returns to the start of the line and lands on the wrong
+     one. The extra leading costs a little scrolling and buys a lot of comfort. */
+  --line-height: 1.7;
+  --line-height-tight: 1.2;  /* headings, where a loose setting looks unmoored */
+  --measure: 64ch;           /* max line length for body copy */
+  --paragraph-gap: 1.15em;
 
   --touch-target: 48px;     /* WCAG 2.2 AA target size */
   --focus-ring: 3px solid #0b57d0;
@@ -44,10 +49,17 @@ body {
   margin: 0;
   color: var(--colour-text);
   background: var(--colour-surface);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  /* No web font on the critical path (§31), and none is needed: every one of
+     these is a well-drawn interface face with generous apertures and clearly
+     distinct 1/l/I, which matters more at this reading age than any typeface
+     we could download. It also costs nothing and cannot flash. */
+  font-family: system-ui, -apple-system, 'Segoe UI Variable Text', 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
   font-size: 1rem;
   line-height: var(--line-height);
-  /* No web font on the critical path (§31). */
+  /* Keep full-strength stems. Antialiasing tricks thin the type, which is the
+     wrong direction for readers with any degree of low vision. */
+  text-rendering: optimizeLegibility;
 }
 
 /* Never remove the focus ring. WCAG 2.2 SC 2.4.11. */
@@ -69,16 +81,49 @@ body {
 }
 
 h1, h2, h3, h4 {
-  line-height: 1.25;
-  margin: 1.5em 0 0.5em;
+  line-height: var(--line-height-tight);
+  /* More space above than below, so a heading reads as belonging to what
+     follows it rather than floating between two blocks. */
+  margin: 1.75em 0 0.5em;
   text-wrap: balance;
+  /* Large type set at default tracking looks loose; a touch negative settles
+     it. Small headings are left alone, where tightening hurts legibility. */
+  letter-spacing: -0.011em;
 }
-h1 { font-size: 2rem; margin-top: 0; }
-h2 { font-size: 1.5rem; }
-h3 { font-size: 1.2rem; }
+h1 { font-size: 2.1rem; margin-top: 0; }
+h2 { font-size: 1.55rem; }
+h3 { font-size: 1.22rem; letter-spacing: 0; }
+h4 { font-size: 1.05rem; letter-spacing: 0; }
 
 p, li { max-width: var(--measure); }
-p { margin: 0 0 1em; }
+p {
+  margin: 0 0 var(--paragraph-gap);
+  /* Avoids a single word stranded on the last line. Ignored where unsupported. */
+  text-wrap: pretty;
+}
+
+/* Lists in prose need the same air between items that paragraphs get between
+   blocks, or they read as one dense lump. */
+ul, ol {
+  margin: 0 0 var(--paragraph-gap);
+  padding-left: 1.4em;
+}
+li { margin-bottom: 0.45em; }
+li:last-child { margin-bottom: 0; }
+li > ul, li > ol { margin-top: 0.45em; }
+
+/* A long unbroken string, a URL in a citation for instance, must not force the
+   page to scroll sideways on a phone. */
+p, li, dd, td, th { overflow-wrap: break-word; }
+
+/* Figures line up in columns only if the digits share a width. Applies to every
+   table and every money figure, where a ragged column is genuinely harder to
+   compare down. */
+table, .tabular { font-variant-numeric: tabular-nums; }
+
+/* Emphasis carries meaning on this site, often the difference between what a
+   council must do and what it may do, so it needs to be visibly heavier. */
+strong, b { font-weight: 650; }
 
 a {
   color: var(--colour-info);

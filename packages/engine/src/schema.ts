@@ -46,11 +46,22 @@ export const meansTestedBenefitSchema = z.enum([
 
 export const childInputSchema = z.object({
   id: z.string().min(1),
+  // invalid_type_error matters as much as the range messages. Without it, an
+  // empty box or a typed word falls through to Zod's own wording, and the carer
+  // is told "Expected number, received nan", which tells them nothing about
+  // what to do. Every message here has to make sense to someone who has never
+  // seen a form error before.
   ageYears: z
-    .number()
-    .int('Enter an age between 0 and 17.')
-    .min(0, 'Enter an age between 0 and 17.')
-    .max(17, 'This calculator covers children under 18. Support after 18 works differently — read our guide.'),
+    .number({
+      required_error: 'Enter the child’s age, in years.',
+      invalid_type_error: 'Enter the child’s age as a number, in years. For a baby under one, enter 0.',
+    })
+    .int('Enter the age in whole years. For a child of two and a half, enter 2.')
+    .min(0, 'An age cannot be less than 0. For a baby under one, enter 0.')
+    .max(
+      17,
+      'This calculator is for children under 18. If they have turned 18, support works differently, and our guide on turning 18 explains what happens next.',
+    ),
   dateOfBirth: isoDateSchema.optional(),
   hasDisabilityOrAdditionalNeeds: z.boolean(),
   wasLookedAfterImmediatelyBeforeOrder: z.union([z.boolean(), z.literal('unknown')]),

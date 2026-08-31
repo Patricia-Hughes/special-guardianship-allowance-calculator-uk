@@ -64,7 +64,7 @@ test('adding a child moves you to the new row and puts the cursor in it', async 
   expect(pos, 'the new child row is off screen').toBeLessThan(1);
 });
 
-test('removing a child does not strand focus on the button that disappeared', async ({ page }) => {
+test('removing a child moves focus to the child above it', async ({ page }) => {
   await toChildren(page);
   await page.getByLabel('How old are they?').nth(0).fill('12');
   await page.getByRole('button', { name: 'Add another child' }).click();
@@ -72,9 +72,10 @@ test('removing a child does not strand focus on the button that disappeared', as
 
   await page.getByRole('button', { name: 'Remove child 2' }).click();
 
-  // Without this, focus falls back to <body> and a keyboard user has to tab
-  // from the top of the document again.
-  await expect(page.getByRole('button', { name: 'Add another child' })).toBeFocused();
+  // The child above the gap, which is where the eye already is. Without any of
+  // this, focus falls back to <body> and a keyboard user tabs from the top of
+  // the document again.
+  await expect(page.getByLabel('How old are they?').nth(0)).toBeFocused();
   const onBody = await page.evaluate(() => document.activeElement === document.body);
   expect(onBody, 'focus was lost to the document body').toBe(false);
 });
