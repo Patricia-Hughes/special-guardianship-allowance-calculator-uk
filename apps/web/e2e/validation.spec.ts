@@ -190,3 +190,48 @@ test.describe('a message is shown once, not twice', () => {
     await expect(page.locator('#error-summary-heading')).toHaveCount(0);
   });
 });
+
+test('marking a younger child as the eldest is caught', async ({ page }) => {
+  await toChildren(page);
+  await page.getByLabel('How old are they?').nth(0).fill('5');
+  await page.getByRole('button', { name: 'Add another child' }).click();
+  await page.getByLabel('How old are they?').nth(1).fill('12');
+
+  // The form auto-picks the oldest, so choose the younger one deliberately.
+  await page.getByRole('radio', { name: /eldest child in the household/i }).nth(0).check();
+  await page.getByRole('button', { name: 'Show me the figure' }).click();
+
+  const message = page.locator('#eldest-error-0');
+  await expect(message).toBeVisible();
+  await expect(message).toContainText('12');
+  await expect(message).toContainText(/Child Benefit/i);
+  await expect(page.getByRole('heading', { name: /starting from/i })).toHaveCount(0);
+});
+
+test('the oldest child marked as eldest is accepted', async ({ page }) => {
+  await toChildren(page);
+  await page.getByLabel('How old are they?').nth(0).fill('5');
+  await page.getByRole('button', { name: 'Add another child' }).click();
+  await page.getByLabel('How old are they?').nth(1).fill('12');
+  await page.getByRole('radio', { name: /eldest child in the household/i }).nth(1).check();
+  await page.getByRole('button', { name: 'Show me the figure' }).click();
+
+  await expect(page.getByRole('heading', { name: /starting from/i })).toBeVisible();
+  await expect(page.locator('#eldest-error-0')).toHaveCount(0);
+});
+
+test('a single child is never queried about being the eldest', async ({ page }) => {
+  await toChildren(page);
+  await page.getByLabel('How old are they?').nth(0).fill('3');
+  await page.getByRole('button', { name: 'Show me the figure' }).click();
+  await expect(page.getByRole('heading', { name: /starting from/i })).toBeVisible();
+});
+
+test('a baby under one is a valid age and gets the 0-2 rate', async ({ page }) => {
+  await toChildren(page);
+  await page.getByLabel('How old are they?').nth(0).fill('0');
+  await page.getByRole('button', { name: 'Show me the figure' }).click();
+  await expect(page.getByRole('heading', { name: /starting from/i })).toBeVisible();
+  await expect(page.getByText(/age band 0-2/i)).toBeVisible();
+  await expect(page.getByText('£195', { exact: false }).first()).toBeVisible();
+});

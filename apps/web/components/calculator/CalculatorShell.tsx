@@ -95,6 +95,28 @@ type MoneyFieldName = (typeof MONEY_FIELDS)[number][0];
  * had not given. Refusing is the house rule everywhere else here, so it applies
  * to a zero as much as to a word.
  */
+/**
+ * Index of the oldest child entered, or 0 when no age has been typed yet.
+ *
+ * Only the eldest attracts the higher rate of Child Benefit, so this decides
+ * money. It is a function rather than state for that reason: it used to be kept
+ * in a useEffect, and a shared link carrying several children calculated before
+ * that effect had run, marking whichever child happened to be first as the
+ * eldest. The figure was wrong and nothing said so.
+ */
+const indexOfOldest = (kids: Array<{ ageYears: string }>): number => {
+  let best = 0;
+  let bestAge = -1;
+  kids.forEach((c, i) => {
+    const age = Number.parseInt(c.ageYears, 10);
+    if (Number.isInteger(age) && age > bestAge) {
+      bestAge = age;
+      best = i;
+    }
+  });
+  return best;
+};
+
 const wholeNumber = (raw: string, blank: number): number => {
   if (raw.trim() === '') return blank;
   const n = Number.parseInt(raw.trim(), 10);
@@ -209,15 +231,7 @@ export function CalculatorShell() {
   // knows their household better than we do, so an explicit choice always wins.
   useEffect(() => {
     if (eldestOverridden) return;
-    let best = 0;
-    let bestAge = -1;
-    children.forEach((c, i) => {
-      const age = Number.parseInt(c.ageYears, 10);
-      if (Number.isInteger(age) && age > bestAge) {
-        bestAge = age;
-        best = i;
-      }
-    });
+    const best = indexOfOldest(children);
     setEldestIndex((prev) => (prev === best ? prev : best));
   }, [children, eldestOverridden]);
 
@@ -336,14 +350,14 @@ export function CalculatorShell() {
             c.wasLookedAfterImmediatelyBeforeOrder === 'unknown'
               ? ('unknown' as const)
               : c.wasLookedAfterImmediatelyBeforeOrder === 'yes',
-          isEldestInHousehold: i === eldestIndex,
+          isEldestInHousehold: i === (eldestOverridden ? eldestIndex : indexOfOldest(children)),
         })),
         ...(finances ? { finances } : {}),
         applyChildBenefitDeduction,
       };
     },
     [
-      nation, region, la, children, eldestIndex, wasFosterCarer, previousAllowance, orderDate,
+      nation, region, la, children, eldestIndex, eldestOverridden, wasFosterCarer, previousAllowance, orderDate,
       monthsSinceOrder, onMeansTestedBenefits, benefitsHeld, money, adults, householdChildren,
       childWouldOtherwiseBeInCare, alreadyOnReg6, applyChildBenefitDeduction,
     ],
@@ -626,11 +640,23 @@ export function CalculatorShell() {
 
                 {children.length > 1 && (
                   <>
+                    <FieldError
+                      id={`eldest-error-${i}`}
+                      message={errorFor(`children.${i}.isEldestInHousehold`)}
+                    />
                     <label className="choice">
                       <input
                         type="radio"
                         name="eldest"
                         checked={eldestIndex === i}
+                        aria-invalid={
+                          errorFor(`children.${i}.isEldestInHousehold`) ? true : undefined
+                        }
+                        aria-describedby={
+                          errorFor(`children.${i}.isEldestInHousehold`)
+                            ? `eldest-error-${i}`
+                            : undefined
+                        }
                         onChange={() => {
                           setEldestIndex(i);
                           setEldestOverridden(true);
@@ -999,6 +1025,9 @@ const FIELD_ANCHORS: Record<string, string> = {
   // four, so an error on a fifth child linked nowhere.
   ...Object.fromEntries(
     Array.from({ length: 10 }, (_, i) => [`children.${i}.ageYears`, `age-${i}`]),
+  ),
+  ...Object.fromEntries(
+    Array.from({ length: 10 }, (_, i) => [`children.${i}.isEldestInHousehold`, `age-${i}`]),
   ),
 };
 

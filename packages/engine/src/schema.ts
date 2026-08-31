@@ -175,6 +175,26 @@ export const calculatorInputSchema = z
         message: 'Only one child can be the eldest in the household.',
       });
     }
+
+    // Marking a younger child as the eldest contradicts the ages just given,
+    // and it is not harmless: only the eldest attracts the higher rate of Child
+    // Benefit, so the mistake moves money. Easy to make, too, since the choice
+    // sits below the ages and the form pre-selects one.
+    const marked = input.children.findIndex((c) => c.isEldestInHousehold);
+    if (marked >= 0 && input.children.length > 1) {
+      const oldest = Math.max(...input.children.map((c) => c.ageYears));
+      const markedAge = input.children[marked]!.ageYears;
+      if (markedAge < oldest) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['children', marked, 'isEldestInHousehold'],
+          message:
+            `You have marked the child aged ${markedAge} as the eldest, but you have also ` +
+            `entered a child aged ${oldest}. Only the eldest child attracts the higher rate of ` +
+            'Child Benefit, so this changes the figures. Mark the oldest child instead.',
+        });
+      }
+    }
   });
 
 /** Parse, converting Zod's error into the engine's own ValidationError. */

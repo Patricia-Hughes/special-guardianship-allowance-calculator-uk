@@ -90,8 +90,12 @@ describe('exhaustive: every nation, region and age', () => {
 
   it('handles every household size up to ten children', () => {
     for (let n = 1; n <= 10; n++) {
-      const kids = Array.from({ length: n }, (_, i) =>
-        child({ ageYears: AGES[i % AGES.length]!, isEldestInHousehold: i === 0 }),
+      const ages = Array.from({ length: n }, (_, i) => AGES[i % AGES.length]!);
+      // The eldest must be the oldest, which the schema now enforces: marking a
+      // younger child moves the higher rate of Child Benefit onto the wrong one.
+      const oldest = ages.indexOf(Math.max(...ages));
+      const kids = ages.map((ageYears, i) =>
+        child({ ageYears, isEldestInHousehold: i === oldest }),
       );
       const r = calculate(
         input({ carer: carer({ englandRegion: 'south-east' }), children: kids }),

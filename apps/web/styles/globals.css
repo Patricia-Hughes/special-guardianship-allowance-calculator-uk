@@ -311,3 +311,47 @@ summary {
   cursor: pointer;
   padding: 0.5rem 0;
 }
+
+/* ── Flags on the result ─────────────────────────────────────────────────── */
+/*
+ * A section per severity, not a card per flag. The heading carries the severity
+ * in words, so the rule down the left is reinforcement rather than the only
+ * signal (§23: never colour alone).
+ */
+.flag-group {
+  border-left: 6px solid var(--colour-line);
+  padding-left: 1.25rem;
+  margin: 2rem 0;
+}
+.flag-group--critical { border-left-color: var(--colour-critical); }
+.flag-group--important { border-left-color: var(--colour-important); }
+.flag-group--info { border-left-color: var(--colour-info); }
+
+.flag-group__heading {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+}
+.flag-group--critical .flag-group__heading { color: var(--colour-critical); }
+.flag-group--important .flag-group__heading { color: var(--colour-important); }
+
+.flag-group__blurb {
+  margin: 0 0 1.5rem;
+  color: var(--colour-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Indented under its own bold line, matching "What to do next". */
+.flag-item { margin-bottom: 1.75rem; }
+.flag-item:last-child { margin-bottom: 0; }
+.flag-item__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+.flag-item__body { padding-left: 1.1rem; }
+.flag-item__body > :last-child { margin-bottom: 0; }
+.flag-item__source,
+.flag-item__action {
+  margin: 0.5rem 0 0;
+  font-size: var(--font-size-sm);
+}
