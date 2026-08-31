@@ -51,25 +51,45 @@ const TYPES = {
   '.woff2': 'font/woff2',
 };
 
-/** Mirror the .htaccess rules: strip a trailing slash, then try `.html`. */
+/**
+ * Mirror the .htaccess rules exactly, redirects included.
+ *
+ * Resolving straight to a file is what let an infinite redirect reach
+ * production: /guidance is both a page and a folder, Apache's mod_dir bounced
+ * it to /guidance/, and the trailing-slash rule bounced it back. This server
+ * resolved it in one step and saw nothing wrong. So it now models the same
+ * three rules, in the same order, and returns the same 301s.
+ *
+ * Returns either {redirect} or {file}, or null for a 404.
+ */
 function resolve(urlPath) {
-  let p = decodeURIComponent(urlPath.split('?')[0]);
-  if (p.length > 1 && p.endsWith('/')) p = p.slice(0, -1);
-  if (p === '' || p === '/') p = '/index.html';
+  const raw = decodeURIComponent(urlPath.split('?')[0]);
+
+  // Rule 1: canonical URLs carry no trailing slash.
+  if (raw.length > 1 && raw.endsWith('/')) {
+    return { redirect: raw.replace(/\/+$/, '') || '/' };
+  }
+
+  const p = raw === '' ? '/' : raw;
+  if (p === '/') return { file: join(root, 'index.html') };
 
   const safe = normalize(p).replace(/^(\.\.[/\\])+/, '');
-  const direct = join(root, safe);
+  const target = join(root, safe);
 
-  if (existsSync(direct) && statSync(direct).isFile()) return direct;
-  const asHtml = `${direct}.html`;
-  if (existsSync(asHtml)) return asHtml;
-  const asIndex = join(direct, 'index.html');
-  if (existsSync(asIndex)) return asIndex;
+  // A real file wins outright (the `!-f` guard).
+  if (existsSync(target) && statSync(target).isFile()) return { file: target };
+
+  // Rule 2: path.html, whether or not a folder of the same name exists.
+  const asHtml = `${target}.html`;
+  if (existsSync(asHtml)) return { file: asHtml };
+
+  // Rule 3: a folder with no page of its own is not browsable.
+  if (existsSync(target) && statSync(target).isDirectory()) return null;
+
   return null;
 }
 
 createServer((req, res) => {
-  const file = resolve(req.url ?? '/');
   const send = (status, path) => {
     res.writeHead(status, {
       ...HEADERS,
@@ -78,13 +98,21 @@ createServer((req, res) => {
     createReadStream(path).pipe(res);
   };
 
-  if (!file) {
+  const outcome = resolve(req.url ?? '/');
+
+  if (outcome && outcome.redirect) {
+    const query = (req.url ?? '').includes('?') ? `?${(req.url ?? '').split('?')[1]}` : '';
+    res.writeHead(301, { ...HEADERS, Location: outcome.redirect + query });
+    return res.end();
+  }
+
+  if (!outcome) {
     const notFound = join(root, '404.html');
     if (existsSync(notFound)) return send(404, notFound);
     res.writeHead(404, HEADERS);
     return res.end('Not found');
   }
-  send(200, file);
+  send(200, outcome.file);
 }).listen(port, '127.0.0.1', () => {
   console.log(`static-server: serving out/ on http://127.0.0.1:${port} with the production headers`);
 });

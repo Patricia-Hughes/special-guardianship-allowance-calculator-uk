@@ -20,6 +20,7 @@ import { CouncilPicker } from './CouncilPicker';
 import { MoneyInput } from './MoneyInput';
 import { ResultsPanel } from '../results/ResultsPanel';
 import { fromQueryString, toQueryString, SHARE_EXPLANATION } from '../../lib/urlState';
+import { scrollToElementAfterPaint } from '../../lib/scrollTo';
 
 /**
  * Step orchestration, spec §20. Six steps, progressive.
@@ -130,6 +131,11 @@ export function CalculatorShell() {
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
   const hydratedFromUrl = useRef(false);
   const [pendingSharedResult, setPendingSharedResult] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const addChildRef = useRef<HTMLButtonElement>(null);
+  /** Key of a child row just added, so the effect can move focus into it. */
+  const [childFocusKey, setChildFocusKey] = useState<string | null>(null);
+  const [childRemoved, setChildRemoved] = useState(false);
 
   // ── Restore the shareable (non-sensitive) part of the state from the URL ──
   useEffect(() => {
@@ -191,10 +197,44 @@ export function CalculatorShell() {
     setEldestIndex((prev) => (prev === best ? prev : best));
   }, [children, eldestOverridden]);
 
-  // Results are announced on render (§24).
+  // Results are announced on render (§24). Take the person to the step as well
+  // as focusing it: on a phone the next question is usually below the fold, and
+  // a form that changes somewhere you are not looking reads as a form that did
+  // nothing.
   useEffect(() => {
-    if (step !== 'where') stepHeadingRef.current?.focus();
+    if (step === 'where') return;
+    scrollToElementAfterPaint(() => stepHeadingRef.current, { focus: true });
   }, [step]);
+
+  // When the figure arrives, go to the figure. It renders below the whole form,
+  // so pressing "Show me the figure" otherwise leaves you looking at the button
+  // you just pressed with the answer somewhere off screen.
+  useEffect(() => {
+    if (!result) return;
+    scrollToElementAfterPaint(() => resultsRef.current);
+  }, [result]);
+
+  // Adding a child appends a row below the fold; removing one collapses the
+  // list under you and, if focus was on the button that has just gone, strands
+  // a keyboard user on nothing. Both cases move the person somewhere sensible.
+  useEffect(() => {
+    if (!childFocusKey) return;
+    const key = childFocusKey;
+    setChildFocusKey(null);
+    scrollToElementAfterPaint(
+      () => document.querySelector<HTMLElement>(`[data-child-key="${key}"] input`),
+      { focus: true },
+    );
+  }, [childFocusKey]);
+
+  useEffect(() => {
+    if (!childRemoved) return;
+    setChildRemoved(false);
+    // Focus lands on Add another child: it is always present, it sits at the
+    // bottom of the list where the removal happened, and it is the most likely
+    // next action.
+    scrollToElementAfterPaint(() => addChildRef.current, { focus: true });
+  }, [childRemoved]);
 
   const shareUrl = useMemo(() => {
     if (typeof window === 'undefined') return '';
@@ -444,6 +484,7 @@ export function CalculatorShell() {
             {children.map((c, i) => (
               <fieldset
                 key={c.key}
+                data-child-key={c.key}
                 style={{
                   border: '2px solid var(--colour-line)',
                   borderRadius: 'var(--radius)',
@@ -531,6 +572,7 @@ export function CalculatorShell() {
                       onClick={() => {
                         setChildren((prev) => prev.filter((_, j) => j !== i));
                         setEldestOverridden(false);
+                        setChildRemoved(true);
                       }}
                     >
                       Remove child {i + 1}
@@ -544,7 +586,14 @@ export function CalculatorShell() {
               <button
                 type="button"
                 className="btn btn--secondary"
-                onClick={() => setChildren((prev) => [...prev, emptyChild()])}
+                ref={addChildRef}
+                onClick={() =>
+                  setChildren((prev) => {
+                    const next = emptyChild();
+                    setChildFocusKey(next.key);
+                    return [...prev, next];
+                  })
+                }
               >
                 Add another child
               </button>
@@ -780,7 +829,7 @@ export function CalculatorShell() {
       </div>
 
       {result && resultInput && !engineError && (
-        <div aria-live="polite">
+        <div aria-live="polite" ref={resultsRef}>
           <ResultsPanel
             result={result}
             input={resultInput}

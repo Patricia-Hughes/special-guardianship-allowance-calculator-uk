@@ -36,6 +36,21 @@
 # ---------------------------------------------------------------------------
 # next.config.mjs sets `trailingSlash: false`, so the export writes about.html,
 # not about/index.html. Apache needs telling that /about means about.html.
+<IfModule mod_dir.c>
+  # Off, or /guidance is an infinite redirect.
+  #
+  # The export writes guidance.html AND a guidance/ folder holding the sixteen
+  # guides. mod_dir sees the folder, decides the canonical form of /guidance is
+  # /guidance/, and issues a 301. The trailing-slash rule below then sends it
+  # back to /guidance. The browser bounces between the two and gives up with
+  # "redirected you too many times", which is what visitors got when they
+  # clicked Guides in the menu.
+  #
+  # Any section that is both a page and a folder of pages hits this, so it is
+  # the pattern that needs handling, not the one URL.
+  DirectorySlash Off
+</IfModule>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
@@ -43,11 +58,23 @@
   RewriteCond %{REQUEST_URI} !^/$
   RewriteRule ^(.*)/$ /$1 [R=301,L]
 
-  # /about -> about.html, /guidance/annual-reviews -> guidance/annual-reviews.html
+  # /about -> about.html, /guidance -> guidance.html,
+  # /guidance/annual-reviews -> guidance/annual-reviews.html
+  #
+  # Deliberately NOT guarded by !-d. The old rule skipped anything that was also
+  # a directory, which is precisely how /guidance fell through to mod_dir. Where
+  # a name is both a page and a folder, the page wins.
   RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-  RewriteRule ^(.+)$ /$1.html [L]
+  RewriteRule ^(.+?)/?$ /$1.html [L]
+
+  # A folder with no page of its own is not browsable. With DirectorySlash off
+  # this stops mod_autoindex offering a file listing, and it needs no Options
+  # override, which not every shared host grants. Real files inside such a
+  # folder are unaffected: they match -f above and never reach this.
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{DOCUMENT_ROOT}/$1.html !-f
+  RewriteRule ^(.+?)/?$ - [R=404,L]
 </IfModule>
 
 ErrorDocument 404 /404.html
