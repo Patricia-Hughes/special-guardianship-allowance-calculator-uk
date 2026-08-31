@@ -18,9 +18,16 @@ it does not go in the product. Flag it, open an issue, ship without it.
 | 1b | Source the 2024/25 rates for **Wales and Northern Ireland**, and 2025/26 for Scotland, Wales and Northern Ireland. England is done; Scotland 2024/25 is now done. | Backdating outside England, in the years still null | `data/rates.2024-25.json`, `rates.2025-26.json`; `data/watchlist.json` rows `ni-model-scheme-2024-25`, `scotland-2025-26` | |
 | 2 | Retrieve the Care Inspectorate Wales bulletins for 2024/25 and 2026/27. The publication route is now known and the 2023/24 bulletin is confirmed, so this is a lookup rather than a hunt. A person has to read the table, because it is an image. | Nothing, quality only | `data/citations.json` `ciw-nma-bulletin-2023-24`; watchlist row `ciw-nma-bulletins` | |
 | 4 | Confirm the DfE taper method across more published LA policies. Four councils looked at so far and none states a taper explicitly. If they diverge, ship configurable with explicit disclosure. Do not invent a national figure. | Means-test accuracy | `meansTest.ts` `DEFAULT_TAPER`; `TAPER_METHOD_ASSUMED` flag | |
-| 5 | Wait for Leeds's final revised support offer. The March 2024 offer is now published on the site with an on-screen note saying the policy is under review, and no Child Benefit claim attached, because the only source for that is a superseded freedom of information response. | The completeness of the Leeds page | `data/la-overrides.json` `leeds.policyUnderReview`; watchlist row `leeds-final-offer` | |
-| 6 | Legal review of the flag copy and the `/la/` page template. Needs a solicitor, not a researcher. Now also covers `LGSCO_FINDING_FORMER_POLICY` and `LA_LIVING_COSTS_VARIATION`. | Publication | `packages/engine/src/flags.ts`; `FOR-YOUR-TEAM.md` Job A | |
+| 5 | Wait for Leeds's final revised support offer. The March 2024 offer is now used for a carer who picks Leeds, with an on-screen note saying the policy is under review, and no Child Benefit claim attached, because the only source for that is a superseded freedom of information response. | How much we can say about Leeds | `data/la-overrides.json` `leeds.policyUnderReview`; watchlist row `leeds-final-offer` | |
+| 6 | Legal review of the flag copy, the letter templates and the guidance pages. Needs a solicitor, not a researcher. Now also covers `LGSCO_FINDING_FORMER_POLICY` and `LA_LIVING_COSTS_VARIATION`. | Publication | `packages/engine/src/flags.ts`; `packages/letters/src`; `FOR-YOUR-TEAM.md` Job A | |
 | 10 | ~~Decide whether analytics ships.~~ **Answered on 31 August 2026: no.** Left here for one release so the decision is visible. Nothing measures visitors, the privacy notice says so, and `check:content` fails the build if a tracker is ever added. | Nothing | `scripts/check-content.ts`; `apps/web/app/privacy/page.tsx` | |
+
+> **A note on wording in earlier versions of this file.** Rows here used to refer
+> to "LA pages" and to a `/la/` page template. There is no such route and there
+> never was one built: the council picker inside the calculator covers all 153
+> English authorities, and for the six councils whose published policy we hold,
+> that detail appears on the carer's own result rather than on a page of its
+> own. Nobody should be briefed to review a page that does not exist.
 
 ## Closed on 31 August 2026
 
