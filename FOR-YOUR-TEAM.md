@@ -12,6 +12,21 @@ first one is urgent.
 | B. Find four missing sources | A researcher | A few hours | Whenever |
 | C. Decide one thing about privacy | You | Five minutes | Before launch |
 
+## One thing to decide before you start Job A
+
+If you are also planning a **full content rewrite** by a copywriter, do that
+first and have the solicitor read the rewritten words. Reviewing the current
+wording and then rewriting it would waste the review.
+
+So pick one of these:
+
+- **Publishing soon:** solicitor reviews the current wording now (Job A), you
+  publish, and the rewrite happens later with a second review.
+- **Rewrite first:** content brief, then rewrite, then Job A once on the new
+  wording. Slower to launch, but only one legal review.
+
+Everything else on this list is the same either way.
+
 ---
 
 # Job A. A solicitor reads the wording
@@ -63,9 +78,13 @@ For each item, we are asking:
 
 1. **Is the legal claim accurate?** Not "is it roughly right" but "would this
    survive a council's legal team reading it".
-2. **Is the strength of the language justified by the source?** Watch for
-   "must" versus "should", "unlawful" versus "may not be appropriate", "the
-   courts have held" versus "the Ombudsman found in one case".
+2. **Is the strength of the language justified by the source?** This is the
+   main question. The strength of a word here is a legal decision, not a style
+   decision: a carer reads "cannot" and "should not" as different rights, and
+   acts on the difference in a meeting with their council. Watch for must
+   versus should, cannot versus should not versus does not have to, unlawful
+   versus not appropriate versus a departure from the guidance, and "the courts
+   have held" versus "the Ombudsman found in one case".
 3. **Does anything read as an accusation against a named council?** Our house
    rule is that the site never states a council has broken the law. It states
    what the guidance says and what a published decision found, and lets the
