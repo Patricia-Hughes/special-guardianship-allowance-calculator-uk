@@ -27,6 +27,7 @@ import {
   type Pence,
 } from './money.js';
 import {
+  CORE_LIVING_COSTS_MULTIPLIER,
   DEFAULT_CAPITAL,
   DEFAULT_TAPER,
   meansTestAvailable,
@@ -207,6 +208,26 @@ function capitalFor(la: LaOverride | undefined): CapitalConfig {
   return la?.capital ?? DEFAULT_CAPITAL;
 }
 
+/**
+ * Basic living costs as a multiple of the Income Support applicable amount.
+ *
+ * The DfE model says 125%. A council may publish something else, and Devon
+ * does, so this reads the council's own figure where we hold one. A percentage
+ * that is absent means the council follows the model; it never means we failed
+ * to look, because an entry only reaches the engine when publishable.
+ */
+function livingCostsMultiplierFor(la: LaOverride | undefined): number {
+  const pct = la?.livingCostsMultiplierPercent;
+  if (pct === undefined) return CORE_LIVING_COSTS_MULTIPLIER;
+  if (!Number.isFinite(pct) || pct <= 0) {
+    throw new DataError(
+      `la-overrides "${la?.slug}" has livingCostsMultiplierPercent ${String(pct)}, which is not a ` +
+        'usable percentage. A wrong figure here silently changes every means-tested result.',
+    );
+  }
+  return pct / 100;
+}
+
 function councilNameFor(slug: string | undefined, deps: EngineDeps): string | undefined {
   if (!slug) return undefined;
   return publishableLaOverrideIn(deps.laOverrides, slug)?.name ?? LA_NAMES[slug];
@@ -374,15 +395,33 @@ function sgoPath(
   const warnings: string[] = [];
 
   if (la?.lawfulnessFlag) {
+    const lf = la.lawfulnessFlag;
     flags.push(
-      makeFlag('LGSCO_FINDING_AGAINST_LA', {
+      makeFlag(lf.concernsFormerPolicy ? 'LGSCO_FINDING_FORMER_POLICY' : 'LGSCO_FINDING_AGAINST_LA', {
         councilName: la.name,
-        policySummary: la.lawfulnessFlag.summary,
-        policySourceUrl: la.lawfulnessFlag.sourceUrl,
+        policySummary: lf.summary,
+        policySourceUrl: lf.sourceUrl,
+        // Where the criticised policy has been changed, or a later complaint
+        // about the current practice was not upheld, the flag says so with the
+        // finding rather than after it.
+        ...(lf.policyChangedOn ? { policyChangedOn: lf.policyChangedOn } : {}),
+        ...(lf.supersededBy ? { supersededSummary: lf.supersededBy.summary } : {}),
       }),
     );
   }
-  if (la && /\b(\d{1,3}\s?%|two[- ]thirds|one[- ]third|percentage)\b/i.test(la.corePolicy)) {
+  if (la?.policyUnderReview) {
+    flags.push(
+      makeFlag('LA_POLICY_UNDER_REVIEW', {
+        councilName: la.name,
+        ...(la.policyUnderReviewNote ? { policyUnderReviewNote: la.policyUnderReviewNote } : {}),
+      }),
+    );
+  }
+  // Only ever from the recorded fraction, never from the wording of the policy
+  // summary. A council paying the full rate, or one that abolished a percentage
+  // model years ago, must not be accused of running one. See LaOverride.
+  const fixedFraction = la?.fixedPercentageOfFosteringRate;
+  if (la && typeof fixedFraction === 'number' && fixedFraction < 1) {
     flags.push(makeFlag('FIXED_PERCENTAGE_POLICY', { councilName: la.name }));
   }
 
@@ -473,9 +512,23 @@ function sgoPath(
 
   const taper = taperFor(la, input);
   const capital = capitalFor(la);
-  const mt = runMeansTest(input.finances, benefits, taper, capital);
+  const livingCostsMultiplier = livingCostsMultiplierFor(la);
+  const mt = runMeansTest(input.finances, benefits, taper, capital, livingCostsMultiplier);
 
   flags.push(makeFlag('MEANS_TEST_MODEL_OUTDATED'));
+  if (livingCostsMultiplier !== CORE_LIVING_COSTS_MULTIPLIER) {
+    // A council allowing less for living costs assesses a bigger contribution
+    // and so pays a smaller allowance. The carer should be told that is where
+    // the difference comes from, not left to wonder.
+    flags.push(
+      makeFlag('LA_LIVING_COSTS_VARIATION', {
+        ...(la?.name ? { councilName: la.name } : {}),
+        livingCostsPercent: Math.round(livingCostsMultiplier * 100),
+        modelLivingCostsPercent: Math.round(CORE_LIVING_COSTS_MULTIPLIER * 100),
+        ...(la?.policySourceUrl ? { policySourceUrl: la.policySourceUrl } : {}),
+      }),
+    );
+  }
   if (!la?.taper && !input.taperOverride) {
     flags.push(makeFlag('TAPER_METHOD_ASSUMED', { taperMethod: taper.method }));
   }

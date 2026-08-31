@@ -6,26 +6,25 @@ The calculator is finished and works. This is the short list of things that
 still need a person rather than a computer. There are three jobs. Only the
 first one is urgent.
 
-| Job | Who does it | How long | Urgency |
+| Job | Who does it | How long | Status |
 |---|---|---|---|
-| A. Read the wording and check it is legally safe | A solicitor who works in children's social care | Half a day to a day | **Do this before launch** |
-| B. Find four missing sources | A researcher | A few hours | Whenever |
-| C. Decide one thing about privacy | You | Five minutes | Before launch |
+| A. Read the wording and check it is legally safe | A solicitor who works in children's social care | Half a day to a day | **Outstanding. The only thing left.** |
+| B. Find four missing sources | A researcher | A few hours | Done, 31 August 2026 |
+| C. Decide one thing about privacy | You | Five minutes | Done, 31 August 2026: no analytics |
 
-## One thing to decide before you start Job A
+## The order, as agreed on 31 August 2026
 
-If you are also planning a **full content rewrite** by a copywriter, do that
-first and have the solicitor read the rewritten words. Reviewing the current
-wording and then rewriting it would waste the review.
+1. Content brief written
+2. All the copy rewritten
+3. **Solicitor reviews the rewritten copy (Job A)**
+4. Fixes applied
+5. Publish
 
-So pick one of these:
-
-- **Publishing soon:** solicitor reviews the current wording now (Job A), you
-  publish, and the rewrite happens later with a second review.
-- **Rewrite first:** content brief, then rewrite, then Job A once on the new
-  wording. Slower to launch, but only one legal review.
-
-Everything else on this list is the same either way.
+So Job A does not start yet. It waits for the rewrite, which means the review
+happens once, on the words that will actually be published. Appendix 1 below
+still lists the five warnings that need the closest reading, because they are
+the ones the writer should be briefed on hardest and the ones the solicitor
+should spend the most time on when the rewrite reaches them.
 
 ---
 
@@ -108,70 +107,49 @@ after changes, we will arrange that.
 
 ---
 
-# Job B. Four things for a researcher
+# Job B. Done, 31 August 2026
 
-Each of these is "find the document", not "work out the answer". Nothing here
-may be estimated, derived or filled in by judgement. If a source cannot be
-found, that is a valid answer and we will keep saying so on the site.
+Your researcher answered all four. Everything usable is in the calculator, and
+the two things that could not be sourced are recorded rather than guessed.
 
-### B1. Allowance rates for 2024 to 2025 for Wales, Scotland and Northern Ireland
+| Item | Outcome |
+|---|---|
+| B1. Older rates for the other nations | **Scotland is in.** The allowance was frozen for 2024/25, so the August 2023 rates stood, and Scottish backdating now covers that year. Northern Ireland is **not** in: the figures could not be read from the primary document, and when the announced uplifts are applied, three of the four reproduce the current table exactly and one does not. A one-pound discrepancy is not something to ship. Wales could not be sourced at all. |
+| B2. The Welsh circular | **The publication route is now known**, which was the real blocker. Welsh rates go out as bilingual Care Inspectorate Wales bulletins, and the 2023/24 one is confirmed. The years we want are not, and the rate table inside is an image, so retrieving them needs a person rather than a script. |
+| B3. Devon and Leeds | **Both pages are now live.** Devon brought a real find with it: its policy allows basic living costs at 100% of the Income Support rate where the standard model allows 125%, which makes a Devon carer's assessed contribution larger and their allowance smaller. The calculator now applies Devon's own figure and tells the carer why theirs differs. Leeds is published with its policy under review said plainly on the page, and with no Child Benefit claim attached, because the only source for that was a superseded freedom of information response. |
+| B4. The four Ombudsman decisions | **All four found, and three of them corrected what we held.** North Tyneside's report is from 2018, not 2019. Southend's reference and date were both wrong. The Rochdale entry was linking to a Shropshire council document by mistake. And the Rochdale decision survived a High Court challenge, which is what makes it safe to rely on at all. |
 
-We have England, recovered from a National Archives snapshot of the GOV.UK
-fostering costs page taken on 6 September 2024. We need the same year's
-published rates for the other three nations.
+**The most important thing your researcher found was not on the list.** A second
+Devon decision, from later in 2024, was **not upheld**: the Ombudsman found
+Devon's current practice consistent with government guidance. Without that, the
+site would have gone on describing a council by a policy it had already
+changed. Chasing it down was the difference between accurate and defamatory, and
+it prompted us to find the same error elsewhere in our own code. Please pass
+that on.
 
-*Why it matters:* carers can ask the site to work out what they should have
-been paid in past years. That currently works for England only.
+**Two short lookups are left**, both now on an automatic reminder rather than a
+list somebody has to remember to read:
 
-### B2. The Welsh Government's own circular on the national minimum allowance
+1. Open the Northern Ireland model scheme PDF in a browser and read the four
+   figures out of it. The server blocks automated access, so it needs a person.
+   Five minutes.
+2. Find the Care Inspectorate Wales bulletins for 2024/25 and 2026/27. The
+   2023/24 address gives the pattern.
 
-Our Welsh figures show an unusual pattern: one age band pays less than the band
-below it. We have confirmed that pattern across two years from secondary
-sources, so we are confident it is real and not a typo. We still do not have
-the Welsh Government's own publication saying it.
+Neither blocks anything. Both are worth doing when somebody has a spare morning.
 
-*Why it matters:* quality only. Nothing is wrong on the site without it.
+# Job C. Decided, 31 August 2026
 
-### B3. Current policy links for Devon and Leeds councils
+**Should the website measure anything about its visitors? No.**
 
-Both councils publish a special guardianship allowance policy. The addresses we
-had have moved. We need the current, permanent links.
+Nothing counts a visit, nothing follows anybody between pages, and nothing is
+sent anywhere when the calculator is used. There are no cookies and no banner,
+because there is nothing to consent to.
 
-*Why it matters:* those two councils' pages on our site are switched off until
-we have a link a carer could click and check.
-
-### B4. Four Ombudsman decisions at permanent addresses
-
-We refer to decisions by the Local Government and Social Care Ombudsman
-concerning Devon (2024), North Tyneside (reference 17 002 928), Southend (2020)
-and Rochdale (2019). We currently rely on news reports of some of them. We want
-the decisions themselves at addresses that will still work in two years.
-
-*Why it matters:* this is the highest standard of proof on the site. Saying
-anything about a named council's conduct should rest on the decision itself,
-not on somebody's summary of it.
-
----
-
-# Job C. One decision for you
-
-**Should the website measure anything about its visitors?**
-
-Right now it measures nothing at all. No analytics, no cookies, no tracking of
-any kind. Nothing about a carer's answers ever leaves their own browser.
-
-The alternative is to add privacy-respecting analytics so you can see how many
-people use it and which pages they read.
-
-**My recommendation is to keep it at nothing.** The people using this site are
-telling it about a child in their care, their benefits and their income, at a
-difficult time. "We measure nothing" is a promise worth more than the numbers
-would be, and it is a promise you can make in one plain sentence.
-
-If you want visitor numbers, your web host can give you basic server counts
-without any tracking on the page itself.
-
----
+That decision is now enforced rather than merely intended: the privacy notice
+says it in plain words, and an automatic check fails the build if tracking code
+is ever added. If it is ever changed, it has to be changed on purpose, in the
+same commit as the privacy notice.
 
 # Appendix 1. The exact wording of the five warning messages
 
@@ -301,9 +279,13 @@ For the avoidance of doubt, the following are done and need nothing from
 anybody:
 
 - All the allowance rates for the current year, all four nations
-- The means test, including the benefit figures behind it
+- Backdating for England, and for Scotland back to 2024/25
+- The means test, including the benefit figures behind it, and per-council
+  variations where a council publishes one
 - The mapping of all 153 English councils to their region
-- Backdating for England
+- Six council pages, each with a current, citable policy source
 - Accessibility, tested automatically against WCAG 2.2 AA
+- No analytics, enforced by a build check rather than by good intentions
 - Security headers, page speed, and the whole calculator working end to end,
-  all checked automatically on every change
+  all checked automatically on every change: 150 unit tests and 188 browser
+  tests, plus ten data and content gates

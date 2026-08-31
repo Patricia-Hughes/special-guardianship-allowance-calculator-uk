@@ -22,7 +22,7 @@ import {
   nthBirthday,
 } from './dates.js';
 import { DataError } from './errors.js';
-import { add, clampMin0, mul, pence, sub, type Pence } from './money.js';
+import { add, clampMin0, formatMoney, mul, pence, sub, type Pence } from './money.js';
 import { defaultDeps, lookupRate, resolveAgeBand, type EngineDeps } from './engine.js';
 import type { CalculatorInput, IsoDate, Nation, RateTable } from './types.js';
 
@@ -41,7 +41,8 @@ export type SegmentReason =
   | 'age-band-change'
   | 'period-start'
   | 'period-end'
-  | 'reg7-anniversary';
+  | 'reg7-anniversary'
+  | 'april-tax-year-boundary';
 
 export interface BackdatingSegment {
   from: IsoDate;
@@ -54,6 +55,13 @@ export interface BackdatingSegment {
   actuallyPaidWeekly: Pence;
   segmentShortfall: Pence;
   reason: SegmentReason;
+  /**
+   * Only on the 1 to 5 April segments. DfE states the allowance on a tax year
+   * beginning 6 April; councils uplift from 1 April. Both are right in their
+   * own frame, so this segment carries the figure the other convention gives
+   * and the site says which it used. See OPEN-ITEMS.md, the April boundary.
+   */
+  taxYearAlternativeWeekly?: Pence;
 }
 
 export interface BackdatingResult {
@@ -64,6 +72,12 @@ export interface BackdatingResult {
   yearsCovered: string[];
   /** Financial years with PENDING_SOURCE rate data. Never estimated. */
   blockedYears: string[];
+  /**
+   * How much of the shortfall rests on using the council convention rather than
+   * the DfE tax year, across every April in the period. Zero for a council that
+   * uplifts on 1 April, which is most of them. Never large, and never silent.
+   */
+  aprilBoundaryDifference: Pence;
   caveats: string[];
 }
 
@@ -91,6 +105,14 @@ export function segmentBoundaries(
 
   for (const b of financialYearBoundaries(fromDate, toDate)) {
     if (!points.has(b)) points.set(b, 'financial-year-change');
+    // The five days a council and the DfE disagree about. Cutting here keeps
+    // 1 to 5 April in a segment of its own, so the part of the total that
+    // depends on which convention the council follows can be stated rather
+    // than buried inside a longer segment.
+    const taxYearStart = `${b.slice(0, 4)}-04-06` as IsoDate;
+    if (taxYearStart > fromDate && taxYearStart <= toDate && !points.has(taxYearStart)) {
+      points.set(taxYearStart, 'april-tax-year-boundary');
+    }
   }
 
   for (const child of base.children) {
@@ -174,6 +196,13 @@ export function calculateBackdating(
   const segments: BackdatingSegment[] = [];
   const blockedYears = new Set<string>();
   const yearsCovered = new Set<string>();
+  let aprilBoundaryDifference = pence(0);
+
+  /** True for 1 to 5 April, the days the two conventions disagree about. */
+  const inAprilWindow = (date: IsoDate): boolean => {
+    const md = date.slice(5);
+    return md >= '04-01' && md <= '04-05';
+  };
 
   for (let i = 0; i < boundaries.length; i++) {
     const start = boundaries[i];
@@ -223,7 +252,7 @@ export function calculateBackdating(
       weeks,
     );
 
-    segments.push({
+    const segment: BackdatingSegment = {
       from: start.date,
       to: displayTo,
       weeks: Math.round(weeks * 100) / 100,
@@ -234,7 +263,33 @@ export function calculateBackdating(
       actuallyPaidWeekly,
       segmentShortfall,
       reason: start.reason,
-    });
+    };
+
+    // On 1 to 5 April the council convention (this table) and the DfE tax year
+    // (the previous one) give different rates. We pay out on the council
+    // convention, because that is what decides what a carer was actually paid,
+    // and record what the other reading would have given so the difference is
+    // visible instead of assumed away. If the previous year is not sourced,
+    // there is nothing to compare against and nothing is claimed.
+    if (inAprilWindow(start.date)) {
+      const previous = rateTableFor(deps.rateTables, addDays(start.date, -7), base.carer.nation);
+      if (!('blocked' in previous)) {
+        const previousBand = resolveAgeBand(
+          previous,
+          base.carer.nation,
+          { ...child, ageYears: ageAtStart, dateOfBirth: undefined },
+          start.date,
+        );
+        const alternativeWeekly = lookupRate(previous, base.carer, previousBand, deps);
+        segment.taxYearAlternativeWeekly = alternativeWeekly;
+        aprilBoundaryDifference = add(
+          aprilBoundaryDifference,
+          mul(clampMin0(sub(maximumWeekly, alternativeWeekly)), weeks),
+        );
+      }
+    }
+
+    segments.push(segment);
   }
 
   const totalShouldHaveBeenPaid = add(
@@ -244,6 +299,13 @@ export function calculateBackdating(
   const shortfall = add(...segments.map((s) => s.segmentShortfall));
 
   const caveats = [...BACKDATING_CAVEATS];
+  if (aprilBoundaryDifference > 0) {
+    caveats.unshift(
+      `Councils normally raise their rates on 1 April and we have used that date. The Department for ` +
+        `Education states the same rates on a tax year beginning 6 April. If your council follows the tax ` +
+        `year instead, ${formatMoney(aprilBoundaryDifference)} of the figure below would not apply.`,
+    );
+  }
   if (blockedYears.size > 0) {
     caveats.unshift(
       `We have left out ${[...blockedYears].sort().join(', ')} because we do not yet hold verified rates for ` +
@@ -258,6 +320,7 @@ export function calculateBackdating(
     shortfall,
     yearsCovered: [...yearsCovered].sort(),
     blockedYears: [...blockedYears].sort(),
+    aprilBoundaryDifference,
     caveats,
   };
 }

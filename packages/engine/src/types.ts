@@ -212,7 +212,10 @@ export type FlagCode =
   | 'KINSHIP_ZONE_PILOT_CAVEAT'
   | 'KINSHIP_ZONE_COMPARISON'
   | 'WALES_BAND_ORDER_ANOMALY'
-  | 'APRIL_RATE_BOUNDARY';
+  | 'APRIL_RATE_BOUNDARY'
+  | 'LGSCO_FINDING_FORMER_POLICY'
+  | 'LA_LIVING_COSTS_VARIATION'
+  | 'LA_POLICY_UNDER_REVIEW';
 
 export type FlagSeverity = 'info' | 'important' | 'critical';
 
@@ -358,6 +361,20 @@ export interface LawfulnessFlag {
   summary: string;
   sourceUrl: string;
   decisionDate: string;
+  /**
+   * A finding about a policy the council has since changed is not a finding
+   * about the council today, and saying otherwise is the exact error this
+   * site's copy rule exists to prevent. Devon is the live example: found at
+   * fault in January 2024, changed the policy from 1 January 2024, and a later
+   * complaint about the current practice was not upheld.
+   */
+  concernsFormerPolicy?: boolean;
+  policyChangedOn?: string;
+  supersededBy?: {
+    summary: string;
+    sourceUrl: string;
+    decisionDate: string;
+  };
 }
 
 export interface LaOverride {
@@ -373,9 +390,34 @@ export interface LaOverride {
   enhancementWeeklyPence?: number;
   deductsChildBenefit?: boolean;
   deductsChildBenefitFromMeansTestedClaimants?: boolean;
+  /**
+   * The fraction of the core fostering rate this council pays, where it pays a
+   * fixed one: 0.667 for two-thirds, and so on. `null` means "we looked, and it
+   * does not", which is a different statement from the field being absent.
+   *
+   * This exists because the flag used to be raised by pattern-matching the
+   * prose in `corePolicy`, which said "Percentage model abolished 2018" for
+   * North Tyneside and "100% of core fostering allowance" for Devon. Both
+   * tripped it. The site was telling carers that a council which had scrapped
+   * the practice in 2018, and one which pays the full rate, were operating the
+   * very policy the courts struck down. An accusation like that is never
+   * inferred from prose again: it is a recorded fact or it is not made.
+   */
+  fixedPercentageOfFosteringRate?: number | null;
   taper?: TaperConfig | null;
   capital?: CapitalConfig | null;
+  /**
+   * What this council allows for basic living costs, as a percentage of the
+   * Income Support applicable amount. The DfE model says 125. Devon's published
+   * procedures say 100, which is a real, sourced local variation and the reason
+   * this is per-council rather than a constant. Absent means "follows the
+   * model", never "we did not check".
+   */
+  livingCostsMultiplierPercent?: number;
   lawfulnessFlag?: LawfulnessFlag | null;
+  /** Recorded when a council says its own policy is being rewritten. */
+  policyUnderReview?: boolean;
+  policyUnderReviewNote?: string;
   policySourceUrl: string;
   verifiedOn: string;
 }

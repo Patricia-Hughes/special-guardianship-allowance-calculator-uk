@@ -6,25 +6,90 @@
   "dfeStatedTaxYearTo": "2025-04-05",
   "councilApplicationFrom": "2024-04-01",
   "dataVersion": "2024-25.1",
-  "note": "England only. Transcribed from the National Archives snapshot of 6 September 2024 of the GOV.UK page, under the heading 'Weekly allowances for the tax year from 6 April 2024 to 5 April 2025' — the figures as published at the time, NOT back-calculated from the 6.88% uplift. That page states 'This guidance applies to England', so wales, scotland and northern-ireland stay null for this year and backdating blocks 2024/25 for those nations rather than guessing. Cross-check: applying the announced 3.55% uplift to every one of these 15 cells reproduces the 2025/26 table within a pound, and the range £165-£289 matches the endpoints reported independently in secondary sources.",
+  "note": "England and Scotland. England is transcribed from the National Archives snapshot of 6 September 2024 of the GOV.UK page, under the heading 'Weekly allowances for the tax year from 6 April 2024 to 5 April 2025', as published at the time and NOT back-calculated from the 6.88% uplift. That page states 'This guidance applies to England'. Scotland was added on 31 August 2026: the Scottish Recommended Allowance was not uprated for 2024/25, so the rates introduced on 29 August 2023 stood for the whole year. Wales and Northern Ireland stay null, so backdating blocks 2024/25 for those two nations rather than guessing. Cross-check for England: applying the announced 3.55% uplift to every one of these 15 cells reproduces the 2025/26 table within a pound, and the range 165 to 289 pounds matches the endpoints reported independently in secondary sources.",
   "england": {
     "sourceId": "dfe-nma-2024-25",
     "unit": "weekly-pence",
     "upliftPercent": 6.88,
     "ageBands": [
-      { "id": "0-2",   "minAge": 0,  "maxAge": 2 },
-      { "id": "3-4",   "minAge": 3,  "maxAge": 4 },
-      { "id": "5-10",  "minAge": 5,  "maxAge": 10 },
-      { "id": "11-15", "minAge": 11, "maxAge": 15 },
-      { "id": "16-17", "minAge": 16, "maxAge": 17 }
+      {
+        "id": "0-2",
+        "minAge": 0,
+        "maxAge": 2
+      },
+      {
+        "id": "3-4",
+        "minAge": 3,
+        "maxAge": 4
+      },
+      {
+        "id": "5-10",
+        "minAge": 5,
+        "maxAge": 10
+      },
+      {
+        "id": "11-15",
+        "minAge": 11,
+        "maxAge": 15
+      },
+      {
+        "id": "16-17",
+        "minAge": 16,
+        "maxAge": 17
+      }
     ],
     "regions": {
-      "london":          { "0-2": 19100, "3-4": 19500, "5-10": 21700, "11-15": 24800, "16-17": 28900 },
-      "south-east":      { "0-2": 18300, "3-4": 18900, "5-10": 20800, "11-15": 23800, "16-17": 27800 },
-      "rest-of-england": { "0-2": 16500, "3-4": 17000, "5-10": 18700, "11-15": 21300, "16-17": 24900 }
+      "london": {
+        "0-2": 19100,
+        "3-4": 19500,
+        "5-10": 21700,
+        "11-15": 24800,
+        "16-17": 28900
+      },
+      "south-east": {
+        "0-2": 18300,
+        "3-4": 18900,
+        "5-10": 20800,
+        "11-15": 23800,
+        "16-17": 27800
+      },
+      "rest-of-england": {
+        "0-2": 16500,
+        "3-4": 17000,
+        "5-10": 18700,
+        "11-15": 21300,
+        "16-17": 24900
+      }
     }
   },
   "wales": null,
   "northern-ireland": null,
-  "scotland": null
+  "scotland": {
+    "sourceId": "sra-2024-25",
+    "unit": "weekly-pence",
+    "upliftPercent": 0,
+    "note": "The Scottish Recommended Allowance was NOT uprated for 2024/25. The rates announced on 29 August 2023 remained in force for the whole financial year, which is why upliftPercent is 0 rather than absent. Scotland publishes four bands (0-4, 5-10, 11-15, 16+) but pays 5-10 and 11-15 the same, which is the three-band design the SRA is built on and the shape this table uses. gov.scot's own August 2023 release gives 11-15 as 19581, identical to 5-10. Several local authority reproductions of the same table instead show 20251 for 11-15. The primary source wins, so 19581 is what ships. The other bands agree across both. Do not switch to 20251 without a gov.scot page or an archived capture saying so.",
+    "ageBands": [
+      {
+        "id": "0-4",
+        "minAge": 0,
+        "maxAge": 4
+      },
+      {
+        "id": "5-15",
+        "minAge": 5,
+        "maxAge": 15
+      },
+      {
+        "id": "16-17",
+        "minAge": 16,
+        "maxAge": 17
+      }
+    ],
+    "rates": {
+      "0-4": 16831,
+      "5-15": 19581,
+      "16-17": 26841
+    }
+  }
 }

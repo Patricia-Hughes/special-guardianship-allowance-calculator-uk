@@ -9,6 +9,7 @@ import { calculateBackdating, segmentBoundaries } from '../backdating.js';
 import { DataError, ValidationError } from '../errors.js';
 import { dedupeFlags, makeFlag, sortFlags } from '../flags.js';
 import {
+  LA_OVERRIDES_ALL,
   LA_REGION_MAP,
   LA_REGION_MAP_META,
   RATE_TABLES,
@@ -282,11 +283,21 @@ describe('engine — standing flags', () => {
   });
 
   it('flags a council whose policy we hold but cannot yet publish', () => {
+    // Injected rather than naming a real council: which councils happen to be
+    // unsourced changes every research round, and the rule under test does not.
+    const held = publishableLa({
+      slug: 'heldshire',
+      corePolicy: 'A policy we hold but cannot cite',
+      flatCoreRateWeeklyPence: 9900,
+      publishable: false,
+      policySourceUrl: '',
+    });
     const r = calculate(
-      input({ carer: carer({ localAuthoritySlug: 'devon', englandRegion: 'rest-of-england' }) }),
+      input({ carer: carer({ localAuthoritySlug: 'heldshire', englandRegion: 'rest-of-england' }) }),
+      { laOverrides: { heldshire: held } },
     );
     expect(r.flags.some((f) => f.code === 'COUNCIL_POLICY_UNKNOWN')).toBe(true);
-    // …and the unsourced Devon flat rate is NOT used.
+    // …and the unsourced flat rate is NOT used.
     expect(r.perChild[0]!.coreAllowanceWeekly).toBe(22700);
   });
 
@@ -295,6 +306,7 @@ describe('engine — standing flags', () => {
       slug: 'pctshire',
       name: 'Pctshire Council',
       corePolicy: 'Pays two-thirds of the core fostering allowance',
+      fixedPercentageOfFosteringRate: 0.667,
       lawfulnessFlag: {
         code: 'LGSCO_UPHELD',
         summary: 'A published decision.',
@@ -308,6 +320,68 @@ describe('engine — standing flags', () => {
     );
     expect(r.flags.some((f) => f.code === 'FIXED_PERCENTAGE_POLICY')).toBe(true);
     expect(r.flags.some((f) => f.code === 'LGSCO_FINDING_AGAINST_LA')).toBe(true);
+  });
+
+  // The site told North Tyneside carers, in a critical warning, that their
+  // council's policy "appears to set the allowance at a fixed share of the
+  // fostering rate". Its policy summary says "Percentage model abolished 2018".
+  // The flag was matching the word, not the fact. Devon, which pays 100%, would
+  // have been accused the moment it was published. Never again from prose.
+  it('never infers a fixed-percentage policy from the wording of the summary', () => {
+    for (const corePolicy of [
+      'Percentage model abolished 2018; equivalence to the maximum fostering allowance',
+      '100% of core fostering allowance as maximum; standardised means test',
+      'Paying a fixed percentage of the fostering allowance would not be lawful',
+      'Two-thirds proportion was dropped after the Ombudsman report',
+    ]) {
+      const la = publishableLa({
+        slug: 'wordy',
+        name: 'Wordy Council',
+        corePolicy,
+        fixedPercentageOfFosteringRate: null,
+      });
+      const r = calculate(
+        input({ carer: carer({ localAuthoritySlug: 'wordy', englandRegion: 'rest-of-england' }) }),
+        { laOverrides: { wordy: la } },
+      );
+      expect(
+        r.flags.some((f) => f.code === 'FIXED_PERCENTAGE_POLICY'),
+        `accused a council over the wording: "${corePolicy}"`,
+      ).toBe(false);
+    }
+  });
+
+  // A council that fixed the problem is not a council with the problem.
+  it('says a finding concerns a former policy when the data records that', () => {
+    const la = publishableLa({
+      slug: 'mendedshire',
+      name: 'Mendedshire Council',
+      fixedPercentageOfFosteringRate: null,
+      lawfulnessFlag: {
+        code: 'LGSCO_UPHELD',
+        summary: 'Found at fault over its former policy.',
+        sourceUrl: 'https://example.invalid/decision',
+        decisionDate: '2024-01-25',
+        concernsFormerPolicy: true,
+        policyChangedOn: '1 January 2024',
+        supersededBy: {
+          summary: 'A later complaint about its current practice was not upheld.',
+          sourceUrl: 'https://example.invalid/later',
+          decisionDate: '2024-10-01',
+        },
+      },
+    });
+    const r = calculate(
+      input({ carer: carer({ localAuthoritySlug: 'mendedshire', englandRegion: 'rest-of-england' }) }),
+      { laOverrides: { mendedshire: la } },
+    );
+    // Not the "check these first" flag: that one is for a council whose current
+    // practice is in question, which this council's is not.
+    expect(r.flags.some((f) => f.code === 'LGSCO_FINDING_AGAINST_LA')).toBe(false);
+    const flag = r.flags.find((f) => f.code === 'LGSCO_FINDING_FORMER_POLICY');
+    expect(flag?.severity).toBe('important');
+    expect(flag?.body).toContain('changed that policy from 1 January 2024');
+    expect(flag?.body).toContain('was not upheld');
   });
 
   it('uses a publishable LA enhancement rather than assuming zero', () => {
@@ -442,13 +516,19 @@ describe('reference data', () => {
   });
 
   it('hides every LA override that is not R9-publishable', () => {
-    expect(publishableLaOverride('devon')).toBeUndefined();
-    expect(publishableLaOverride('leeds')).toBeUndefined();
     expect(publishableLaOverride(undefined)).toBeUndefined();
     expect(publishableLaOverride('not-a-council')).toBeUndefined();
-    expect(hasUnpublishableLaOverride('devon')).toBe(true);
     expect(hasUnpublishableLaOverride('not-a-council')).toBe(false);
     expect(hasUnpublishableLaOverride(undefined)).toBe(false);
+    // Whatever ships must pass the rule, whichever councils those happen to be.
+    for (const slug of Object.keys(LA_OVERRIDES_ALL)) {
+      const served = publishableLaOverride(slug);
+      if (served) {
+        expect(served.policySourceUrl, `${slug} is served with no policy URL`).not.toBe('');
+      } else {
+        expect(hasUnpublishableLaOverride(slug), `${slug} is neither served nor held`).toBe(true);
+      }
+    }
   });
 
   it('treats a missing source URL or an undated decision as unpublishable', () => {
@@ -588,6 +668,69 @@ describe('backdating', () => {
     });
     expect(r.shortfall).toBe(0);
     expect(r.totalActuallyPaid).toBeGreaterThan(r.totalShouldHaveBeenPaid);
+  });
+
+  // Open item 11. Councils uplift on 1 April; the DfE states the same rates on a
+  // tax year beginning 6 April. The tool pays out on the council convention,
+  // because that is what decides what a carer was actually paid, but the five
+  // days it depends on are now a segment of their own so the amount at stake can
+  // be stated rather than quietly included.
+  describe('the 1 to 5 April window', () => {
+    const spanning = {
+      base: input({
+        carer: carer({ englandRegion: 'rest-of-england', orderDate: d('2024-06-01') }),
+        children: [child({ ageYears: 8, dateOfBirth: d('2016-06-01') })],
+      }),
+      fromDate: d('2024-06-01'),
+      toDate: d('2026-08-01'),
+      actuallyPaidWeekly: p(10000),
+    };
+
+    it('cuts a segment at 6 April as well as at 1 April', () => {
+      const r = calculateBackdating(spanning);
+      const aprilStarts = r.segments.filter((x) => x.from.endsWith('-04-01'));
+      expect(aprilStarts.length).toBe(2);
+      for (const seg of aprilStarts) {
+        expect(seg.to.endsWith('-04-05'), `${seg.from} runs to ${seg.to}`).toBe(true);
+      }
+      expect(r.segments.some((x) => x.reason === 'april-tax-year-boundary')).toBe(true);
+    });
+
+    it('records what the tax year reading would have paid, on those days only', () => {
+      const r = calculateBackdating(spanning);
+      for (const seg of r.segments) {
+        const inWindow = seg.from.slice(5) >= '04-01' && seg.from.slice(5) <= '04-05';
+        expect(
+          seg.taxYearAlternativeWeekly !== undefined,
+          `${seg.from} should ${inWindow ? '' : 'not '}carry an alternative`,
+        ).toBe(inWindow);
+        if (seg.taxYearAlternativeWeekly !== undefined) {
+          // The previous year's rate, which is lower.
+          expect(seg.taxYearAlternativeWeekly).toBeLessThan(seg.maximumWeekly);
+        }
+      }
+    });
+
+    it('states the amount that rests on the convention, and says so once', () => {
+      const r = calculateBackdating(spanning);
+      // Five days at the gap between two years' weekly rates, twice over.
+      expect(r.aprilBoundaryDifference).toBeGreaterThan(0);
+      expect(r.aprilBoundaryDifference).toBeLessThan(2000);
+      const mentions = r.caveats.filter((c) => c.includes('tax year'));
+      expect(mentions).toHaveLength(1);
+      expect(mentions[0]).toContain('1 April');
+    });
+
+    it('claims nothing where the period crosses no April', () => {
+      const r = calculateBackdating({
+        ...spanning,
+        fromDate: d('2025-05-01'),
+        toDate: d('2026-01-01'),
+      });
+      expect(r.aprilBoundaryDifference).toBe(0);
+      expect(r.caveats.some((c) => c.includes('tax year'))).toBe(false);
+      expect(r.segments.every((x) => x.taxYearAlternativeWeekly === undefined)).toBe(true);
+    });
   });
 
   it('carries the standing caveats on every result', () => {

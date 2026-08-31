@@ -5,6 +5,7 @@ import fc from 'fast-check';
 import { assertGuardrails, GuardrailViolation } from '../guardrails.js';
 import { calculate } from '../engine.js';
 import { cite } from '../referenceData.js';
+import { FLAG_CATALOGUE } from '../flags.js';
 import { pence } from '../money.js';
 import { carer, child, d, depsWithMeansTest, finances, input, p } from './fixtures.js';
 import type { CalculatorResult, PerChildResult } from '../types.js';
@@ -178,4 +179,21 @@ describe('guardrails', () => {
       { numRuns: 500 },
     );
   });
+});
+
+/**
+ * Citations we hold for the record are stripped of their `holding` prose in the
+ * shipped copy, because it is never rendered for them. That is only safe while
+ * every citation something actually points at keeps its holding, since that is
+ * the line a carer reads under "Where these figures and rules come from".
+ */
+describe('the shipped citation copy keeps what is rendered', () => {
+  it('every flag citation still has the prose the result page shows', () => {
+    for (const [code, spec] of Object.entries(FLAG_CATALOGUE)) {
+      if (!spec.citationId) continue;
+      const c = cite(spec.citationId);
+      expect(c.label, `${code} cites ${spec.citationId}, which has no label`).toBeTruthy();
+    }
+  });
+
 });

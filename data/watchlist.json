@@ -1,0 +1,59 @@
+{
+  "note": "Documents we know exist, or expect to exist, and are waiting on. Each one is a short lookup rather than a piece of research. check-staleness warns once checkAfter has passed, so nothing here can quietly rot in a markdown file. Adding a row is cheap; leaving a known gap unrecorded is not.",
+  "items": [
+    {
+      "id": "ni-model-scheme-2024-25",
+      "what": "Open the Department of Health (Northern Ireland) model scheme PDF for 2024-25 and read the four weekly figures out of it.",
+      "why": "Northern Ireland backdating for 2024/25 is switched off for want of this. Two independent secondary sources give 149, 166, 187 and 219 pounds, and three of those four reproduce the 2026/27 table when the announced uplifts are applied, but the 5-10 figure does not, so the figures are not shipped. The DoH server blocks automated access, which is why this needs a person with a browser.",
+      "url": "https://www.health-ni.gov.uk/sites/default/files/publications/health/model-scheme-2024-25.pdf",
+      "checkAfter": "2026-09-30",
+      "openItem": "1b"
+    },
+    {
+      "id": "ni-model-scheme-2025-26",
+      "what": "The same for the 2025-26 and 2026-27 model scheme PDFs, now published on the same page.",
+      "why": "Would give Northern Ireland a primary source for the current year as well as the past ones.",
+      "url": "https://www.health-ni.gov.uk/publications/foster-care-allowances",
+      "checkAfter": "2026-09-30",
+      "openItem": "1b"
+    },
+    {
+      "id": "scotland-2025-26",
+      "what": "A published Scottish Recommended Allowance table for 2025/26.",
+      "why": "The implementation review says there was no uplift in 2024/25 and gives no indication of one in 2025/26. An absence of indications is not a published rate, so 2025/26 is left null and Scottish backdating blocks that year.",
+      "checkAfter": "2026-10-31",
+      "openItem": "1b"
+    },
+    {
+      "id": "sra-implementation-review-url",
+      "what": "A permanent address for the Scottish Recommended Allowance implementation review.",
+      "why": "It is the evidence that the August 2023 rates stood through 2024/25, and it is currently cited without a link.",
+      "checkAfter": "2026-10-31",
+      "openItem": "1b"
+    },
+    {
+      "id": "ciw-nma-bulletins",
+      "what": "The Care Inspectorate Wales bulletins for 2024/25 and 2026/27, via the CIW bulletins archive and the National Archives web archive.",
+      "why": "The publication route is now confirmed and the 2023/24 bulletin gives the URL pattern. A person has to read the rate table, because it is an image inside the bulletin rather than text.",
+      "url": "https://content.govdelivery.com/accounts/UKWALES_CSSIW_INT/bulletins/3450cef",
+      "checkAfter": "2026-11-30",
+      "openItem": "2"
+    },
+    {
+      "id": "wg-codes-outcome",
+      "what": "The outcome of the Welsh consultation on the Part 6 and Special Guardianship Orders codes of practice.",
+      "why": "The consultation closed on 7 April 2026. The draft would require all services to pay the national minimum allowance. Until the outcome is published nothing on this site may state it as the law, and when it lands the Wales pages need rewriting.",
+      "url": "https://www.gov.wales/written-statement-launch-consultation-revisions-part-6-and-special-guardianship-codes-practice",
+      "checkAfter": "2026-10-01",
+      "openItem": "2"
+    },
+    {
+      "id": "leeds-final-offer",
+      "what": "The final version of Leeds City Council's revised special guardianship support offer.",
+      "why": "Leeds says its financial support information is under review, so the March 2024 offer is served with an on-screen note saying so. The Child Benefit position is deliberately not stated, because the only source for it is a freedom of information response that itself says the policy is under review.",
+      "url": "https://leedscs.trixonline.co.uk/chapter/applications-for-special-guardianship-orders",
+      "checkAfter": "2026-11-30",
+      "openItem": "5"
+    }
+  ]
+}

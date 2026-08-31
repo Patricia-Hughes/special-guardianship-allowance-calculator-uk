@@ -14,7 +14,7 @@
  */
 
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 
@@ -165,6 +165,41 @@ for (const target of EM_DASH_ROOTS) {
         );
       });
   }
+}
+
+// ── Nothing measures the people using this site ─────────────────────────────
+//
+// A settled decision, taken on 31 August 2026, not an oversight: the people
+// using this site are describing a child in their care, their benefits and
+// their income, at a hard moment. "We measure nothing" is a promise worth more
+// than the numbers would be, and it is only worth making if it cannot quietly
+// stop being true. So it is a gate, not a note in a file.
+//
+// If analytics are ever wanted, the honest route is to delete this block in the
+// same change that updates the privacy notice, so the two can never drift.
+const TRACKERS =
+  /\b(gtag|googletagmanager|google-analytics|dataLayer|plausible\.io|matomo|piwik|fathom|posthog|mixpanel|hotjar|clarity\.ms|doubleclick|facebook\.net|sendBeacon)\b/i;
+for (const file of [
+  ...walkFiles(join(root, 'apps', 'web', 'app')),
+  ...walkFiles(join(root, 'apps', 'web', 'components')),
+  ...walkFiles(join(root, 'apps', 'web', 'lib')),
+]) {
+  const rel = relative(root, file);
+  // The privacy notice is the one place allowed to say the word.
+  if (rel.includes(join('app', 'privacy'))) continue;
+  readFileSync(file, 'utf8')
+    .split('\n')
+    .forEach((line, i) => {
+      if (isComment(line)) return;
+      const hit = TRACKERS.exec(line);
+      if (!hit) return;
+      failures.push(
+        `${rel}:${i + 1} looks like visitor tracking ("${hit[0]}").\n` +
+          '      This site measures nothing about the people who use it, and that is a decision\n' +
+          '      recorded in the privacy notice. If it is being changed on purpose, change the\n' +
+          '      privacy notice and this gate in the same commit.',
+      );
+    });
 }
 
 for (const w of warnings) console.warn(`  ⚠ ${w}`);

@@ -190,8 +190,15 @@ test.describe('journeys', () => {
     // spans three financial years and none is left out.
     await expect(page.getByRole('heading', { name: 'The difference' })).toBeVisible();
     await expect(page.getByText('2024/25').first()).toBeVisible();
-    await expect(page.getByText(/rates changed in April/i).first()).toBeVisible();
+    await expect(page.getByText(/rates changed on 1 April/i).first()).toBeVisible();
     await expect(page.getByText(/not included/i)).toHaveCount(0);
+
+    // The 1 to 5 April window is its own row, because councils uplift on
+    // 1 April and the DfE states the same rates on a tax year starting on the
+    // 6th. We pay out on the council convention and say what rests on it,
+    // rather than letting a few pounds ride on an unstated assumption.
+    await expect(page.getByText(/the tax year began/i).first()).toBeVisible();
+    await expect(page.getByText(/If your council follows the tax year instead/i)).toBeVisible();
 
     // And the caveats that stop someone treating it as a guaranteed debt.
     await expect(page.getByText(/not a guaranteed entitlement/i).first()).toBeVisible();

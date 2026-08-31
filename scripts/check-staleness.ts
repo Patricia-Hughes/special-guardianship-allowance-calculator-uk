@@ -93,6 +93,30 @@ if (zoneAge > 90) {
   );
 }
 
+// ── Watch list ─────────────────────────────────────────────────────────────
+//
+// Documents we know we are missing. Left in a markdown file they get read once
+// and then never again, which is how a gap becomes permanent. Here they nag.
+interface WatchItem {
+  id: string;
+  what: string;
+  why: string;
+  url?: string;
+  checkAfter: string;
+  openItem: string;
+}
+const watchlist = readJson('watchlist.json').items as WatchItem[];
+for (const item of watchlist) {
+  const overdue = daysBetween(item.checkAfter, today);
+  if (overdue >= 0) {
+    warnings.push(
+      `watchlist "${item.id}" was due a look on ${item.checkAfter} ` +
+        `(${overdue === 0 ? 'today' : `${overdue} day${overdue === 1 ? '' : 's'} ago`}). ` +
+        `${item.what}${item.url ? ` See ${item.url}` : ''} (open item ${item.openItem})`,
+    );
+  }
+}
+
 // ── Report ─────────────────────────────────────────────────────────────────
 for (const w of warnings) console.warn(`  ⚠ ${w}`);
 

@@ -37,6 +37,11 @@ export interface FlagContext {
   policySummary?: string;
   policySourceUrl?: string;
   effectiveTo?: string;
+  livingCostsPercent?: number;
+  modelLivingCostsPercent?: number;
+  policyChangedOn?: string;
+  supersededSummary?: string;
+  policyUnderReviewNote?: string;
 }
 
 /**
@@ -48,6 +53,7 @@ const FLAG_ORDER: FlagCode[] = [
   'FIXED_PERCENTAGE_POLICY',
   'BELOW_NMA',
   'LGSCO_FINDING_AGAINST_LA',
+  'LGSCO_FINDING_FORMER_POLICY',
   'RATES_STALE',
   'REG7_FLOOR_APPLIED',
   'REG7_EXPIRING',
@@ -58,12 +64,14 @@ const FLAG_ORDER: FlagCode[] = [
   'KINSHIP_ZONE_PILOT_CAVEAT',
   'ENHANCEMENT_AVAILABLE',
   'MEANS_TEST_MODEL_OUTDATED',
+  'LA_LIVING_COSTS_VARIATION',
   'TAPER_METHOD_ASSUMED',
   'AGE_17_TRANSITION',
   'SCOTLAND_SRA_IS_A_FLOOR',
   'SCOTLAND_FOSTER_KINSHIP_PARITY',
   'SCOTLAND_NO_WORSE_OFF',
   'COUNCIL_POLICY_UNKNOWN',
+  'LA_POLICY_UNDER_REVIEW',
   'LOOKED_AFTER_STATUS_UNKNOWN',
   'KINSHIP_ZONE_EXCLUDED_REG6',
   'KINSHIP_ZONE_COMPARISON',
@@ -111,10 +119,16 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     actionUrl: '/guidance/what-your-council-must-consider',
   },
   LGSCO_FINDING_AGAINST_LA: {
+    // Wording note: a finding about a policy a council has since changed is not
+    // a finding about the council today. Where the data records that the policy
+    // changed, or that a later complaint about the current practice was not
+    // upheld, this flag must say so in the same breath. Devon is the live case.
     severity: 'critical',
     title: 'The Ombudsman has made a finding about this council',
     body: (c) =>
       `${c.policySummary ?? 'The Local Government and Social Care Ombudsman has published a decision about this council\'s special guardianship allowance practice.'}\n\n` +
+      (c.policyChangedOn ? `The council changed its policy from ${c.policyChangedOn}.\n\n` : '') +
+      (c.supersededSummary ? `${c.supersededSummary}\n\n` : '') +
       'A published decision about one carer does not automatically apply to you, but it is relevant background if you are asking the council to look at your case again.',
     actionUrl: '/guidance/complaining-to-the-ombudsman',
   },
@@ -346,6 +360,40 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
       'Scotland sets one recommended allowance for foster carers and kinship carers alike. If your council pays its foster carers more than it pays you for a child of the same age, ask it to explain the difference.',
     citationId: 'sra-2026-27',
     actionUrl: '/guidance/scotland-kinship-care',
+  },
+  LGSCO_FINDING_FORMER_POLICY: {
+    // Same facts as LGSCO_FINDING_AGAINST_LA, different present tense. A council
+    // that changed the policy it was criticised for is not a council currently
+    // at fault, so this is not a "check these first" item and does not carry
+    // that heading's alarm. It still matters: the remedy in these cases is
+    // usually backdating, which can reach an order made years ago.
+    severity: 'important',
+    title: 'The Ombudsman made a finding about a policy this council has since changed',
+    body: (c) =>
+      `${c.policySummary ?? 'The Local Government and Social Care Ombudsman published a decision about how this council used to calculate special guardianship allowances.'}\n\n` +
+      (c.policyChangedOn ? `The council changed that policy from ${c.policyChangedOn}.\n\n` : '') +
+      (c.supersededSummary ? `${c.supersededSummary}\n\n` : '') +
+      'This is history rather than a live problem, but it is worth knowing. Where a council has been found at fault, the Ombudsman has often asked it to go back and recalculate old awards, so it can still be relevant to an order made some years ago.',
+    actionUrl: '/guidance/complaining-to-the-ombudsman',
+  },
+  LA_LIVING_COSTS_VARIATION: {
+    severity: 'important',
+    title: 'Your council allows a different amount for basic living costs',
+    body: (c) =>
+      `The standardised model most councils use allows basic living costs at ${c.modelLivingCostsPercent ?? 125}% of the Income Support rate for a household your size. ` +
+      `${c.councilName ?? 'Your council'} publishes ${c.livingCostsPercent ?? 100}%, and that is the figure used above.\n\n` +
+      'Allowing less for living costs leaves more income counted as spare, which means a larger contribution expected from you and a smaller allowance. It is a local choice, not a national rule.\n\n' +
+      'If the figure matters to you, ask the council to confirm the percentage it applied and why.',
+    actionUrl: '/guidance/how-the-means-test-works',
+  },
+  LA_POLICY_UNDER_REVIEW: {
+    severity: 'info',
+    title: 'This council is rewriting its policy',
+    body: (c) =>
+      (c.policyUnderReviewNote ??
+        `${c.councilName ?? 'This council'} says its special guardianship financial support policy is under review, so what is shown here is the last version it published.`) +
+      '\n\nAsk the council for its current position in writing before you rely on any figure here.',
+    actionUrl: '/guidance/asking-for-the-policy',
   },
   SCOTLAND_NO_WORSE_OFF: {
     severity: 'info',

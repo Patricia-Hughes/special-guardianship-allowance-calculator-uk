@@ -252,11 +252,13 @@ function formatDate(iso: string): string {
 function reasonLabel(reason: string): string {
   switch (reason) {
     case 'financial-year-change':
-      return 'rates changed in April';
+      return 'rates changed on 1 April';
     case 'age-band-change':
       return 'moved up an age band';
     case 'reg7-anniversary':
       return 'two-year protection ended';
+    case 'april-tax-year-boundary':
+      return 'the tax year began';
     case 'period-start':
       return 'start of the period';
     default:

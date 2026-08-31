@@ -78,28 +78,27 @@
     "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
   },
   "lgsco-devon-2024": {
-    "label": "LGSCO decision, Devon County Council (2024)",
-    "url": "",
+    "label": "LGSCO decision, Devon County Council (23 000 973, 25 January 2024)",
+    "url": "https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/23-000-973",
     "kind": "ombudsman",
-    "retrieved": "2026-08-29",
-    "holding": "Blanket Child Benefit deduction including from carers on means-tested benefits was unlawful.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "retrieved": "2026-08-31",
+    "holding": "The council was at fault for deducting Child Benefit from all special guardians on Universal Credit as a blanket rule, without looking at individual circumstances. It was ordered to recalculate and to refund deductions. Devon changed the policy with effect from 1 January 2024, and a later complaint about its current practice was not upheld.",
+    "note": "Paragraph 45 records 170 special guardians on means-tested benefits in the area, 92 not on benefits, and 125 where the council held no information. Read alongside lgsco-devon-24-003-172, which found the practice Devon operates NOW to be consistent with government guidance. Nothing on this site may imply Devon is currently at fault."
   },
   "lgsco-southend-2020": {
-    "label": "LGSCO decision, Southend-on-Sea (Dec 2020)",
-    "url": "",
+    "label": "LGSCO decision, Southend-on-Sea (19 003 363, 5 October 2020)",
+    "url": "https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/19-003-363",
     "kind": "ombudsman",
-    "retrieved": "2026-08-29",
-    "holding": "Tapering the whole allowance to 75% then 50% misapplied reg 7, which covers only the reward element.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "retrieved": "2026-08-31",
+    "holding": "Reducing the whole allowance to 75% of the core fostering allowance in year one and 50% in year two misapplied the two-year transitional provision, which protects the reward element only. Backdating of about 6,948 pounds was recommended, and the council estimated 37 other families were affected."
   },
   "lgsco-north-tyneside-17002928": {
-    "label": "LGSCO decision, North Tyneside Council (17 002 928)",
-    "url": "",
+    "label": "LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018)",
+    "url": "https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf",
     "kind": "ombudsman",
-    "retrieved": "2026-08-29",
-    "holding": "A fixed-percentage special guardianship allowance policy was unlawful; backdating was ordered.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "retrieved": "2026-08-31",
+    "holding": "Calculating a special guardianship allowance as a percentage of the fostering allowance was contrary to statutory guidance and case law. The council identified 171 families who may not have received the right support, and payments were backdated to November 2013.",
+    "note": "This is a 2018 report. The site previously carried it as 2019, which was wrong. It concerns the policy North Tyneside abolished in 2018, not its current one."
   },
   "corambaaf-pn75": {
     "label": "CoramBAAF Practice Note 75 - special guardianship financial support",
@@ -128,8 +127,8 @@
     "url": "",
     "kind": "dataset",
     "retrieved": "2026-08-29",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2",
-    "note": "The Welsh Government's own circular has NOT been located. The 2026/27 figures are corroborated, not primary-sourced: Fostering news of 15 September 2025 records the same band inversion in 2025/26, and applying the announced 2.2% uplift reproduces our table to the pound. See rates.2026-27.json wales.anomalyCorroboration. Keep looking for the circular."
+    "note": "The publication route is now known: Welsh rates are issued as bilingual Care Inspectorate Wales bulletins on behalf of the Welsh Government (see ciw-nma-bulletin-2023-24, the confirmed 2023/24 example). The 2026/27 bulletin itself has not been located, so these figures remain corroborated rather than primary: Fostering news of 15 September 2025 records the same band inversion in 2025/26, and applying the announced 2.2% uplift reproduces our table to the pound. The inversion is confirmed genuine across two independent years and must be reproduced as printed, never \"corrected\".",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2"
   },
   "hsc-fostering-2026-27": {
     "label": "HSC (Northern Ireland) fostering allowances, 2026 to 2027",
@@ -139,12 +138,12 @@
     "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
   },
   "sra-2026-27": {
-    "label": "Scottish Recommended Allowance, 2026 to 2027",
-    "url": "",
+    "label": "Scottish Recommended Allowance for foster and kinship carers, Scottish Government, page updated 11 May 2026",
+    "url": "https://www.gov.scot/publications/scottish-recommended-allowance-for-foster-and-kinship-carers-information-for-carers-and-professionals/",
     "kind": "dataset",
-    "retrieved": "2026-08-29",
+    "retrieved": "2026-08-31",
     "holding": "A national minimum for foster and kinship carers alike. Councils may pay more.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "note": "This page carries the 2026/27 figures and they match our table to the penny: 177.68, 206.71 for both middle bands, and 283.35. It is a live page that is updated in place each year, so it is the right source for the current year and the wrong one for any past year. For 2024/25 use sra-2024-25."
   },
   "cb-ga-uprating-order-2026": {
     "label": "Child Benefit and Guardian's Allowance Up-rating Order 2026",
@@ -191,12 +190,12 @@
     "note": "Published 11 October 2024, replacing the 2010 Family and Friends Care guidance. A 2024 restatement of the para 65 principle, and so a fresher citation than the 2017 guidance for the single most important rule on this site."
   },
   "lgsco-rochdale-2019": {
-    "label": "LGSCO decision, Rochdale MBC (December 2019)",
-    "url": "https://shropshire.gov.uk/committee-services/documents/s26540/Special Guardianship Allowances Policy.pdf",
+    "label": "LGSCO decision, Rochdale MBC (May 2019), upheld on judicial review (December 2019)",
+    "url": "https://www.lgo.org.uk/information-centre/news/2019/dec/rochdale-council-s-legal-challenge-rejected-and-it-must-now-consider-ombudsman-s-recommendations",
     "kind": "ombudsman",
-    "retrieved": "2026-08-29",
-    "holding": "Rochdale was found at fault for failing to act in accordance with the law and statutory guidance on special guardianship allowances.",
-    "note": "Rochdale applied to the High Court for judicial review of the Ombudsman's findings. Cited here via Shropshire Council's Cabinet report of 8 February 2021, which gives the decision as its reason for reviewing its own policy; the LGSCO decision itself has not been located at a stable URL."
+    "retrieved": "2026-08-31",
+    "holding": "The council was found at fault for underpaying special guardianship allowances under a policy departing from statutory guidance and the case law without a rational explanation. Rochdale challenged the finding in the High Court; permission was refused, the challenge was dismissed and the council was ordered to pay costs, so the decision stands.",
+    "note": "The judicial review outcome is what makes this decision safe to rely on, and it was the open question when this citation was first added. Corroborated by CYP Now and Local Government Lawyer. The URL is the Ombudsman's own news item confirming the outcome. The previous URL on this entry pointed at a Shropshire Council policy PDF, which was wrong."
   },
   "sg-regs-2005-reg13": {
     "label": "Special Guardianship Regulations 2005, reg 13(2)",
@@ -267,5 +266,82 @@
     "retrieved": "2026-08-30",
     "holding": "Weekly allowances for the tax year from 6 April 2024 to 5 April 2025, by region and age band. This guidance applies to England.",
     "note": "The live GOV.UK page now shows the current year, so this is the UK Government Web Archive copy captured on 6 September 2024, when the 2024/25 table was current. Open the URL and choose a snapshot from within the 2024/25 year to see it. Figures transcribed as printed, not derived from the 6.88% uplift."
+  },
+  "lgsco-devon-24-003-172": {
+    "label": "LGSCO decision, Devon County Council (24 003 172), not upheld",
+    "url": "https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/24-003-172",
+    "kind": "ombudsman",
+    "retrieved": "2026-08-31",
+    "holding": "A later complaint about Devon's deductions was not upheld. The Ombudsman found the practice consistent with government guidance, the council paying its maximum allowance less child-related benefits.",
+    "note": "Held on file specifically so the site cannot imply Devon is currently at fault. Any wording about Devon must carry both this and the January 2024 report."
+  },
+  "lgsco-22-018-116": {
+    "label": "LGSCO decision, friends and family carers (22 018 116)",
+    "url": "https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/22-018-116",
+    "kind": "ombudsman",
+    "retrieved": "2026-08-31",
+    "holding": "Fault for not following the guidance on how much to pay, and for not considering exceptional circumstances."
+  },
+  "lgsco-22-011-906": {
+    "label": "LGSCO decision, friends and family carers (22 011 906)",
+    "url": "https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/22-011-906",
+    "kind": "ombudsman",
+    "retrieved": "2026-08-31",
+    "holding": "Concerns a 2020 policy change and how it affected the calculation of allowances."
+  },
+  "lgsco-20-005-985": {
+    "label": "LGSCO decision, fostering (20 005 985)",
+    "url": "https://www.lgo.org.uk/decisions/children-s-care-services/fostering/20-005-985",
+    "kind": "ombudsman",
+    "retrieved": "2026-08-31",
+    "holding": "Squarely about the two-year transitional provision and the skills or reward element ending two years after the special guardianship order."
+  },
+  "sra-2024-25": {
+    "label": "Scottish Recommended Allowance, rates announced 29 August 2023, unchanged for 2024/25",
+    "url": "https://www.gov.scot/news/new-national-allowance-for-foster-and-kinship-carers/",
+    "kind": "dataset",
+    "retrieved": "2026-08-31",
+    "holding": "A national minimum for foster and kinship carers alike. Councils may pay more.",
+    "note": "These rates were introduced in August 2023 and were not uprated for 2024/25, so they are the 2024/25 figures. Take them from this release or an archived capture, never from the live gov.scot page, which now shows 2026/27. gov.scot gives 11-15 as the same as 5-10; some local authority reproductions show a higher 11-15 figure. The primary source wins."
+  },
+  "sra-implementation-review": {
+    "label": "Scottish Government, Foster and kinship carers, Scottish Recommended Allowance: implementation review",
+    "url": "",
+    "kind": "dataset",
+    "retrieved": "2026-08-31",
+    "holding": "Records that there was no uplift to payments in the financial year 2024/25.",
+    "note": "No permanent address located for the review document itself. It is the evidence that the August 2023 rates stood through 2024/25, so it is recorded rather than dropped. The same review says there was no indication of an uplift in 2025/26, which is an expectation and not a published rate, so 2025/26 stays unsourced.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/1"
+  },
+  "devon-sgo-procedures-2024": {
+    "label": "Devon County Council, Applications for Special Guardianship Orders (procedures manual), last updated 24 October 2024",
+    "url": "https://devoncs.trixonline.co.uk/chapter/applications-for-special-guardianship-orders",
+    "kind": "guidance",
+    "retrieved": "2026-08-31",
+    "holding": "Devon uses the standardised means-test model with the living costs disregard set at 100% of the Income Support applicable amount, states that paying a fixed percentage of the fostering allowance would not be lawful, and stopped deducting Child Benefit from special guardians on means-tested benefits from 1 January 2024."
+  },
+  "leeds-sgo-support-offer-2024": {
+    "label": "Leeds City Council, Revised Special Guardianship Support Offer, cover report, 1 March 2024",
+    "url": "https://democracy.leeds.gov.uk/documents/s254642/Special%20Guardianship%20Order%20Support%20Cover%20Report%20010324.pdf",
+    "kind": "guidance",
+    "retrieved": "2026-08-31",
+    "holding": "Under the revised offer, carers of children subject to non-agency orders who already receive a means-tested benefit are to receive support that is not means tested.",
+    "note": "Leeds's own operational manual states that its special guardianship financial support information is under review, so this offer is not a settled position. Decision record: https://democracy.leeds.gov.uk/ieDecisionDetails.aspx?AIId=95875"
+  },
+  "ciw-nma-bulletin-2023-24": {
+    "label": "Care Inspectorate Wales, National Minimum Allowances for Foster Carers 2023 to 2024, bulletin of 27 January 2023",
+    "url": "https://content.govdelivery.com/accounts/UKWALES_CSSIW_INT/bulletins/3450cef",
+    "kind": "dataset",
+    "retrieved": "2026-08-31",
+    "holding": "Welsh national minimum allowances are issued as bilingual bulletins produced by Care Inspectorate Wales on behalf of the Welsh Government, addressed to local authorities and independent fostering providers, setting rates the Welsh Government expects to be applied from 1 April.",
+    "note": "This is the confirmed example of the publication route, which is what was missing. The rate table inside the bulletin is an image, so any year retrieved this way has to be read by a person. The bulletins for 2024/25 and 2026/27 have not been located."
+  },
+  "wg-codes-consultation-2026": {
+    "label": "Welsh Government, consultation on changes to two codes of practice: Part 6 and Special Guardianship Orders, 12 February to 7 April 2026",
+    "url": "https://www.gov.wales/written-statement-launch-consultation-revisions-part-6-and-special-guardianship-codes-practice",
+    "kind": "guidance",
+    "retrieved": "2026-08-31",
+    "holding": "Draft revisions would require all services to pay the national minimum allowance and introduce an enhanced fostering allowance and fee.",
+    "note": "DRAFT, consultation closed 7 April 2026, outcome not published. Nothing on this site may state these as the law. The Special Guardianship Orders code is being revised alongside the Part 6 code and is directly relevant to the Wales pages when the outcome lands."
   }
 }

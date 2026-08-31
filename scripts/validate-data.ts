@@ -52,6 +52,7 @@ const schemaFor = (file: string): string | null => {
   if (file === 'la-region-map.json') return 'la-region-map.schema.json';
   if (file === 'kinship-zones.json') return 'kinship-zones.schema.json';
   if (file === 'citations.json') return 'citations.schema.json';
+  if (file === 'watchlist.json') return 'watchlist.schema.json';
   return null;
 };
 
@@ -343,6 +344,8 @@ interface LaEntry {
   pendingSourceIssue?: string;
   verifiedOn: string;
   lawfulnessFlag?: { sourceUrl: string; decisionDate: string } | null;
+  fixedPercentageOfFosteringRate?: number | null;
+  livingCostsMultiplierPercent?: number;
   region?: string;
   [k: string]: unknown;
 }
@@ -573,6 +576,75 @@ for (const la of authorities) {
     );
   } else {
     note(`la-overrides "${la.slug}" holds an unsourced lawfulness finding back from publication`);
+  }
+}
+
+// ── 15. The fixed-percentage accusation is recorded, never inferred ────────
+//
+// FIXED_PERCENTAGE_POLICY is a critical flag telling a carer their council may
+// be running a policy the courts struck down. It used to be raised by pattern
+// matching corePolicy for a percentage, which fired on North Tyneside, whose
+// policy summary says "Percentage model abolished 2018", and would have fired
+// on Devon, which pays the full rate. Both would have been accused of the
+// opposite of what they do.
+//
+// So the flag now reads one field, and this gate makes sure that field is
+// answered wherever the prose invites the question. null is a valid answer, and
+// means somebody looked.
+const PROPORTION_IN_PROSE = /\b(\d{1,3}\s?%|two[- ]thirds|one[- ]third|percentage|proportion)\b/i;
+for (const la of authorities) {
+  const recorded = la.fixedPercentageOfFosteringRate;
+  const mentioned = PROPORTION_IN_PROSE.test(la.corePolicy ?? '');
+  if (mentioned && recorded === undefined) {
+    fail(
+      '15 fixed-percentage',
+      `la-overrides "${la.slug}" describes a proportion in corePolicy but does not record ` +
+        'fixedPercentageOfFosteringRate. Set it to the fraction, or to null if the council pays no ' +
+        'fixed fraction. It must never be guessed from the wording.',
+    );
+  }
+  if (recorded !== undefined && recorded !== null) {
+    if (typeof recorded !== 'number' || !Number.isFinite(recorded) || recorded <= 0) {
+      fail(
+        '15 fixed-percentage',
+        `la-overrides "${la.slug}" fixedPercentageOfFosteringRate is ${String(recorded)}, which is not ` +
+          'a usable fraction.',
+      );
+    } else if (recorded < 1 && !la.publishable) {
+      note(`la-overrides "${la.slug}" records a fixed fraction but is not published`);
+    }
+  }
+}
+
+// ── 16. A living-costs figure that departs from the model is sourced ───────
+for (const la of authorities) {
+  const pct = la.livingCostsMultiplierPercent;
+  if (pct === undefined) continue;
+  if (typeof pct !== 'number' || !Number.isFinite(pct) || pct <= 0) {
+    fail('16 living-costs', `la-overrides "${la.slug}" livingCostsMultiplierPercent is not a percentage`);
+  } else if (pct !== 125 && !la.policySourceUrl) {
+    fail(
+      '16 living-costs',
+      `la-overrides "${la.slug}" departs from the model's 125% living-costs figure with no ` +
+        'policySourceUrl. This changes every means-tested result for that council.',
+    );
+  }
+}
+
+// ── 17. A superseded finding carries its own source ────────────────────────
+for (const la of authorities) {
+  const lf = la.lawfulnessFlag as
+    | { supersededBy?: { sourceUrl?: string; summary?: string }; concernsFormerPolicy?: boolean }
+    | null
+    | undefined;
+  if (!lf?.supersededBy) continue;
+  if (!lf.supersededBy.sourceUrl || !lf.supersededBy.summary) {
+    fail(
+      '17 lawfulness',
+      `la-overrides "${la.slug}" says a finding was superseded but gives no sourceUrl and summary for ` +
+        'the later decision. Saying a council has been cleared needs the same evidence as saying it ' +
+        'was at fault.',
+    );
   }
 }
 

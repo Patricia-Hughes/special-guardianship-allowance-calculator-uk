@@ -50,9 +50,13 @@ export default function PrivacyPage() {
 
       <h2>Analytics</h2>
       <p>
-        We do not run analytics on this site. If that ever changes, it will be a cookieless,
-        privacy-preserving tool that never records anything you type, and this page will say so
-        before it happens.
+        We do not run analytics on this site. Nothing counts your visit, nothing follows you
+        between pages, and nothing is sent anywhere when you use the calculator.
+      </p>
+      <p>
+        That is a decision rather than an oversight, taken in August 2026 and checked
+        automatically every time this site is built. If it ever changes, it will be a cookieless
+        tool that never records anything you type, and this page will say so before it happens.
       </p>
 
       <h2>Sharing a result</h2>

@@ -71,6 +71,11 @@ export type CountableIncomeKind = (typeof COUNTABLE_INCOME)[number];
 export type DisregardedIncomeKind = (typeof DISREGARDED_INCOME)[number];
 
 export const DISREGARD_RATE = 0.2;
+/**
+ * The DfE standardised model allows basic living costs at 125% of the Income
+ * Support applicable amount. Councils may differ, and at least one does: Devon's
+ * published procedures set it at 100%. So this is the default, not the law.
+ */
 export const CORE_LIVING_COSTS_MULTIPLIER = 1.25;
 
 export const DEFAULT_TAPER: TaperConfig = { method: 'pound-for-pound' };
@@ -181,6 +186,7 @@ export function runMeansTest(
   benefits: BenefitTable,
   taper: TaperConfig,
   capital: CapitalConfig,
+  livingCostsMultiplier: number = CORE_LIVING_COSTS_MULTIPLIER,
 ): MeansTestBreakdown {
   const steps: BreakdownStep[] = [];
   const step = (
@@ -242,7 +248,7 @@ export function runMeansTest(
   // DWP publishes the applicable amounts weekly; everything else in this
   // function is monthly. Convert before applying the 25% uplift.
   const applicableWeekly = incomeSupportApplicableAmountWeekly(f, benefits);
-  const coreLiving = mul(weeklyToMonthly(applicableWeekly), CORE_LIVING_COSTS_MULTIPLIER);
+  const coreLiving = mul(weeklyToMonthly(applicableWeekly), livingCostsMultiplier);
 
   let expenditure = pence(0);
   const spend = (label: string, v: Pence, note?: string): void => {
@@ -255,10 +261,16 @@ export function runMeansTest(
   spend('Maintenance you pay out', f.maintenancePaid);
   spend('Pension contributions', f.pensionContributions);
   spend('Childcare costs', f.childcareCosts);
+  // The note has to state the council's own percentage. Saying "plus 25%" to a
+  // Devon carer, whose council allows 100%, would describe a calculation the
+  // page is not showing them.
+  const upliftPercent = Math.round((livingCostsMultiplier - 1) * 100);
   spend(
     'Basic living costs',
     coreLiving,
-    'Income Support rates for a household your size, plus 25%.',
+    upliftPercent === 0
+      ? 'Income Support rates for a household your size.'
+      : `Income Support rates for a household your size, plus ${upliftPercent}%.`,
   );
 
   // ── Step 4: disposable income ───────────────────────────────────────────
@@ -295,7 +307,7 @@ export function runMeansTest(
     disregardRate: DISREGARD_RATE,
     incomeAfterDisregardMonthly: afterDisregard,
     coreLivingCostsMonthly: coreLiving,
-    coreLivingCostsMultiplier: CORE_LIVING_COSTS_MULTIPLIER,
+    coreLivingCostsMultiplier: livingCostsMultiplier,
     totalExpenditureMonthly: expenditure,
     disposableIncomeMonthly: disposable,
     capitalTariffMonthly: capitalTariff,

@@ -1,42 +1,53 @@
 {
   "schemaNote": "corePolicy = what the LA SAYS it does. lawfulnessFlag = whether that survives scrutiny.",
   "publishableNote": "[HARD R9] An entry may only be used in a user-facing calculation or page when publishable === true, which requires a non-empty, dated policySourceUrl (and, where a lawfulnessFlag is present, a non-empty sourceUrl and decisionDate). CI enforces this.",
-  "lawfulnessNote": "Sourcing a council's POLICY and sourcing an OMBUDSMAN FINDING against it are separate evidential questions, and an entry can pass one and fail the other. Where the decision itself has not been located at a citable URL, it sits in pendingLawfulnessFlag: held, never served, and invisible to the engine, which only ever reads lawfulnessFlag. That way one missing URL suppresses the allegation without also suppressing everything we do know about the council. Saying publicly that a named council acted unlawfully is precisely the claim that must never rest on an uncited note.",
+  "lawfulnessNote": "Sourcing a council's POLICY and sourcing an OMBUDSMAN FINDING against it are separate evidential questions, and an entry can pass one and fail the other. Where the decision itself has not been located at a citable URL, it sits in pendingLawfulnessFlag: held, never served, and invisible to the engine, which only ever reads lawfulnessFlag. That way one missing URL suppresses the allegation without also suppressing everything we do know about the council. Saying publicly that a named council acted unlawfully is precisely the claim that must never rest on an uncited note. A finding is also a statement about a moment in time. Where a council has since changed the policy that was criticised, or a later complaint about its current practice was not upheld, that goes in the same record and is said in the same breath on the page. Devon is the worked example.",
   "authorities": [
     {
       "slug": "devon",
       "name": "Devon County Council",
       "nation": "england",
       "region": "rest-of-england",
-      "publishable": false,
-      "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/5",
-      "corePolicy": "100% of core fostering allowance as maximum; DfE-model means test",
+      "publishable": true,
+      "corePolicy": "Allowance aligned to the basic fostering allowance rate, with the standardised means-test model. Devon's procedures state that paying a fixed percentage of the fostering allowance would not be lawful. The living costs disregard is set at 100% of the Income Support applicable amount rather than the model's 125%, with tiered housing disregards.",
       "flatCoreRateWeeklyPence": 21301,
-      "deductsChildBenefit": true,
+      "deductsChildBenefit": false,
       "deductsChildBenefitFromMeansTestedClaimants": false,
       "taper": null,
       "capital": null,
       "lawfulnessFlag": {
         "code": "LGSCO_UPHELD",
-        "summary": "LGSCO 2024: blanket Child Benefit deduction from carers on means-tested benefits found unlawful. Recalculation and refunds ordered for approx. 170 carers, plus £300 + £300 remedy payments.",
-        "sourceUrl": "",
-        "decisionDate": ""
+        "summary": "In January 2024 the Ombudsman found Devon at fault for deducting Child Benefit from all special guardians on Universal Credit as a blanket rule, without looking at individual circumstances. Recalculation and refunds were ordered.",
+        "sourceUrl": "https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/23-000-973",
+        "decisionDate": "2024-01-25",
+        "concernsFormerPolicy": true,
+        "policyChangedOn": "1 January 2024",
+        "supersededBy": {
+          "summary": "A later complaint about the way Devon calculates allowances now was not upheld. The Ombudsman found its current practice consistent with government guidance.",
+          "sourceUrl": "https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/24-003-172",
+          "decisionDate": "2024-10-01"
+        }
       },
-      "policySourceUrl": "",
-      "verifiedOn": "2026-08-29"
+      "policySourceUrl": "https://devoncs.trixonline.co.uk/chapter/applications-for-special-guardianship-orders",
+      "verifiedOn": "2026-08-31",
+      "fixedPercentageOfFosteringRate": null,
+      "livingCostsMultiplierPercent": 100,
+      "policySourceDate": "2024-10-24"
     },
     {
       "slug": "leeds",
       "name": "Leeds City Council",
       "nation": "england",
       "region": "rest-of-england",
-      "publishable": false,
-      "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/5",
-      "corePolicy": "Does not use the DfE means-test model; individualised needs assessment",
-      "deductsChildBenefit": false,
+      "publishable": true,
+      "corePolicy": "Revised Special Guardianship Support Offer of March 2024. Uses the standardised means-test model, with support that is not means tested for carers of children subject to non-agency orders who already receive a means-tested benefit. The maximum is pegged to Leeds's own weekly fostering allowance rates.",
       "lawfulnessFlag": null,
-      "policySourceUrl": "",
-      "verifiedOn": "2026-08-29"
+      "policySourceUrl": "https://democracy.leeds.gov.uk/documents/s254642/Special%20Guardianship%20Order%20Support%20Cover%20Report%20010324.pdf",
+      "verifiedOn": "2026-08-31",
+      "fixedPercentageOfFosteringRate": null,
+      "policyUnderReview": true,
+      "policyUnderReviewNote": "Leeds City Council's own procedures manual says its special guardianship financial support information is under review. What is shown here is the revised offer of March 2024, which is the last version it published.",
+      "policySourceDate": "2024-03-01"
     },
     {
       "slug": "north-tyneside",
@@ -44,20 +55,21 @@
       "nation": "england",
       "region": "rest-of-england",
       "publishable": true,
-      "corePolicy": "Percentage model abolished 2018; equivalence to the maximum fostering allowance, uplifted annually in line with the National Minimum Allowance, means tested",
-      "lawfulnessFlag": null,
-      "pendingLawfulnessFlag": {
+      "corePolicy": "Equivalence to the maximum fostering allowance, uplifted annually in line with the National Minimum Allowance, means tested. The council abolished its earlier percentage model in 2018.",
+      "lawfulnessFlag": {
         "code": "LGSCO_UPHELD",
-        "summary": "LGSCO 17 002 928: previous fixed-percentage policy unlawful; backdating ordered.",
-        "sourceUrl": "",
-        "decisionDate": "",
-        "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9",
-        "note": "The council's current policy is sourced and published below. This finding concerns the policy North Tyneside ABOLISHED in 2018, and the decision itself has not been located at a citable URL. Held back until it is."
+        "summary": "In February 2018 the Ombudsman found North Tyneside at fault for calculating special guardianship allowances as a percentage of its fostering allowance. The council identified 171 families who may not have received the right support, and payments were backdated to November 2013. North Tyneside abolished the percentage model that year.",
+        "sourceUrl": "https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf",
+        "decisionDate": "2018-02-27",
+        "concernsFormerPolicy": true,
+        "policyChangedOn": "2018",
+        "note": "Held back until 31 August 2026 for want of a citable URL, which the research round of that date supplied. It is served with the policy-changed line because the finding concerns a policy North Tyneside no longer operates. The backdating to November 2013 is why it still matters to a carer with an older order."
       },
       "councilApplicationDate": "1 April",
       "policySourceUrl": "https://northtyneside.gov.uk/sites/default/files/web-page-related-files/20250321%20-%20Decision%20Record%20-%20Fostering%20Allowance.pdf",
       "policySourceDate": "2025-03-21",
-      "verifiedOn": "2026-08-29"
+      "verifiedOn": "2026-08-29",
+      "fixedPercentageOfFosteringRate": null
     },
     {
       "slug": "shropshire",
@@ -69,7 +81,8 @@
       "lawfulnessFlag": null,
       "policySourceUrl": "https://shropshire.gov.uk/committee-services/documents/s26540/Special Guardianship Allowances Policy.pdf",
       "policySourceDate": "2021-02-08",
-      "verifiedOn": "2026-08-29"
+      "verifiedOn": "2026-08-29",
+      "fixedPercentageOfFosteringRate": null
     },
     {
       "slug": "lincolnshire",
@@ -80,7 +93,8 @@
       "corePolicy": "Uses the DfE standardised means-test model and publishes a full worked example of the calculation. Its own policy classifies that model as non-statutory guidance",
       "lawfulnessFlag": null,
       "policySourceUrl": "https://www.lincolnshire.gov.uk/directory-record/82363/special-guardianship-allowance-assessment-framework",
-      "verifiedOn": "2026-08-29"
+      "verifiedOn": "2026-08-29",
+      "fixedPercentageOfFosteringRate": null
     },
     {
       "slug": "derby",
@@ -92,7 +106,9 @@
       "lawfulnessFlag": null,
       "policySourceUrl": "https://derbycsc.trixonline.co.uk/chapter/special-guardianship-orders-and-derby-support-scheme",
       "policySourceDate": "2024-05-10",
-      "verifiedOn": "2026-08-29"
+      "verifiedOn": "2026-08-29",
+      "fixedPercentageOfFosteringRate": null
     }
-  ]
+  ],
+  "fixedPercentageNote": "fixedPercentageOfFosteringRate is the ONLY thing that raises FIXED_PERCENTAGE_POLICY. It was previously inferred by pattern-matching corePolicy, which accused North Tyneside (whose policy text reads \"Percentage model abolished 2018\") and would have accused Devon (which pays 100%) of running the very policy the courts struck down. null means checked and no fixed fraction; absent is not allowed where corePolicy mentions a proportion, and CI enforces that."
 }
