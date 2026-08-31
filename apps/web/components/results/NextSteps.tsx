@@ -42,7 +42,7 @@ export function NextSteps({ result }: { result: CalculatorResult }) {
   if (has('ENHANCEMENT_AVAILABLE')) {
     steps.push({
       title: "Ask for more because of your child's needs",
-      body: 'There is no national figure for this, so it will not appear in any estimate — but the regulations allow it and you have to ask.',
+      body: 'There is no national figure for this, so it will not appear in any estimate. But the regulations allow it and you have to ask.',
       href: '/guidance/enhancements-for-additional-needs',
     });
   }
@@ -62,7 +62,7 @@ export function NextSteps({ result }: { result: CalculatorResult }) {
   });
 
   steps.push({
-    title: 'If you get nowhere, complain — then go to the Ombudsman',
+    title: 'If you get nowhere, complain, then go to the Ombudsman',
     body: 'Use your council’s complaints procedure first. If you are still not satisfied, the Ombudsman can look at it, and has ordered councils to backdate payments.',
     href: '/guidance/complaining-to-the-ombudsman',
   });

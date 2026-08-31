@@ -23,8 +23,8 @@ export default function ContactPage() {
 
       <h2>Corrections policy</h2>
       <p>
-        If you think something on this site is wrong — a figure, a legal point, a description of a
-        council&apos;s policy — please tell us.
+        If you think something on this site is wrong, a figure, a legal point, a description of a
+        council&apos;s policy, please tell us.
       </p>
       <ul>
         <li>We acknowledge every correction request within <strong>5 working days</strong>.</li>

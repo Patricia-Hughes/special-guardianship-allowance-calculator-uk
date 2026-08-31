@@ -6,7 +6,7 @@ import { AdviceLines } from '../components/ui/AdviceLines';
 import { JsonLd, webApplicationJsonLd } from '../lib/jsonLd';
 
 export const metadata: Metadata = {
-  title: 'Special guardianship allowance calculator — what your council should be paying',
+  title: 'Special guardianship allowance calculator, what your council should be paying',
   description:
     'Work out the maximum special guardianship allowance your council should be starting from, in under a minute. Free, private, and with the law behind every figure.',
   alternates: { canonical: '/' },
@@ -55,7 +55,7 @@ export default function HomePage() {
         <h2 id="rates-heading">The national minimum allowance, 2026/27</h2>
         <p>
           These are the fostering national minimum allowances. The statutory guidance says the core
-          fostering allowance is the starting point for a special guardianship allowance — that is
+          fostering allowance is the starting point for a special guardianship allowance, that is
           why they matter to you.
         </p>
         <RateTable nation="england" />

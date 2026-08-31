@@ -3,7 +3,7 @@ import { RATE_TABLES, todayUtc } from '@sgo/engine';
 /**
  * [§33] Rates past their effectiveTo get a site-wide critical banner.
  *
- * Rendered at build time from the shipped data — no client JS — so it appears
+ * Rendered at build time from the shipped data, no client JS — so it appears
  * even with JavaScript disabled. The build is also gated by
  * scripts/check-staleness.ts, so in practice this fires only if a deploy sits
  * un-rebuilt across an April boundary.

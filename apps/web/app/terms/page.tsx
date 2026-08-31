@@ -31,7 +31,7 @@ export default function TermsPage() {
       </p>
       <p>
         If you would like to reproduce our guides, or embed the calculator on an advice
-        organisation&apos;s website, please <a href="/contact">get in touch</a> — we would rather
+        organisation&apos;s website, please <a href="/contact">get in touch</a>. We would rather
         say yes and help you keep it current than have an out-of-date copy circulating.
       </p>
 

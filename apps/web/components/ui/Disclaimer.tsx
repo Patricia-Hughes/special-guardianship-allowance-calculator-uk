@@ -7,7 +7,7 @@ export function Disclaimer({ compact = false }: { compact?: boolean }) {
     <div className="callout callout--important avoid-break" role="note" aria-label="Important">
       <p style={{ margin: 0 }}>
         <strong>This is an estimate, not legal advice.</strong> Financial support for special
-        guardians is discretionary — there is no fixed amount you are entitled to. What this tool
+        guardians is discretionary, there is no fixed amount you are entitled to. What this tool
         shows you is the figure your council should be starting from, and what the rules and
         published decisions say about how it must decide.
       </p>

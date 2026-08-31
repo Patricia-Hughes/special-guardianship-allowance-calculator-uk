@@ -20,7 +20,7 @@ export function LetterCTA({ template }: { template: string }) {
     <div className="callout">
       <p style={{ margin: 0 }}>
         We have a template letter for this. It will be available here once the letter generator is
-        switched on — for now, the wording you need is in the guidance above.
+        switched on, for now, the wording you need is in the guidance above.
         <span className="sr-only"> Template: {template}</span>
       </p>
     </div>
@@ -34,7 +34,7 @@ export function CalculatorCTA() {
         <strong>
           <a href="/">Work out what your council should be paying you</a>
         </strong>{' '}
-        — it takes under a minute, and nothing you type leaves your browser.
+        It takes under a minute, and nothing you type leaves your browser.
       </p>
     </div>
   );

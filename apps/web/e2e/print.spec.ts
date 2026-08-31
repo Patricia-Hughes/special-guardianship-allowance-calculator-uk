@@ -22,7 +22,7 @@ test('the printed result carries the figure, the inputs and the sources', async 
   await page.emulateMedia({ media: 'print' });
 
   // 1. The header that says what this document is.
-  await expect(page.getByText(/Special guardianship allowance — estimate/)).toBeVisible();
+  await expect(page.getByText(/Special guardianship allowance estimate/)).toBeVisible();
 
   // 2. The maximum figure.
   await expect(page.getByText('£255', { exact: false }).first()).toBeVisible();

@@ -36,13 +36,13 @@ export default function AboutPage() {
         Where we cannot confirm a figure against its original source, we leave it out and say why.
         That is why we currently publish no Welsh rates, and no 2024/25 table. Working a historic
         rate out from an uplift percentage would give a number that looks precise and could be
-        wrong by a few pounds — and a few pounds across two years is exactly what gets a
+        wrong by a few pounds, and a few pounds across two years is exactly what gets a
         carer&apos;s complaint dismissed.
       </p>
 
       <h3>We do not name a council without a source</h3>
       <p>
-        Saying what a particular council does — especially where an Ombudsman has criticised it —
+        Saying what a particular council does, especially where an Ombudsman has criticised it,
         requires a stored, dated, public source. Where we hold information about a council but have
         not re-sourced the link, our calculator ignores it entirely and uses the national figures
         instead. We currently cover {Object.keys(LA_REGION_MAP).length} English authorities for

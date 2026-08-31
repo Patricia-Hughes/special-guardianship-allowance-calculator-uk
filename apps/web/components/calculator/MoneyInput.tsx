@@ -4,7 +4,7 @@ import { useId, useState } from 'react';
 import { parseMoney } from '@sgo/engine';
 
 /**
- * [§24] inputMode="decimal", NOT type="number" — spinners are hostile to screen
+ * [§24] inputMode="decimal", NOT type="number", spinners are hostile to screen
  * readers and to shaky hands. Parsing happens once, here, at the boundary (§10).
  *
  * Validates on blur, not on keystroke (§20.1). Never clears the field on error.

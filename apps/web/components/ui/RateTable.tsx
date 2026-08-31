@@ -13,7 +13,7 @@ import { ScrollableTable } from './ScrollableTable';
  *
  * [§26] This component exists so that when the April uprating lands, every
  * mention of a rate updates everywhere at once. If a writer hardcodes "£255" in
- * prose it silently goes wrong every April — CI fails the build on a £ followed
+ * prose it silently goes wrong every April. CI fails the build on a £ followed
  * by digits in MDX body content for exactly that reason.
  *
  * It is a server component with no client JS, so it renders with JavaScript
@@ -49,7 +49,7 @@ export function RateTable({
     <ScrollableTable label={label}>
       <table>
         <caption>
-          {NATION_LABEL[nation]} — weekly minimum allowance, financial year{' '}
+          {NATION_LABEL[nation]}: weekly minimum allowance, financial year{' '}
           {table.financialYear.replace('-', '/')}
         </caption>
         <thead>

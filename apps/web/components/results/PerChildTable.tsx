@@ -1,4 +1,4 @@
-import { formatMoney, type CalculatorResult } from '@sgo/engine';
+import { add, formatMoney, type CalculatorResult } from '@sgo/engine';
 import { ScrollableTable } from '../ui/ScrollableTable';
 
 const FLOOR_LABEL: Record<string, string> = {
@@ -59,9 +59,7 @@ export function PerChildTable({ result }: { result: CalculatorResult }) {
                 Total
               </th>
               <td>
-                {formatMoney(
-                  result.perChild.reduce<number>((a, c) => a + c.maximumWeekly, 0) as never,
-                )}
+                {formatMoney(add(...result.perChild.map((c) => c.maximumWeekly)))}
               </td>
               {result.meansTestApplied && <td />}
               {result.perChild.some((x) => x.childBenefitDeductionWeekly > 0) && <td />}

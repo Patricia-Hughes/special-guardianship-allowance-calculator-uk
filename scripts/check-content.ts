@@ -13,7 +13,7 @@
  * appear as literal text.
  */
 
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
@@ -108,6 +108,60 @@ for (const kind of ['guidance', 'la'] as const) {
           '      frontmatter\'s literalMoneyAllowed array with that justification.',
       );
     });
+  }
+}
+
+// ── No em dashes in anything a carer reads ──────────────────────────────────
+// A house style rule, not a typographic preference. Em dashes are the single
+// clearest tell of machine-written prose, and this site is asking people to
+// trust it with a decision about money. It should read as though a person wrote
+// it. Commas, full stops, colons and brackets cover every case; the rewrite
+// that removes the dash is almost always the clearer sentence anyway.
+//
+// Code comments are exempt: nobody reads them but us.
+const EM_DASH_ROOTS = [
+  join(root, 'apps', 'web', 'content'),
+  join(root, 'apps', 'web', 'app'),
+  join(root, 'apps', 'web', 'components'),
+  join(root, 'packages', 'engine', 'src', 'flags.ts'),
+  join(root, 'packages', 'letters', 'src'),
+];
+
+function isComment(line: string): boolean {
+  return /^\s*(\/\/|\/\*|\*)/.test(line);
+}
+
+function walkFiles(target: string, acc: string[] = []): string[] {
+  if (!existsSync(target)) return acc;
+  if (statSync(target).isFile()) {
+    acc.push(target);
+    return acc;
+  }
+  for (const entry of readdirSync(target, { withFileTypes: true })) {
+    if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name === '__tests__') {
+      continue;
+    }
+    const full = join(target, entry.name);
+    if (entry.isDirectory()) walkFiles(full, acc);
+    else if (/\.(tsx?|mdx)$/.test(entry.name)) acc.push(full);
+  }
+  return acc;
+}
+
+for (const target of EM_DASH_ROOTS) {
+  for (const file of walkFiles(target)) {
+    const rel = file.slice(root.length + 1);
+    readFileSync(file, 'utf8')
+      .split('\n')
+      .forEach((line, i) => {
+        if (!line.includes('—') || isComment(line)) return;
+        failures.push(
+          `${rel}:${i + 1}: em dash in text a user reads\n` +
+            `      ${line.trim().slice(0, 90)}\n` +
+            '      Rewrite it. A comma, a full stop, a colon or brackets will do the job, and\n' +
+            '      usually make the sentence plainer.',
+        );
+      });
   }
 }
 

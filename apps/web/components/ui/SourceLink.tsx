@@ -5,7 +5,7 @@ import type { Citation } from '@sgo/engine';
  * carries the citation it derives from.
  *
  * Where a citation has no URL yet, we say so plainly rather than rendering a
- * dead link — an unsourced claim looks worse than an acknowledged gap, and the
+ * dead link, an unsourced claim looks worse than an acknowledged gap, and the
  * gap is tracked (spec §42 item 9).
  */
 export function SourceLink({ citation }: { citation: Citation }) {

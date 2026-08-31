@@ -1,5 +1,5 @@
 /**
- * @sgo/letters — spec §18.
+ * @sgo/letters, spec §18.
  *
  * Template letters, pre-filled with the user's own figures. They are a product
  * feature, not a copy-paste block: the useful version already contains the
@@ -81,7 +81,7 @@ interface TemplateSpec {
 export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
   'challenge-child-benefit-deduction': {
     title: 'Ask about Child Benefit being taken off your allowance',
-    subject: () => `Special guardianship allowance — Child Benefit deduction — ${PLACEHOLDER_REF}`,
+    subject: () => `Special guardianship allowance. Child Benefit deduction, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
@@ -99,7 +99,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
 
   'challenge-fixed-percentage': {
     title: 'Ask how your allowance was calculated, where a percentage seems to have been used',
-    subject: () => `Special guardianship allowance — how my allowance was calculated — ${PLACEHOLDER_REF}`,
+    subject: () => `Special guardianship allowance, how my allowance was calculated, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
@@ -116,7 +116,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
 
   'request-reg7-extension': {
     title: 'Ask for your two-year former foster carer protection to continue',
-    subject: () => `Special guardianship allowance — continuing the reward element — ${PLACEHOLDER_REF}`,
+    subject: () => `Special guardianship allowance, continuing the reward element, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}, and I was ${PLACEHOLDER_CHILD}'s foster carer before the special guardianship order was made` +
@@ -135,7 +135,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
 
   'request-enhancement-disability': {
     title: "Ask for more because of your child's needs",
-    subject: () => `Special guardianship allowance — request for an enhancement — ${PLACEHOLDER_REF}`,
+    subject: () => `Special guardianship allowance, request for an enhancement, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
@@ -152,7 +152,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
 
   'request-written-policy': {
     title: "Ask for your council's written policy",
-    subject: () => `Request for your special guardianship financial support policy — ${PLACEHOLDER_REF}`,
+    subject: () => `Request for your special guardianship financial support policy, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}.\n\n` +
@@ -169,7 +169,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
 
   'request-calculation-breakdown': {
     title: 'Ask for the arithmetic behind your figure',
-    subject: () => `Special guardianship allowance — request for a breakdown — ${PLACEHOLDER_REF}`,
+    subject: () => `Special guardianship allowance, request for a breakdown, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
@@ -186,7 +186,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
 
   'request-annual-review': {
     title: 'Ask for your annual review',
-    subject: () => `Special guardianship allowance — annual review — ${PLACEHOLDER_REF}`,
+    subject: () => `Special guardianship allowance, annual review, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
@@ -199,7 +199,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
 
   'formal-complaint-stage-1': {
     title: 'Make a stage 1 complaint',
-    subject: () => `Stage 1 complaint — special guardianship allowance — ${PLACEHOLDER_REF}`,
+    subject: () => `Stage 1 complaint, special guardianship allowance, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I would like to make a stage 1 complaint about the way my special guardianship allowance for ${PLACEHOLDER_CHILD} has been handled. ${paidLine(ctx)}` +

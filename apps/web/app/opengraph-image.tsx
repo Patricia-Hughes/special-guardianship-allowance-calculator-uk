@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const alt =
-  'Special guardianship allowance calculator — find out what your council should be paying you';
+  'Special guardianship allowance calculator, find out what your council should be paying you';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -9,7 +9,7 @@ export const contentType = 'image/png';
 export const dynamic = 'force-static';
 
 /**
- * Generated at build time (§27). No web font is fetched — a build that reaches
+ * Generated at build time (§27). No web font is fetched, a build that reaches
  * out over the network for a typeface is a build that can fail for a reason
  * nobody can reproduce.
  */

@@ -23,7 +23,7 @@ export default function DisclaimerPage() {
       <p>
         Financial support for special guardians is <strong>discretionary</strong>. There is no fixed
         amount you are entitled to. What the calculator shows you is the figure the statutory
-        guidance says your council should be starting from — not a figure you can require it to pay.
+        guidance says your council should be starting from, not a figure you can require it to pay.
       </p>
       <p>
         A council can lawfully pay less than the maximum after properly assessing your
@@ -53,7 +53,7 @@ export default function DisclaimerPage() {
       <p>
         The <strong>Welsh rates</strong> are here, with one caveat we would rather you heard from
         us: in Wales the rate for a child under 5 is higher than for a child aged 5 to 15. That is
-        genuinely how they are published, and we have checked it against two years of figures — but
+        genuinely how they are published, and we have checked it against two years of figures, but
         we have not seen the Welsh Government&rsquo;s own circular, only reports of it.
       </p>
 

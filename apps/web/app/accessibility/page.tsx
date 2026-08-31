@@ -22,7 +22,7 @@ export default function AccessibilityPage() {
         places where it matters for this audience.
       </p>
       <ul>
-        <li>Body text is 18px, never below 16px anywhere — including footnotes and disclaimers.</li>
+        <li>Body text is 18px, never below 16px anywhere, including footnotes and disclaimers.</li>
         <li>Body text contrast is at least 7:1, which is the AAA threshold rather than AA&apos;s 4.5:1.</li>
         <li>The site works at 200% zoom, and at 320px wide, with no sideways scrolling.</li>
         <li>Every button and link is at least 48×48 pixels, with space around it.</li>
@@ -42,7 +42,7 @@ export default function AccessibilityPage() {
       <h2>Without JavaScript</h2>
       <p>
         Every guide and every rate table works with JavaScript switched off. The calculator itself
-        needs it, and says so — but the figures it would have shown you are on the{' '}
+        needs it, and says so. But the figures it would have shown you are on the{' '}
         <a href="/rates">rates page</a> as plain tables.
       </p>
 
@@ -50,7 +50,7 @@ export default function AccessibilityPage() {
       <ul>
         <li>
           The council picker is a long list. If a searchable version would help you, please tell us
-          — we would rather hear it than guess.
+          We would rather hear about it than guess.
         </li>
         <li>
           Printed output is designed for A4 and US Letter. Very small paper sizes may cut off wide

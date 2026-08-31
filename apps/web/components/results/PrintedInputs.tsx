@@ -24,7 +24,7 @@ const LOOKED_AFTER: Record<string, string> = {
  * social worker can check them.
  *
  * Without this the printed page is an assertion. With it, it is a calculation
- * somebody else can follow and disagree with — which is the point of handing it
+ * somebody else can follow and disagree with, which is the point of handing it
  * over.
  *
  * Print-only: on screen the user can see their own answers in the form.
@@ -102,7 +102,7 @@ export function PrintedInputs({
             <td>
               {input.applyChildBenefitDeduction
                 ? 'Yes, as told to us by the carer'
-                : 'Not applied — we never deduct it unless told to'}
+                : 'Not applied, we never deduct it unless told to'}
             </td>
           </tr>
           {input.finances && (

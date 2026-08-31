@@ -5,7 +5,7 @@ type CalloutType = 'info' | 'important' | 'critical';
 const LABEL: Record<CalloutType, string> = {
   info: 'Note',
   important: 'Important',
-  critical: 'Important — please read',
+  critical: 'Important, please read',
 };
 
 /**

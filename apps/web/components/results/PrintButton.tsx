@@ -14,7 +14,7 @@ export function PrintButton() {
         Print this, or save it as a PDF
       </button>
       <p style={{ marginTop: '0.75rem', color: 'var(--colour-text-muted)' }}>
-        The printed version has your figures, the full arithmetic and every source on it — ready to
+        The printed version has your figures, the full arithmetic and every source on it, ready to
         hand to your social worker. In the print dialogue, choose &ldquo;Save as PDF&rdquo; if you
         would rather email it.
       </p>

@@ -11,14 +11,14 @@ import { MoneyInput } from '../calculator/MoneyInput';
 import { ScrollableTable } from '../ui/ScrollableTable';
 
 /**
- * "What should I have been paid since the order?" — spec §16.
+ * "What should I have been paid since the order?", spec §16.
  *
  * A disclosure rather than another step in the form. Most people come for one
  * number and leave; this is a second, harder question, and putting it in the
  * main flow would make everyone answer it.
  *
- * The period is split at every point the rate could change — each April, each
- * birthday that crosses an age band, the reg 7 two-year anniversary — because a
+ * The period is split at every point the rate could change, each April, each
+ * birthday that crosses an age band, the reg 7 two-year anniversary, because a
  * single average rate across two years is exactly the kind of figure a council
  * can pick apart.
  *
@@ -152,7 +152,7 @@ function BackdatingResultView({ result }: { result: BackdatingResult }) {
       {nothingOwed ? (
         <p>
           Over the period you gave us, what you were paid matches or exceeds the maximum your
-          council should have been starting from. That does not mean nothing is wrong — it means
+          council should have been starting from. That does not mean nothing is wrong, it means
           this particular check does not show a gap.
         </p>
       ) : (
@@ -169,10 +169,10 @@ function BackdatingResultView({ result }: { result: BackdatingResult }) {
             {formatMoney(result.shortfall)}
           </p>
           <p>
-            That is the gap between {formatMoney(result.totalShouldHaveBeenPaid)} — the maximum your
-            council should have been starting from across{' '}
-            {result.yearsCovered.map((y) => y.replace('-', '/')).join(', ')} — and the{' '}
-            {formatMoney(result.totalActuallyPaid)} you were actually paid.
+            Your council should have been starting from{' '}
+            {formatMoney(result.totalShouldHaveBeenPaid)} across{' '}
+            {result.yearsCovered.map((y) => y.replace('-', '/')).join(', ')}. You were actually
+            paid {formatMoney(result.totalActuallyPaid)}.
           </p>
         </>
       )}

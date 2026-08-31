@@ -1,6 +1,6 @@
 'use client';
 
-import { formatMoney, weeklyToAnnual, type CalculatorResult, type Pence } from '@sgo/engine';
+import { add, formatMoney, weeklyToAnnual, type CalculatorResult } from '@sgo/engine';
 
 const FLOOR_HEADING: Record<string, string> = {
   'reg7-former-foster-carer': 'But your figure is protected at a higher amount',
@@ -22,8 +22,8 @@ const REGION_LABEL: Record<string, string> = {
  * asked for.
  */
 /**
- * Where a floor has raised the figure above the area maximum — reg 7 is the
- * case that matters — the protected amount is the number the carer needs, and
+ * Where a floor has raised the figure above the area maximum, reg 7 is the
+ * case that matters, the protected amount is the number the carer needs, and
  * it must not be left buried in a flag underneath the area maximum. §21 says
  * lead with the ceiling; for these carers the ceiling is not the whole story.
  */
@@ -60,7 +60,7 @@ function FloorNotice({ result }: { result: CalculatorResult }) {
       <p style={{ margin: 0 }}>
         You fostered this child before the order, and it was made less than two years ago. For that
         period the reward part of your fostering allowance is protected, so your figure should not
-        drop below what you were being paid — even though that is more than the standard rate for
+        drop below what you were being paid, even though that is more than the standard rate for
         your area.
       </p>
     </div>
@@ -74,7 +74,8 @@ export function MaximumHero({
   result: CalculatorResult;
   regionLabel?: string;
 }) {
-  const total = result.perChild.reduce<number>((a, c) => a + c.maximumWeekly, 0) as Pence;
+  // Through `add`, not a cast: the cast would let a bad value reach the screen.
+  const total = add(...result.perChild.map((c) => c.maximumWeekly));
   const single = result.perChild.length === 1 ? result.perChild[0] : undefined;
   const region = regionLabel ? REGION_LABEL[regionLabel] ?? regionLabel : undefined;
 
@@ -124,7 +125,7 @@ export function MaximumHero({
           ? 'The Scottish Recommended Allowance is a minimum. Your council can pay more.'
           : result.regime === 'kinship-zone'
             ? 'The pilot pays the full fostering National Minimum Allowance with no means test.'
-            : 'Your council can lawfully pay less after assessing your circumstances — but this is the figure the guidance says it should start from.'}
+            : 'Your council can lawfully pay less after assessing your circumstances. But this is the figure the guidance says it should start from.'}
       </p>
     </section>
   );

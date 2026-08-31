@@ -22,7 +22,7 @@ import { ResultsPanel } from '../results/ResultsPanel';
 import { fromQueryString, toQueryString, SHARE_EXPLANATION } from '../../lib/urlState';
 
 /**
- * Step orchestration — spec §20. Six steps, progressive.
+ * Step orchestration, spec §20. Six steps, progressive.
  *
  * The rule that shapes everything here: NEVER ask for finances before showing
  * the maximum. The interstitial result after step 2 is the number most users
@@ -36,12 +36,21 @@ import { fromQueryString, toQueryString, SHARE_EXPLANATION } from '../../lib/url
 type StepId = 'where' | 'children' | 'result' | 'history' | 'benefits' | 'finances' | 'council';
 
 interface ChildForm {
+  /**
+   * Identity that survives reordering. Keying the list by array index makes
+   * React match the wrong row to the wrong DOM node when a child in the middle
+   * is removed, and the symptom is someone's answers appearing to jump between
+   * children or vanish. Nothing in the answer decides the key.
+   */
+  key: string;
   ageYears: string;
   hasDisabilityOrAdditionalNeeds: boolean;
   wasLookedAfterImmediatelyBeforeOrder: 'yes' | 'no' | 'unknown';
 }
 
+let childKeySeq = 0;
 const emptyChild = (): ChildForm => ({
+  key: `child-${(childKeySeq += 1)}`,
   ageYears: '',
   hasDisabilityOrAdditionalNeeds: false,
   wasLookedAfterImmediatelyBeforeOrder: 'unknown',
@@ -68,7 +77,7 @@ const MONEY_FIELDS = [
   ['essentialLoanRepayments', 'Essential loan repayments, per month', ''],
   ['maintenancePaid', 'Maintenance you pay out, per month', ''],
   ['pensionContributions', 'Pension contributions, per month', ''],
-  ['savingsCapital', 'Savings, in total', 'Not monthly — the total you have.'],
+  ['savingsCapital', 'Savings, in total', 'Not monthly, the total you have.'],
 ] as const;
 
 type MoneyFieldName = (typeof MONEY_FIELDS)[number][0];
@@ -120,6 +129,7 @@ export function CalculatorShell() {
   const errorSummaryRef = useRef<HTMLDivElement>(null);
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
   const hydratedFromUrl = useRef(false);
+  const [pendingSharedResult, setPendingSharedResult] = useState(false);
 
   // ── Restore the shareable (non-sensitive) part of the state from the URL ──
   useEffect(() => {
@@ -133,6 +143,7 @@ export function CalculatorShell() {
       const disability = new Set(s.disability ?? []);
       setChildren(
         s.ages.map((age, i) => ({
+          ...emptyChild(),
           ageYears: String(age),
           hasDisabilityOrAdditionalNeeds: disability.has(i),
           wasLookedAfterImmediatelyBeforeOrder: 'unknown' as const,
@@ -141,10 +152,30 @@ export function CalculatorShell() {
       setHouseholdChildren(String(s.ages.length));
     }
     if (s.formerFosterCarer) setWasFosterCarer(true);
+
+    // Someone opening a shared link expects to see the figure, not a blank form
+    // with their answers quietly pre-filled. Only jump to the result when the
+    // link carries enough to actually calculate one; otherwise leave them at
+    // the start, where the missing answer is asked for.
+    const enough =
+      Boolean(s.ages?.length) &&
+      Boolean(s.nation) &&
+      (s.nation !== 'england' || Boolean(s.region) || Boolean(s.la));
+    if (enough) setPendingSharedResult(true);
   }, []);
 
+  // Runs on the tick after the URL state has been applied, so the calculation
+  // sees the restored answers rather than the empty ones it replaced.
+  useEffect(() => {
+    if (!pendingSharedResult) return;
+    setPendingSharedResult(false);
+    run(false);
+    goTo('result');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingSharedResult]);
+
   // [§20] Auto-mark the eldest by age. Only the eldest attracts the higher
-  // Child Benefit rate, so getting it wrong shifts the figure — but the carer
+  // Child Benefit rate, so getting it wrong shifts the figure. But the carer
   // knows their household better than we do, so an explicit choice always wins.
   useEffect(() => {
     if (eldestOverridden) return;
@@ -256,7 +287,7 @@ export function CalculatorShell() {
           queueMicrotask(() => errorSummaryRef.current?.focus());
         } else if (e instanceof GuardrailViolation) {
           // [§15 UI contract] Never show the raw error. Log the rule code only —
-          // no user data — and render the fallback.
+          // no user data, and render the fallback.
           console.error(`GuardrailViolation: ${e.rule}`);
           setEngineError('guardrail');
         } else if (e instanceof DataError) {
@@ -344,7 +375,7 @@ export function CalculatorShell() {
                 <p style={{ margin: 0 }}>
                   <strong>We are not showing Welsh figures yet.</strong> We are checking the Welsh
                   rates against the Welsh Government&apos;s own published table before we publish
-                  them — one of the age bands in the sources we have looks wrong, and a wrong figure
+                  them, one of the age bands in the sources we have looks wrong, and a wrong figure
                   here is worse than none. The rest of this guide still applies in Wales.
                 </p>
               </div>
@@ -368,7 +399,7 @@ export function CalculatorShell() {
                   </span>
                   {(
                     [
-                      ['london', 'London — the 32 boroughs and the City of London'],
+                      ['london', 'London, the 32 boroughs and the City of London'],
                       ['south-east', 'South East England'],
                       ['rest-of-england', 'Anywhere else in England'],
                     ] as Array<[EnglandRegion, string]>
@@ -395,7 +426,7 @@ export function CalculatorShell() {
                   <p className="field__hint">
                     The government publishes rates by region but does not publish a list of which
                     council is in which region. We use the standard national regions. If you think
-                    yours is wrong, choose it here — your choice overrides ours.
+                    yours is wrong, choose it here, your choice overrides ours.
                   </p>
                 </fieldset>
               </>
@@ -412,7 +443,7 @@ export function CalculatorShell() {
           <StepPanel heading="About the children" headingRef={stepHeadingRef} stepNumber={2}>
             {children.map((c, i) => (
               <fieldset
-                key={i}
+                key={c.key}
                 style={{
                   border: '2px solid var(--colour-line)',
                   borderRadius: 'var(--radius)',
@@ -644,7 +675,7 @@ export function CalculatorShell() {
             <div className="callout" role="note" aria-label="Note">
               <p style={{ margin: 0 }}>
                 <strong>You can skip this.</strong> Fill it in only if you want an estimate of what
-                you might get after a means test. Nothing you type here leaves your browser — there
+                you might get after a means test. Nothing you type here leaves your browser, there
                 is no server to send it to.
               </p>
             </div>
@@ -704,8 +735,8 @@ export function CalculatorShell() {
             stepNumber={FLAGS.MEANS_TEST_ENABLED ? 6 : 5}
           >
             <p>
-              If you know any of this, it makes the guidance more useful. If you do not, leave it —
-              and the result will tell you how to find out.
+              If you know any of this, it makes the guidance more useful. If you do not, leave it
+              blank and the result will tell you how to find out.
             </p>
 
             <label className="choice">
@@ -882,7 +913,7 @@ function EngineErrorFallback({ kind }: { kind: 'guardrail' | 'data' }) {
           : 'Rather than guess, we have stopped. This usually means we do not yet hold a verified rate table or benefit figure for the date or the situation you gave us.'}
       </p>
       <p style={{ marginBottom: 0 }}>
-        Please talk to one of the advice organisations listed at the bottom of this page — they can
+        Please talk to one of the advice organisations listed at the bottom of this page, they can
         look at your case properly.
       </p>
     </div>

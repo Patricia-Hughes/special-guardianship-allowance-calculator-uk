@@ -4,13 +4,13 @@ import { useMemo, useRef, useState } from 'react';
 import { LA_NAMES, LA_REGION_MAP, type EnglandRegion } from '@sgo/engine';
 
 /**
- * Council picker — spec §12, route 1 (the most reliable, and the default path).
+ * Council picker, spec §12, route 1 (the most reliable, and the default path).
  *
  * A native <datalist>-free, ARIA-compliant combobox would be a lot of JS for
  * this budget; a labelled <select> with all 153 authorities is fully keyboard
  * operable, announces its option count natively in every screen reader, works
  * with JS disabled, and costs nothing. That is the better trade for this
- * audience — see docs/DECISIONS.md.
+ * audience, see docs/DECISIONS.md.
  *
  * The postcode route (§12 route 2) sits alongside it and degrades silently to
  * the manual region picker if it fails.
@@ -39,7 +39,7 @@ export function CouncilPicker({
 
   /**
    * [HARD R8] Fires only on explicit user action, never on keystroke. Sends
-   * only the outward code — enough for district resolution, and less
+   * only the outward code, enough for district resolution, and less
    * identifying than a full postcode. The result is used and discarded: the
    * postcode is never stored, logged, or put in the URL.
    */

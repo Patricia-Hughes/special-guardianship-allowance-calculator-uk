@@ -14,14 +14,14 @@ export default function PrivacyPage() {
         <strong>
           We do not collect, store or process any personal information about you or your child.
         </strong>{' '}
-        That is not a policy promise — it is how the site is built.
+        That is not a policy promise. It is how the site is built.
       </p>
 
       <h2>How the calculator works</h2>
       <p>
         Everything the calculator does happens inside your own browser. There is no server that
         performs the calculation, and therefore nothing for your answers to be sent to. Your
-        child&apos;s age, your income, your savings, your benefits — none of it leaves the device
+        child&apos;s age, your income, your savings, your benefits, none of it leaves the device
         you are reading this on.
       </p>
       <p>
@@ -39,7 +39,7 @@ export default function PrivacyPage() {
       </p>
       <ul>
         <li>It only happens when you press the button. Never as you type.</li>
-        <li>Only the outward code is sent — not the full postcode.</li>
+        <li>Only the outward code is sent, not the full postcode.</li>
         <li>Nothing else you have entered is sent with it.</li>
         <li>We use the answer and discard it. We do not store it, log it, or put it in the web address.</li>
         <li>You never have to use it. Choosing your council or region from the list works just as well.</li>

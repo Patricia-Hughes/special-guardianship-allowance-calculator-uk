@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: 'Special guardianship allowance calculator',
-    template: `%s — ${SITE_NAME}`,
+    template: `%s | ${SITE_NAME}`,
   },
   description:
     'Find out the most your council should be paying you as a special guardian, what the law says it must consider, and what you can do if the figure looks wrong.',

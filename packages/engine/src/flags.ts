@@ -1,5 +1,5 @@
 /**
- * Flags catalogue — spec §17.
+ * Flags catalogue, spec §17.
  *
  * Each flag is both an inline card and a link to its guidance page. These are
  * the reason people share the site: the flag is often worth more to a carer
@@ -22,7 +22,7 @@ interface FlagSpec {
   actionUrl?: string;
 }
 
-/** Everything a flag body might need. All fields optional — flags are context-tolerant. */
+/** Everything a flag body might need. All fields optional, flags are context-tolerant. */
 export interface FlagContext {
   councilName?: string;
   coreWeekly?: Pence;
@@ -95,7 +95,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     title: 'A fixed percentage of the fostering rate has been ruled unlawful',
     body: (c) =>
       `${c.councilName ? `${c.councilName}'s published policy` : 'This policy'} appears to set the allowance at a fixed share of the fostering rate.\n\n` +
-      'The courts have repeatedly held that applying a flat percentage — two-thirds, or a third, or any other fixed fraction — is an unjustified departure from the guidance. The starting point is the core fostering allowance, and the council must consider your actual circumstances.\n\n' +
+      'The courts have repeatedly held that applying a flat percentage, two-thirds, or a third, or any other fixed fraction, is an unjustified departure from the guidance. The starting point is the core fostering allowance, and the council must consider your actual circumstances.\n\n' +
       'Ask for the written policy and for the reasons behind the figure you were given.',
     citationId: 'kirklees-2010',
     actionUrl: '/guidance/fixed-percentage-policies',
@@ -159,7 +159,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'important',
     title: 'Your assessment is discretionary, not automatic',
     body: () =>
-      'Because the child was not in the council\'s care immediately before the order, the council does not have to assess you for financial support — but it can, and you can ask it to.\n\n' +
+      'Because the child was not in the council\'s care immediately before the order, the council does not have to assess you for financial support. But it can, and you can ask it to.\n\n' +
       'Put the request in writing and ask for the decision and its reasons in writing too.',
     citationId: 'sg-regs-2005-reg6',
     actionUrl: '/guidance/who-can-get-an-allowance',
@@ -224,7 +224,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'important',
     title: 'The means test model is not law, and it pre-dates Universal Credit',
     body: () =>
-      'Most English councils use a standard Department for Education spreadsheet model to work out how much of your income to take into account. That model is **not statutory** — no law requires it — and it was written before Universal Credit existed.\n\n' +
+      'Most English councils use a standard Department for Education spreadsheet model to work out how much of your income to take into account. That model is **not statutory**. No law requires it, and it was written before Universal Credit existed.\n\n' +
       'Your council may use a different method, and it is entitled to. Treat the figure below as an illustration of how the common model works, not as the answer your council will reach.',
     citationId: 'corambaaf-pn75',
     actionUrl: '/guidance/how-the-means-test-works',
@@ -242,7 +242,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     title: 'You are in the few days of April where the rules disagree',
     body: () =>
       'The government sets these rates for a **tax year running 6 April to 5 April**. Most councils put their increase in from **1 April**.\n\n' +
-      'Between 1 and 5 April the two do not line up. We have shown you the new rate, because that is what councils normally pay from 1 April — but if your council follows the tax year, it may still be paying last year\'s rate for a few more days.\n\n' +
+      'Between 1 and 5 April the two do not line up. We have shown you the new rate, because that is what councils normally pay from 1 April. But if your council follows the tax year, it may still be paying last year\'s rate for a few more days.\n\n' +
       'It is worth a few pounds, not a few hundred. If you are checking a backdated claim, it is worth getting right.',
     actionUrl: '/guidance/rates',
   },
@@ -259,7 +259,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'info',
     title: 'Your council may have a savings rule',
     body: (c) =>
-      `You told us about savings of ${money(c.savingsCapital)}. Some councils count savings above a threshold — a common pattern is £6,000, then £1 a week for each £250 above it — but there is no national rule and we do not hold your council's.\n\n` +
+      `You told us about savings of ${money(c.savingsCapital)}. Some councils count savings above a threshold. A common pattern is £6,000, then £1 a week for each £250 above it. But there is no national rule and we do not hold your council's.\n\n` +
       'We have not applied any savings rule to your estimate. Ask your council whether it has one.',
     actionUrl: '/guidance/how-the-means-test-works',
   },
@@ -268,7 +268,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     title: 'Your allowance should be reviewed every year',
     body: () =>
       'Financial support is reviewed annually. The council should ask you for updated information, tell you what it proposes, and give you a chance to comment before it changes anything.\n\n' +
-      'If you have not had a review in over a year, ask for one — rates go up every April.',
+      'If you have not had a review in over a year, ask for one. Rates go up every April.',
     citationId: 'sg-regs-2005-reg10-11',
     actionUrl: '/guidance/annual-reviews',
   },
@@ -276,7 +276,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'info',
     title: 'Which council is responsible',
     body: () =>
-      'For three years after the order, the council that looked after the child stays responsible for assessing support needs — even if you have moved away. After three years, responsibility usually passes to the council where you live.\n\n' +
+      'For three years after the order, the council that looked after the child stays responsible for assessing support needs, even if you have moved away. After three years, responsibility usually passes to the council where you live.\n\n' +
       'If you have moved recently, it is worth being clear which council you should be asking.',
     citationId: 'sg-regs-2005-reg5',
     actionUrl: '/guidance/which-council-is-responsible',
@@ -285,7 +285,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'important',
     title: 'Plan now for what happens at 18',
     body: () =>
-      'Your child is 17. Special guardianship financial support normally stops when they turn 18, unless they stay in full-time education or training — in which case it can continue.\n\n' +
+      'Your child is 17. Special guardianship financial support normally stops when they turn 18, unless they stay in full-time education or training, in which case it can continue.\n\n' +
       'Ask your council now, in writing, what will happen on their eighteenth birthday and what you need to do to keep support going.',
     citationId: 'sg-regs-2005-reg9',
     actionUrl: '/guidance/turning-18',
@@ -310,7 +310,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'info',
     title: 'Check whether you can claim Guardian\'s Allowance',
     body: () =>
-      'Guardian\'s Allowance is a weekly payment for someone bringing up a child whose parents have died — or where one has died and the other cannot be traced, is serving a long prison sentence, or cannot be found.\n\n' +
+      'Guardian\'s Allowance is a weekly payment for someone bringing up a child whose parents have died, or where one has died and the other cannot be traced, is serving a long prison sentence, or cannot be found.\n\n' +
       'It is tax free, it is ignored for means-tested benefits, and it is exempt from the benefit cap. It is widely missed.',
     actionUrl: '/guidance/benefits-and-your-allowance',
   },

@@ -2,7 +2,7 @@ import { formatMoney, type MeansTestBreakdown } from '@sgo/engine';
 import { ScrollableTable } from '../ui/ScrollableTable';
 
 /**
- * "Show the arithmetic" — spec §21 item 5, printed open (§19).
+ * "Show the arithmetic", spec §21 item 5, printed open (§19).
  *
  * A <details>/<summary> disclosure, not a div with an onClick (§24). The print
  * stylesheet forces it open, because the whole point of the printed page is
@@ -59,7 +59,7 @@ export function ArithmeticPanel({ breakdown }: { breakdown: MeansTestBreakdown }
       <p>
         The 20% disregard comes off your income <strong>before</strong> your outgoings are taken
         into account. Councils sometimes do this the other way round, which produces a much larger
-        contribution — it is worth checking which way yours has done it.
+        contribution. It is worth checking which way yours has done it.
       </p>
     </details>
   );

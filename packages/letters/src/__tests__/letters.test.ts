@@ -1,4 +1,4 @@
-/** Letter generation — spec §18, including the copy rules. */
+/** Letter generation, spec §18, including the copy rules. */
 
 import { describe, expect, it } from 'vitest';
 import { pence, type EnglandRegion, type FlagCode } from '@sgo/engine';

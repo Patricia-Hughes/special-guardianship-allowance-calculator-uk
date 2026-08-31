@@ -69,6 +69,15 @@ export const weeklyToAnnual = (w: Pence): Pence => pence(w * 52);
 
 /** Format for display. en-GB. Shows pence only when there are any, unless forced. */
 export function formatMoney(p: Pence, opts?: { showPence?: boolean }): string {
+  // Every money value on screen goes through here, which makes it the one place
+  // that can guarantee nobody is ever shown "£NaN". The Pence brand is enforced
+  // by `pence()`, but a cast can smuggle a raw number past it, and the failure
+  // is silent and convincing: a figure someone might take to their council.
+  // Refuse instead. app/error.tsx turns this into a visible message rather than
+  // a blank page.
+  if (!Number.isFinite(p)) {
+    throw new MoneyError(`Refusing to display a non-finite amount: ${p}`);
+  }
   const showPence = opts?.showPence ?? p % 100 !== 0;
   return new Intl.NumberFormat('en-GB', {
     style: 'currency',

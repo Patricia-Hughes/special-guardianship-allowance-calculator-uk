@@ -17,7 +17,7 @@ import { AdviceLines } from '../ui/AdviceLines';
 import { SHARE_EXPLANATION } from '../../lib/urlState';
 
 /**
- * Output order matters — spec §21. Lead with the ceiling, not the estimate:
+ * Output order matters, spec §21. Lead with the ceiling, not the estimate:
  *
  *   1. the maximum        5. the arithmetic
  *   2. the estimate       6. what to do next
@@ -75,14 +75,14 @@ export function ResultsPanel({
 }
 
 /**
- * Printed at the top of the page (§19 item 1) and hidden on screen — the carer
+ * Printed at the top of the page (§19 item 1) and hidden on screen, the carer
  * hands this to a social worker, so it needs to say what it is and when it was
  * produced.
  */
 function PrintHeader({ result }: { result: CalculatorResult }) {
   return (
     <div className="print-only avoid-break">
-      <h2 style={{ marginTop: 0 }}>Special guardianship allowance — estimate</h2>
+      <h2 style={{ marginTop: 0 }}>Special guardianship allowance estimate</h2>
       <p>
         Generated {new Date(result.computedAt).toLocaleDateString('en-GB')} · rates for financial
         year {result.financialYear.replace('-', '/')} · produced with an online calculator, not by a
