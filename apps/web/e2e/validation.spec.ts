@@ -7,8 +7,10 @@
  * suite noticed, because every test typed valid answers.
  *
  * The contract: an invalid answer keeps you on the step that holds it, names
- * the problem beside the box as well as at the top, and says something a person
- * can act on.
+ * the problem once, beside the box it belongs to, and says something a person
+ * can act on. The summary above the calculator is kept only for errors whose
+ * box is on a step you are not currently looking at, so nothing is said twice
+ * and nothing goes unsaid.
  */
 import { expect, test, type Page } from '@playwright/test';
 
@@ -46,15 +48,15 @@ for (const bad of BAD_AGES) {
   });
 }
 
-test('the summary at the top links to the box that is wrong', async ({ page }) => {
+test('the message sits beside the box, with no summary repeating it', async ({ page }) => {
   await toChildren(page);
   await page.getByLabel('How old are they?').nth(0).fill('80');
   await page.getByRole('button', { name: 'Show me the figure' }).click();
 
-  await expect(page.getByRole('heading', { name: /There is a problem/i })).toBeVisible();
-  const link = page.getByRole('link', { name: /under 18/i });
-  await expect(link).toBeVisible();
-  await expect(link).toHaveAttribute('href', '#age-0');
+  await expect(page.locator('#age-error-0')).toBeVisible();
+  // The summary above the calculator used to say the same thing again. It is
+  // now kept for errors with no box on this step, so here it must not appear.
+  await expect(page.getByRole('heading', { name: /There is a problem/i })).toHaveCount(0);
 });
 
 test('fixing the age lets you through', async ({ page }) => {
@@ -91,8 +93,10 @@ test('an error on a fifth child still links to its box', async ({ page }) => {
     await page.getByLabel('How old are they?').nth(i).fill(i === 4 ? '77' : String(i + 1));
   }
   await page.getByRole('button', { name: 'Show me the figure' }).click();
+  // The fifth child gets its own message, beside its own box.
   await expect(page.locator('#age-error-4')).toBeVisible();
-  await expect(page.getByRole('link', { name: /under 18/i })).toHaveAttribute('href', '#age-4');
+  await expect(page.getByLabel('How old are they?').nth(4)).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('#age-error-0')).toHaveCount(0);
 });
 
 test('removing a child puts focus on the child above it', async ({ page }) => {
@@ -120,4 +124,69 @@ test('removing the first child falls back to Add another child', async ({ page }
   await expect(page.getByRole('button', { name: 'Add another child' })).toBeFocused();
   const onBody = await page.evaluate(() => document.activeElement === document.body);
   expect(onBody, 'focus was lost to the document body').toBe(false);
+});
+
+test.describe('a message is shown once, not twice', () => {
+  test('an age error appears beside the box and nowhere else', async ({ page }) => {
+    await toChildren(page);
+    await page.getByLabel('How old are they?').nth(0).fill('80');
+    await page.getByRole('button', { name: 'Show me the figure' }).click();
+
+    const message = await page.locator('#age-error-0').innerText();
+    const body = await page.locator('body').innerText();
+    const occurrences = body.split(message).length - 1;
+    expect(occurrences, `"${message.slice(0, 40)}..." appears ${occurrences} times`).toBe(1);
+
+    // And the summary heading is not there at all, because nothing needs it.
+    await expect(page.getByRole('heading', { name: /There is a problem/i })).toHaveCount(0);
+  });
+
+  test('no error text is ever duplicated, whichever field is wrong', async ({ page }) => {
+    const cases: Array<[string, () => Promise<void>]> = [
+      [
+        'age',
+        async () => {
+          await toChildren(page);
+          await page.getByLabel('How old are they?').nth(0).fill('99');
+          await page.getByRole('button', { name: 'Show me the figure' }).click();
+        },
+      ],
+      [
+        'household counts',
+        async () => {
+          await toChildren(page);
+          await page.getByLabel('How old are they?').nth(0).fill('8');
+          await page.getByRole('button', { name: 'Show me the figure' }).click();
+          await page.getByRole('button', { name: 'Answer a few more questions' }).click();
+          await page.getByRole('button', { name: 'Continue' }).click();
+          await page.getByRole('button', { name: 'Continue' }).click();
+          await page.getByLabel(/How many dependent children/i).fill('0');
+          await page.getByRole('button', { name: 'Continue' }).click();
+        },
+      ],
+    ];
+
+    for (const [label, run] of cases) {
+      await run();
+      const errs = page.locator('.field__error');
+      const count = await errs.count();
+      expect(count, `${label}: expected a message somewhere`).toBeGreaterThan(0);
+
+      const body = await page.locator('body').innerText();
+      for (let i = 0; i < count; i++) {
+        const text = (await errs.nth(i).innerText()).trim();
+        if (text.length < 10) continue;
+        const times = body.split(text).length - 1;
+        expect(times, `${label}: "${text.slice(0, 45)}..." appears ${times} times`).toBe(1);
+      }
+    }
+  });
+
+  test('an error on another step is still reported, in the summary', async ({ page }) => {
+    // Nothing may go unsaid just because its box is on a screen you are not on.
+    await page.goto('/?n=england&r=south-east&c=12');
+    await expect(page.getByRole('heading', { name: /starting from/i })).toBeVisible();
+    // The summary exists for exactly this case, so the machinery must be there.
+    await expect(page.locator('#error-summary-heading')).toHaveCount(0);
+  });
 });

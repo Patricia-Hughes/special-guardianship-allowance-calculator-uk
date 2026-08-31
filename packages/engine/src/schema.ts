@@ -113,8 +113,27 @@ export const financesInputSchema = z.object({
   essentialLoanRepayments: moneyFieldSchema,
   maintenancePaid: moneyFieldSchema,
   pensionContributions: moneyFieldSchema,
-  adultsInHousehold: z.number().int().min(1, 'Enter 1 to 6.').max(6, 'Enter 1 to 6.'),
-  dependentChildrenInHousehold: z.number().int().min(0).max(20),
+  // Every message here is read by a carer, so every one needs wording, including
+  // the type errors. A bare .min(0) leaves Zod to say "Expected number, received
+  // nan" when the box is empty, which is the failure this whole file exists to
+  // avoid.
+  adultsInHousehold: z
+    .number({
+      required_error: 'Enter how many adults live in your household.',
+      invalid_type_error: 'Enter how many adults live in your household, as a number from 1 to 6.',
+    })
+    .int('Enter a whole number of adults, from 1 to 6.')
+    .min(1, 'There is at least one adult in the household: you. Enter 1 or more.')
+    .max(6, 'Enter a number from 1 to 6. If your household is larger, enter 6.'),
+  dependentChildrenInHousehold: z
+    .number({
+      required_error: 'Enter how many dependent children live in your household.',
+      invalid_type_error:
+        'Enter how many dependent children live in your household, as a number.',
+    })
+    .int('Enter a whole number of children.')
+    .min(0, 'Enter 0 or more.')
+    .max(20, 'Enter a number up to 20. If your household is larger, enter 20.'),
   householdHasDisabilityPremium: z.boolean().optional(),
   householdHasCarerPremium: z.boolean().optional(),
   claimantUnder25: z.boolean().optional(),

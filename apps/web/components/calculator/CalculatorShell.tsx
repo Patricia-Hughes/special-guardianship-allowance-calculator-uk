@@ -86,6 +86,21 @@ const MONEY_FIELDS = [
 
 type MoneyFieldName = (typeof MONEY_FIELDS)[number][0];
 
+/**
+ * A whole number from a text box, or NaN so the schema can object.
+ *
+ * `Number.parseInt(raw, 10) || fallback` looks equivalent and is not: 0 is
+ * falsy, so someone who deliberately typed 0 had it silently replaced by the
+ * fallback and never validated. The form would then accept an answer the person
+ * had not given. Refusing is the house rule everywhere else here, so it applies
+ * to a zero as much as to a word.
+ */
+const wholeNumber = (raw: string, blank: number): number => {
+  if (raw.trim() === '') return blank;
+  const n = Number.parseInt(raw.trim(), 10);
+  return Number.isInteger(n) ? n : Number.NaN;
+};
+
 export function CalculatorShell() {
   const [step, setStep] = useState<StepId>('where');
   const [maxStepReached, setMaxStepReached] = useState<StepId>('where');
@@ -292,9 +307,8 @@ export function CalculatorShell() {
             essentialLoanRepayments: (money.essentialLoanRepayments.pence ?? 0) as Pence,
             maintenancePaid: (money.maintenancePaid.pence ?? 0) as Pence,
             pensionContributions: (money.pensionContributions.pence ?? 0) as Pence,
-            adultsInHousehold: Number.parseInt(adults, 10) || 1,
-            dependentChildrenInHousehold:
-              Number.parseInt(householdChildren, 10) || children.length,
+            adultsInHousehold: wholeNumber(adults, 1),
+            dependentChildrenInHousehold: wholeNumber(householdChildren, children.length),
           } as FinancesInput)
         : undefined;
 
@@ -305,7 +319,7 @@ export function CalculatorShell() {
           ...(la ? { localAuthoritySlug: la } : {}),
           wasFosterCarerForThisChild: wasFosterCarer,
           ...(orderDate ? { orderDate: orderDate as CalculatorInput['asAtDate'] } : {}),
-          monthsSinceOrderMade: Number.parseInt(monthsSinceOrder, 10) || 0,
+          monthsSinceOrderMade: wholeNumber(monthsSinceOrder, 0),
           ...(wasFosterCarer && previousAllowance.pence !== null
             ? { previousWeeklyFosteringAllowance: previousAllowance.pence as Pence }
             : {}),
@@ -375,6 +389,12 @@ export function CalculatorShell() {
   const errorFor = (path: string): string | undefined =>
     errors.find((e) => e.path === path)?.message;
 
+  /**
+   * Errors with no box on the current step to sit beside. Only these reach the
+   * summary, so nothing is said twice and nothing goes unsaid either.
+   */
+  const elsewhereErrors = errors.filter((e) => stepForPath(e.path) !== step);
+
   const goTo = (next: StepId): void => {
     setStep(next);
     setMaxStepReached((prev) => (ORDER.indexOf(next) > ORDER.indexOf(prev) ? next : prev));
@@ -386,7 +406,7 @@ export function CalculatorShell() {
 
   return (
     <div>
-      {errors.length > 0 && (
+      {elsewhereErrors.length > 0 && (
         <div
           ref={errorSummaryRef}
           tabIndex={-1}
@@ -398,7 +418,7 @@ export function CalculatorShell() {
             There is a problem
           </h2>
           <ul style={{ margin: 0 }}>
-            {errors.map((e, i) => {
+            {elsewhereErrors.map((e, i) => {
               const target = FIELD_ANCHORS[e.path];
               return (
                 <li key={i}>
@@ -465,8 +485,9 @@ export function CalculatorShell() {
                     if (r) setRegion(r);
                   }}
                 />
-                <fieldset>
+                <fieldset id="region-fieldset">
                   <legend>Or choose your region</legend>
+                  <FieldError id="region-error" message={errorFor('carer.englandRegion')} />
                   <span className="field__hint">
                     Rates are higher in London and the South East. If you picked a council above,
                     we have already filled this in.
@@ -515,6 +536,8 @@ export function CalculatorShell() {
 
         {step === 'children' && (
           <StepPanel heading="About the children" headingRef={stepHeadingRef} stepNumber={2}>
+            {/* Errors about the list itself rather than one child in it. */}
+            <FieldError id="children-error" message={errorFor('children')} />
             {children.map((c, i) => (
               <fieldset
                 key={c.key}
@@ -685,6 +708,7 @@ export function CalculatorShell() {
                   name="previousWeeklyFosteringAllowance"
                   required
                   value={previousAllowance.raw}
+                  error={errorFor('carer.previousWeeklyFosteringAllowance')}
                   onChange={(raw, p) => setPreviousAllowance({ raw, pence: p })}
                 />
                 <div className="field">
@@ -694,11 +718,17 @@ export function CalculatorShell() {
                   <span className="field__hint" id="order-date-hint">
                     If you are not sure of the exact day, the month is close enough.
                   </span>
+                  <FieldError id="order-date-error" message={errorFor('carer.orderDate')} />
                   <input
                     id="order-date"
                     type="date"
                     value={orderDate}
-                    aria-describedby="order-date-hint"
+                    aria-invalid={errorFor('carer.orderDate') ? true : undefined}
+                    aria-describedby={
+                      errorFor('carer.orderDate')
+                        ? 'order-date-hint order-date-error'
+                        : 'order-date-hint'
+                    }
                     onChange={(e) => setOrderDate(e.target.value)}
                   />
                 </div>
@@ -712,12 +742,24 @@ export function CalculatorShell() {
               <span className="field__hint" id="months-since-hint">
                 Leave blank if you gave the date above.
               </span>
+              <FieldError
+                id="months-since-error"
+                message={
+                  errorFor('carer.monthsSinceOrderMade') ??
+                  errorFor('carer.previousWeeklyFosteringAllowance')
+                }
+              />
               <input
                 id="months-since"
                 type="text"
                 inputMode="numeric"
                 value={monthsSinceOrder}
-                aria-describedby="months-since-hint"
+                aria-invalid={errorFor('carer.monthsSinceOrderMade') ? true : undefined}
+                aria-describedby={
+                  errorFor('carer.monthsSinceOrderMade')
+                    ? 'months-since-hint months-since-error'
+                    : 'months-since-hint'
+                }
                 onChange={(e) => setMonthsSinceOrder(e.target.value)}
               />
             </div>
@@ -785,6 +827,7 @@ export function CalculatorShell() {
                 label={label}
                 {...(hint ? { hint } : {})}
                 value={money[name].raw}
+                error={errorFor(`finances.${name}`)}
                 onChange={(raw, p) => setMoney((prev) => ({ ...prev, [name]: { raw, pence: p } }))}
               />
             ))}
@@ -793,11 +836,14 @@ export function CalculatorShell() {
               <label className="field__label" htmlFor="adults">
                 How many adults live in your household?
               </label>
+              <FieldError id="adults-error" message={errorFor('finances.adultsInHousehold')} />
               <input
                 id="adults"
                 type="text"
                 inputMode="numeric"
                 value={adults}
+                aria-invalid={errorFor('finances.adultsInHousehold') ? true : undefined}
+                aria-describedby={errorFor('finances.adultsInHousehold') ? 'adults-error' : undefined}
                 onChange={(e) => setAdults(e.target.value)}
               />
             </div>
@@ -808,12 +854,21 @@ export function CalculatorShell() {
               <span className="field__hint" id="household-children-hint">
                 Include the children you have already told us about.
               </span>
+              <FieldError
+                id="household-children-error"
+                message={errorFor('finances.dependentChildrenInHousehold')}
+              />
               <input
                 id="household-children"
                 type="text"
                 inputMode="numeric"
                 value={householdChildren}
-                aria-describedby="household-children-hint"
+                aria-invalid={errorFor('finances.dependentChildrenInHousehold') ? true : undefined}
+                aria-describedby={
+                  errorFor('finances.dependentChildrenInHousehold')
+                    ? 'household-children-hint household-children-error'
+                    : 'household-children-hint'
+                }
                 onChange={(e) => setHouseholdChildren(e.target.value)}
               />
             </div>
@@ -915,6 +970,23 @@ const ORDER: StepId[] = ['where', 'children', 'result', 'history', 'benefits', '
  * Keys are the Zod issue paths from the shared schema; children.N.field paths
  * are normalised to the repeated field's id.
  */
+/**
+ * The step that owns each error, so a message can be shown once, beside the box
+ * it belongs to.
+ *
+ * The summary at the top used to list every error as well, so a carer who typed
+ * an impossible age read the same sentence twice, once above the calculator and
+ * once inside it. The summary now carries only what has nowhere else to go: an
+ * error on a step you are not currently looking at.
+ */
+function stepForPath(path: string): StepId | null {
+  if (path === 'children' || path.startsWith('children.')) return 'children';
+  if (path.startsWith('finances.')) return 'finances';
+  if (path === 'carer.englandRegion' || path === 'carer.localAuthoritySlug') return 'where';
+  if (path.startsWith('carer.')) return 'history';
+  return null;
+}
+
 const FIELD_ANCHORS: Record<string, string> = {
   'carer.englandRegion': 'council-select',
   'carer.previousWeeklyFosteringAllowance': 'months-since',
@@ -929,6 +1001,16 @@ const FIELD_ANCHORS: Record<string, string> = {
     Array.from({ length: 10 }, (_, i) => [`children.${i}.ageYears`, `age-${i}`]),
   ),
 };
+
+/** One message, in one place: beside the box it belongs to. */
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+  return (
+    <span className="field__error" id={id} role="alert">
+      {message}
+    </span>
+  );
+}
 
 function StepPanel({
   heading,

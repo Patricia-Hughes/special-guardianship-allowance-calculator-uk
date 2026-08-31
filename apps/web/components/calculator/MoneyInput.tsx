@@ -16,6 +16,7 @@ export function MoneyInput({
   value,
   onChange,
   required = false,
+  error: externalError,
 }: {
   label: string;
   hint?: string;
@@ -23,22 +24,30 @@ export function MoneyInput({
   value: string;
   onChange: (raw: string, pence: number | null) => void;
   required?: boolean;
+  /**
+   * A message from the engine's own validation, as opposed to the parse error
+   * this component raises itself. Shown in the same place, so a field never
+   * ends up with two messages, and never repeats one already in the summary.
+   */
+  error?: string;
 }) {
   const id = useId();
-  const [error, setError] = useState<string | null>(null);
+  const [parseError, setParseError] = useState<string | null>(null);
+  // The typing error wins while it stands: it is about what is in the box now.
+  const error = parseError ?? externalError ?? null;
 
   const validate = (raw: string): void => {
     if (raw.trim() === '') {
-      setError(required ? 'Enter an amount.' : null);
+      setParseError(required ? 'Enter an amount.' : null);
       onChange(raw, required ? null : 0);
       return;
     }
     try {
       const p = parseMoney(raw);
-      setError(null);
+      setParseError(null);
       onChange(raw, p);
     } catch {
-      setError('Enter an amount like 1250 or 1250.50.');
+      setParseError('Enter an amount like 1250 or 1250.50.');
       onChange(raw, null);
     }
   };
