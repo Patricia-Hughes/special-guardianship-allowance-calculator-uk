@@ -1,7 +1,7 @@
 # Open items
 
-From spec §42, updated 31 August 2026 against the Job B research round of the
-same date. Each must close before the feature it blocks ships. Nothing here may
+From spec §42, updated 1 September 2026 against the Job A legal review of that
+date. Each must close before the feature it blocks ships. Nothing here may
 be closed by deriving, estimating or "correcting" a figure.
 
 Short lookups now live in `data/watchlist.json`, where `check:staleness` warns
@@ -15,12 +15,35 @@ it does not go in the product. Flag it, open an issue, ship without it.
 
 | # | Item | Blocks | Where it is tracked in the code | Owner |
 |---|---|---|---|---|
-| 1b | Source the 2024/25 rates for **Wales**, and 2025/26 for Scotland, Wales and Northern Ireland. England, Scotland and Northern Ireland are done for 2024/25. | Backdating in the years still null | `data/rates.2025-26.json`; `data/watchlist.json` rows `ni-model-scheme-2025-26`, `scotland-2025-26`, `ciw-nma-bulletins` | |
-| 2 | Retrieve the Care Inspectorate Wales bulletins for 2024/25 and 2026/27. The publication route is now known and the 2023/24 bulletin is confirmed, so this is a lookup rather than a hunt. A person has to read the table, because it is an image. | Nothing, quality only | `data/citations.json` `ciw-nma-bulletin-2023-24`; watchlist row `ciw-nma-bulletins` | |
-| 4 | Confirm the DfE taper method across more published LA policies. Four councils looked at so far and none states a taper explicitly. If they diverge, ship configurable with explicit disclosure. Do not invent a national figure. | Means-test accuracy | `meansTest.ts` `DEFAULT_TAPER`; `TAPER_METHOD_ASSUMED` flag | |
-| 5 | Wait for Leeds's final revised support offer. The March 2024 offer is now used for a carer who picks Leeds, with an on-screen note saying the policy is under review, and no Child Benefit claim attached, because the only source for that is a superseded freedom of information response. | How much we can say about Leeds | `data/la-overrides.json` `leeds.policyUnderReview`; watchlist row `leeds-final-offer` | |
-| 6 | Legal review of the flag copy, the letter templates and the guidance pages. Needs a solicitor, not a researcher. Now also covers `LGSCO_FINDING_FORMER_POLICY` and `LA_LIVING_COSTS_VARIATION`. | Publication | `packages/engine/src/flags.ts`; `packages/letters/src`; `FOR-YOUR-TEAM.md` Job A | |
-| 10 | ~~Decide whether analytics ships.~~ **Answered on 31 August 2026: no.** Left here for one release so the decision is visible. Nothing measures visitors, the privacy notice says so, and `check:content` fails the build if a tracker is ever added. | Nothing | `scripts/check-content.ts`; `apps/web/app/privacy/page.tsx` | |
+| 1b | Source 2025/26 for Scotland, Wales and Northern Ireland, and 2026/27 for Northern Ireland. All four nations now have 2024/25. | Backdating in the years still null | `data/rates.2025-26.json`; `data/watchlist.json` | |
+| 4 | Confirm the DfE taper method across more published LA policies. Four councils looked at, none states a taper explicitly. Do not invent a national figure. | Means-test accuracy | `meansTest.ts` `DEFAULT_TAPER`; `TAPER_METHOD_ASSUMED` | |
+| 5 | Wait for Leeds's final revised support offer. | How much we can say about Leeds | `data/la-overrides.json` `leeds.policyUnderReview` | |
+| 6 | **Identify the provision behind the duty to assess.** The only finding from the legal review of 1 September that is parked rather than fixed. The site said a council "must" assess where the child was looked after, citing regulation 6, which governs when financial support is payable rather than when an assessment is owed. The wording no longer rests on it and an on-screen note says why. The reviewer's instruction was not to guess. Also confirm regs 10 and 11 for the annual review and reg 5 for the three year rule. | Nothing, but it is an admitted gap on the page | `data/watchlist.json` `must-assess-provision` | Reviewer |
+| 7 | Legal review of the rewritten copy, if a rewrite happens. The review of 1 September was of the current wording, on the basis that no rewrite is planned. Its findings are about strength of claim rather than style, so they survive a rewrite, but they would need re-checking against the new sentences. | A rewrite, if one happens | `FOR-YOUR-TEAM.md` | |
+| 10 | ~~Analytics.~~ **Answered 31 August 2026: no.** Nothing measures visitors, the privacy notice says so, and `check:content` fails the build on any tracker. | Nothing | `scripts/check-content.ts` | |
+
+## Closed on 1 September 2026, from the Job A legal review
+
+Nineteen numbered actions. Eighteen applied, one parked as item 6 above.
+
+| Finding | What it was | What changed |
+|---|---|---|
+| 1 and 2 | **The formal complaint fired on the wrong trigger.** It was promoted whenever an Ombudsman finding about a *different* carer appeared, which the site's own warning correctly says does not apply to this one. A carer would complain holding no policy and no breakdown, with the formal clocks started. It also asserted "I have raised this before and have not had a full answer", which the site cannot know. | No flag promotes it. It records that the policy and the breakdown must be asked for first. The assertion is a deletable placeholder. |
+| 3 | **One letter doing two jobs badly.** A carer whose whole allowance was being stepped down was handed the extension letter, which never asks the tapering question and whose second question concedes the drop. That is the Southend point, and it was the strongest argument the carer had. | Split in two: one asks which element is being reduced, one asks for the reward element to continue. |
+| 4 | **Regulation 13 permits the Child Benefit deduction and the site never said so.** A carer was pointed at a question they cannot win. | The warning, the letter and the page now lead with what is permitted and move to how the council decided this case. The 12 month Ombudsman limit is stated. |
+| 5 | **Regulation 7 is a power, not a protection**, in nine places. It lets a council keep paying the reward element and lets it stop. | Reworded throughout. There were eleven places, not nine: the result page headline and the next-steps card also said it, and neither appears in the packs the reviewer was given, so an end to end test caught them rather than the review. The continuity argument is now made from the guidance and Tower Hamlets, which is where it comes from, and the two year point is said to cut both ways. |
+| 6 | **"Ruled unlawful" and "not allowed" overstated the sources.** No court has held fixed percentages unlawful as a class, and the Ombudsman says fault. | Heading and H1 softened, the Merton counterweight added, "unjustified departure" kept and glossed, the observation dated. |
+| 7 | The must assess citation. | Parked as item 6 above, per the reviewer's instruction not to guess. |
+| 8 | A letter asked about "that figure" when the sentence introducing the figure was conditional and absent. | Fixed, and a test now walks every letter in its sparse form looking for the same shape. |
+| 9 | A1.4 looked like it carried hardcoded Devon text. | It did not: the export filled every optional field with realistic values. The export now uses obvious placeholders. |
+| 10 to 13 | Starting rate versus final award; fire only on upheld decisions; show the date and link; the Welsh circular. | All applied. |
+| 14 to 19 | The two April calendars; sourcing the unsourced warnings; attributing the fostering figure; which council to send to; the data corrections; the glossary terms. | All applied. |
+
+**Two things the review surfaced that were not on its list.** Twelve of the 34 warnings carried no
+source at all, because the citation gate covered the guidance pages and the data and stopped there.
+Eight are now sourced, four are named as legitimately operational, and gate 18 fails the build on
+any new one. And the letters are not reachable by a carer at all yet: the generator is not switched
+on, so the reviewer was reading copy that no carer has ever received.
 
 > **A note on wording in earlier versions of this file.** Rows here used to refer
 > to "LA pages" and to a `/la/` page template. There is no such route and there

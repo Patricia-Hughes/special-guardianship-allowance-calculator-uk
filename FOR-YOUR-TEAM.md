@@ -8,23 +8,41 @@ first one is urgent.
 
 | Job | Who does it | How long | Status |
 |---|---|---|---|
-| A. Read the wording and check it is legally safe | A solicitor who works in children's social care | Half a day to a day | **Outstanding. The only thing left.** |
+| A. Read the wording and check it is legally safe | A solicitor who works in children's social care | Half a day to a day | **Done, 1 September 2026.** 18 of 19 findings applied |
 | B. Find four missing sources | A researcher | A few hours | Done, 31 August 2026 |
 | C. Decide one thing about privacy | You | Five minutes | Done, 31 August 2026: no analytics |
 
-## The order, as agreed on 31 August 2026
+## Where that leaves it
 
-1. Content brief written
-2. All the copy rewritten
-3. **Solicitor reviews the rewritten copy (Job A)**
-4. Fixes applied
-5. Publish
+All three jobs are done. The review found no reason to rewrite anything: its
+words were *"the research underneath this site is better than most published
+guidance on the subject, and the drafting is careful"*. What it found was about
+a dozen sentences put more strongly than their sources support, plus one routing
+decision that would have sent carers into a formal complaint before they held
+the evidence to make it.
 
-So Job A does not start yet. It waits for the rewrite, which means the review
-happens once, on the words that will actually be published. Appendix 1 below
-still lists the five warnings that need the closest reading, because they are
-the ones the writer should be briefed on hardest and the ones the solicitor
-should spend the most time on when the rewrite reaches them.
+All of that is fixed, and each finding now has a test, because none of them
+would break a build or look wrong on screen. They are exactly the kind of thing
+that comes back quietly when somebody tidies the copy.
+
+**One finding is parked rather than fixed, on the reviewer's instruction.** The
+site said a council **must** assess you where the child was looked after,
+citing regulation 6. Regulation 6 governs when financial support is payable
+rather than when an assessment is owed, so the citation did not support the
+claim. The reviewer said the claim looks right but not to guess the provision.
+So the wording no longer rests on it, an on-screen note explains why, and the
+question is back with the reviewer. It blocks nothing.
+
+## About the rewrite
+
+The order we agreed on 31 August was brief, then rewrite, then review. That
+changed: the review went ahead on the current wording, on the basis that no
+rewrite is coming.
+
+If you do decide to rewrite after all, the findings still apply. They are about
+how strongly a claim is put, not about style, so they survive a change of
+sentences. But they would need re-checking against the new ones, and the pack
+below is what to hand the writer.
 
 ---
 

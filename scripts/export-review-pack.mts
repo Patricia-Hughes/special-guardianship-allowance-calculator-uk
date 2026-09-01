@@ -26,6 +26,7 @@ import {
 } from '../packages/engine/src/index.js';
 import {
   LETTER_TEMPLATES,
+  lettersRequiredFirst,
   generateLetter,
   suggestLetters,
   type LetterContext,
@@ -122,6 +123,7 @@ for (const [i, template] of offerOrder.entries()) {
 | Offered in position | ${i + 1} of ${offerOrder.length}, when nothing specific has been triggered |
 | Brought to the top when | ${spec.suggestedBy.length ? spec.suggestedBy.map((f) => `the "${FLAG_CATALOGUE[f].title}" warning appears`).join(', or ') : 'never promoted; it sits in the standing list'} |
 | Linked from | ${(linkedFrom.get(template) ?? ['not linked from any guidance page']).join(', ')} |
+| Only worth sending after | ${lettersRequiredFirst(template).length ? lettersRequiredFirst(template).map((t) => `"${t}"`).join(' and ') : 'nothing, it stands on its own'} |
 
 ## What it refers to
 
@@ -235,6 +237,16 @@ ${Object.entries(bySeverity)
 Split by how loudly they are shown. The critical ones are the ones to read
 first: they tell a carer something may be wrong with what their council is
 doing, and they are the closest the site comes to an accusation.
+
+## What this pack still does not cover
+
+The result page itself. The warnings and letters below are its content, but the
+page also has wording of its own: the headline above the figure, the "what to do
+next" cards, the backdating table's labels. The regulation 7 review found nine
+places to change and there were eleven, because two of them were there.
+
+If you are reviewing wording again, ask for those too, or open the calculator
+and read a result end to end.
 
 ## The house rules these were written to
 

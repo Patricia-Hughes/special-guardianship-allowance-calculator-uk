@@ -139,6 +139,12 @@ export interface Citation {
   note?: string;
   /** Set when the source URL has not been re-sourced yet. UI must not render a dead link. */
   pendingSourceIssue?: string;
+  /**
+   * The original address, where `url` deliberately points at an archived copy
+   * because the original no longer responds. The reader is told, rather than
+   * left to wonder why they have landed on the web archive.
+   */
+  archivedFrom?: string;
 }
 
 export interface PerChildResult {

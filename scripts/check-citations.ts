@@ -27,6 +27,16 @@ const citations = JSON.parse(
 
 const TIMEOUT_MS = 15_000;
 
+/**
+ * Hosts we deliberately serve from an archive.
+ *
+ * The Ombudsman's own asset server times out on the North Tyneside report, so
+ * the citation points at the web archive and keeps the original address as
+ * provenance. That is a considered choice, not link rot to be flagged every
+ * week, and the reader is told why they are seeing an archived page.
+ */
+const ARCHIVE_HOSTS = ['web.archive.org'];
+
 async function head(url: string): Promise<{ ok: boolean; status: number | string }> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -51,6 +61,7 @@ async function head(url: string): Promise<{ ok: boolean; status: number | string
 
 const missing: string[] = [];
 const broken: string[] = [];
+const archived: string[] = [];
 const ok: string[] = [];
 
 const entries = Object.entries(citations);
@@ -69,10 +80,23 @@ for (const { id, c, result } of results) {
     continue;
   }
   if (result.ok) ok.push(id);
-  else broken.push(`${id} → ${c.url} returned ${result.status}`);
+  else if (ARCHIVE_HOSTS.some((h) => c.url.includes(h))) {
+    // An archived copy that is slow or briefly unavailable is not link rot, and
+    // reporting it weekly trains people to ignore this report.
+    archived.push(`${id} → served from the archive, ${result.status}`);
+  } else broken.push(`${id} → ${c.url} returned ${result.status}`);
 }
 
-console.log(`check-citations: ${ok.length} live, ${broken.length} broken, ${missing.length} not yet sourced.\n`);
+console.log(
+  `check-citations: ${ok.length} live, ${archived.length} served from the archive on purpose, ` +
+    `${broken.length} broken, ${missing.length} not yet sourced.\n`,
+);
+
+if (archived.length > 0) {
+  console.log('Deliberately archived, not link rot:');
+  for (const a of archived) console.log(`  · ${a}`);
+  console.log('');
+}
 
 if (broken.length > 0) {
   console.warn('Broken links (warn only — update or archive them):');

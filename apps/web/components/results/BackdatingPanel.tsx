@@ -256,7 +256,7 @@ function reasonLabel(reason: string): string {
     case 'age-band-change':
       return 'moved up an age band';
     case 'reg7-anniversary':
-      return 'two-year protection ended';
+      return 'the two-year point passed';
     case 'april-tax-year-boundary':
       return 'the tax year began';
     case 'period-start':

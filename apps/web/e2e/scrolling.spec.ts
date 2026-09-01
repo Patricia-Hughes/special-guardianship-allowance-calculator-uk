@@ -18,6 +18,28 @@ async function toChildren(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Continue' }).click();
 }
 
+/**
+ * Wait for a smooth scroll to finish.
+ *
+ * Measuring position after `scrollY > 0` measures mid-animation, so the number
+ * depends on how loaded the machine is. That is a race in the test rather than
+ * in the page, and it failed once under a full parallel run while passing alone,
+ * which is the signature. Poll until the position stops moving instead.
+ */
+async function scrollSettled(page: Page): Promise<void> {
+  await page.waitForFunction(
+    () =>
+      new Promise<boolean>((resolve) => {
+        const start = window.scrollY;
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => resolve(Math.abs(window.scrollY - start) < 1)),
+        );
+      }),
+    undefined,
+    { timeout: 5000 },
+  );
+}
+
 /** How far down the viewport an element sits, as a fraction of its height. */
 async function verticalPosition(page: Page, selector: string): Promise<number> {
   return page.evaluate((sel) => {
@@ -46,6 +68,7 @@ test('the result is scrolled to, not left below the fold', async ({ page }) => {
 
   await expect(page.getByText('£255', { exact: false }).first()).toBeVisible();
   await page.waitForFunction(() => window.scrollY > 0 || document.body.scrollHeight <= window.innerHeight);
+  await scrollSettled(page);
 
   // The headline figure should be in the upper half of the screen, not off it.
   const pos = await verticalPosition(page, 'h2#maximum-heading');

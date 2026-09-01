@@ -20,7 +20,15 @@ export function SourceLink({ citation }: { citation: Citation }) {
       )}{' '}
       <span style={{ color: 'var(--colour-text-muted)', fontSize: 'var(--font-size-sm)' }}>
         {citation.url ? (
-          <>(checked {citation.retrieved})</>
+          <>
+            (checked {citation.retrieved}
+            {/* A reader who clicks through to an archived page and is not told
+                why will reasonably wonder whether the source is still good. */}
+            {citation.archivedFrom
+              ? ', shown from the web archive because the original address no longer responds'
+              : ''}
+            )
+          </>
         ) : (
           <>(we are still sourcing a public link for this)</>
         )}

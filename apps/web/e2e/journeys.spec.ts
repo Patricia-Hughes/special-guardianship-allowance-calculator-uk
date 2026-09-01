@@ -69,16 +69,21 @@ test.describe('journeys', () => {
     await page.getByRole('button', { name: 'Continue' }).click();
 
     // The floor holds the figure at the previous fostering allowance, above the
-    // South East 5-10 maximum of £223 — and the protected figure is shown as a
-    // headline, not buried in a flag.
+    // South East 5-10 maximum of £223, and it is shown as a headline rather than
+    // buried in a flag. The heading says we have ASSUMED the old rate continues:
+    // reg 7 lets a council keep paying it and lets it stop, so telling a carer
+    // their figure is protected would be telling them they hold a right they do
+    // not. See the Job A review, finding 3.
     await expect(
-      page.getByRole('heading', { name: /your figure is protected at a higher amount/i }),
+      page.getByRole('heading', { name: /we have assumed your old fostering rate continues/i }),
     ).toBeVisible();
     await expect(page.getByText('£300 a week').first()).toBeVisible();
     await expect(page.getByText('£223', { exact: false }).first()).toBeVisible();
+    // The warning is there too, and it does not promise a right either.
     await expect(
-      page.getByRole('heading', { name: /two-year protection|previous fostering allowance/i }).first(),
+      page.getByRole('heading', { name: /can keep paying your old fostering rate/i }).first(),
     ).toBeVisible();
+    await expect(page.getByText(/not a figure your council has agreed/i).first()).toBeVisible();
   });
 
   test('3: carer on Universal Credit whose council deducts Child Benefit', async ({ page }) => {

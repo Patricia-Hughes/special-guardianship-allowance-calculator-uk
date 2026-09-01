@@ -14,9 +14,16 @@
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import { calculate } from '../engine.js';
+import { FLAG_CATALOGUE, makeFlag, type FlagContext } from '../flags.js';
 import { EngineError } from '../errors.js';
 import { formatMoney } from '../money.js';
-import type { CalculatorInput, CalculatorResult, EnglandRegion, Nation } from '../types.js';
+import type {
+  CalculatorInput,
+  CalculatorResult,
+  EnglandRegion,
+  FlagCode,
+  Nation,
+} from '../types.js';
 import { carer, child, finances, input, p } from './fixtures.js';
 
 const NATIONS: Nation[] = ['england', 'wales', 'scotland', 'northern-ireland'];
@@ -189,6 +196,73 @@ describe('exhaustive: the means test over random finances', () => {
       ),
       { numRuns: 2000 },
     );
+  });
+});
+
+describe('exhaustive: every warning renders for every carer', () => {
+  // A flag body is a function of the carer's answers, and most of its lines are
+  // conditional. The Job A review found a letter that referred to "that figure"
+  // when the sentence introducing the figure had been skipped. The same shape
+  // can occur in any warning, so every one is rendered with nothing supplied and
+  // with everything supplied, and both must read as whole sentences.
+  const FULL: FlagContext = {
+    councilName: 'Anytown Council',
+    coreWeekly: p(12000),
+    nationalWeekly: p(18700),
+    ageBand: '5-10',
+    previousWeekly: p(30000),
+    monthsSinceOrder: 18,
+    kinshipZoneWeekly: p(18700),
+    taperMethod: 'pound-for-pound',
+    savingsCapital: p(700000),
+    childCount: 2,
+    policySummary: 'A summary of the decision.',
+    policySourceUrl: 'https://example.invalid/decision',
+    effectiveTo: '2027-03-31',
+    livingCostsPercent: 100,
+    modelLivingCostsPercent: 125,
+    policyChangedOn: '1 January 2024',
+    supersededSummary: 'A later complaint was not upheld.',
+    policyUnderReviewNote: 'The council says its policy is under review.',
+    policyCheckedOn: '2026-08-31',
+    decisionDate: '2024-01-25',
+  };
+
+  it.each(Object.keys(FLAG_CATALOGUE) as FlagCode[])(
+    '%s reads as prose with and without context',
+    (code) => {
+      for (const [label, ctx] of [
+        ['nothing supplied', {}],
+        ['everything supplied', FULL],
+      ] as Array<[string, FlagContext]>) {
+        const flag = makeFlag(code, ctx);
+        const where = `${code} with ${label}`;
+
+        expect(flag.title.length, `${where}: no title`).toBeGreaterThan(0);
+        expect(flag.body.length, `${where}: no body`).toBeGreaterThan(20);
+
+        // A conditional sentence that dropped out leaves its neighbours joined.
+        expect(flag.body, `${where}: a gap where a sentence was`).not.toMatch(/ {2,}|\n{3,}/);
+        expect(flag.body, `${where}: sentence ends mid-air`).not.toMatch(/\s[.,]/);
+        // The classic: a demonstrative pointing at a sentence that is not there.
+        expect(flag.body, `${where}: refers to something it never gave`).not.toMatch(
+          /\bthat figure\b|\bthat amount\b|\bthe above\b/i,
+        );
+        // Nothing renders as an object or an undefined.
+        expect(flag.body, `${where}: leaked a value`).not.toMatch(
+          /undefined|\[object|NaN|null/,
+        );
+      }
+    },
+  );
+
+  it('no warning tells a carer they are entitled to a figure', () => {
+    for (const code of Object.keys(FLAG_CATALOGUE) as FlagCode[]) {
+      const body = makeFlag(code, FULL).body;
+      expect(body, `${code} promises an entitlement`).not.toMatch(
+        /you are entitled to|you will receive|guaranteed/i,
+      );
+    }
   });
 });
 

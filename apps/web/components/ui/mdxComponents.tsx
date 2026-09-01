@@ -2,6 +2,7 @@ import { cite } from '@sgo/engine';
 import { RateTable } from './RateTable';
 import { Callout } from './Callout';
 import { AdviceLines } from './AdviceLines';
+import { BenefitAmount } from './BenefitAmount';
 import { SourceLink } from './SourceLink';
 
 /**
@@ -19,8 +20,8 @@ export function LetterCTA({ template }: { template: string }) {
   return (
     <div className="callout">
       <p style={{ margin: 0 }}>
-        We have a template letter for this. It will be available here once the letter generator is
-        switched on, for now, the wording you need is in the guidance above.
+        <strong>There is a template letter for this.</strong> It is written and checked but not
+        switched on yet, so for now the wording you need is in the guidance above.
         <span className="sr-only"> Template: {template}</span>
       </p>
     </div>
@@ -47,4 +48,5 @@ export const mdxComponents = {
   LetterCTA,
   CalculatorCTA,
   AdviceLines,
+  BenefitAmount,
 };

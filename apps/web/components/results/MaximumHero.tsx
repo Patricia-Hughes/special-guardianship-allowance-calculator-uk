@@ -3,7 +3,10 @@
 import { add, formatMoney, weeklyToAnnual, type CalculatorResult } from '@sgo/engine';
 
 const FLOOR_HEADING: Record<string, string> = {
-  'reg7-former-foster-carer': 'But your figure is protected at a higher amount',
+  // Regulation 7 is a power, not an entitlement: it lets a council keep
+  // paying the reward element, and lets it stop. Saying the figure is
+  // "protected" told carers they held something they do not.
+  'reg7-former-foster-carer': 'We have assumed your old fostering rate continues',
   'kinship-zone-nma': 'The pilot rate applies to you',
   'scottish-recommended-allowance': 'This is the recommended minimum',
 };
@@ -59,9 +62,10 @@ function FloorNotice({ result }: { result: CalculatorResult }) {
       </p>
       <p style={{ margin: 0 }}>
         You fostered this child before the order, and it was made less than two years ago. For that
-        period the reward part of your fostering allowance is protected, so your figure should not
-        drop below what you were being paid, even though that is more than the standard rate for
-        your area.
+        period your council can carry on paying the reward part of your fostering allowance, and it
+        can carry on for longer if it thinks that right. We have assumed it does, which is why this
+        figure is higher than the standard rate for your area. That is our assumption, not something
+        your council has agreed.
       </p>
     </div>
   );

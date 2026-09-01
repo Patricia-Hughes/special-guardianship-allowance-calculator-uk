@@ -33,8 +33,8 @@ export function NextSteps({ result }: { result: CalculatorResult }) {
 
   if (has('REG7_FLOOR_APPLIED') || has('REG7_EXPIRING') || has('REG7_EXTENSION_AVAILABLE')) {
     steps.push({
-      title: 'Ask about your two-year protection',
-      body: 'As a former foster carer, the reward part of your fostering allowance is protected for two years, and a council can agree to continue it.',
+      title: 'Ask about the two-year point',
+      body: 'As a former foster carer, your council can carry on paying the reward part of your fostering allowance for two years, and for longer if it considers that appropriate. Nothing about that is automatic in either direction, so it is worth asking.',
       href: '/guidance/former-foster-carers',
     });
   }

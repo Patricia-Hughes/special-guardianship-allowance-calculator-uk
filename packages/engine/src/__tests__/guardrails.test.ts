@@ -5,7 +5,8 @@ import fc from 'fast-check';
 import { assertGuardrails, GuardrailViolation } from '../guardrails.js';
 import { calculate } from '../engine.js';
 import { cite } from '../referenceData.js';
-import { FLAG_CATALOGUE } from '../flags.js';
+import { FLAG_CATALOGUE, makeFlag } from '../flags.js';
+import type { FlagCode } from '../types.js';
 import { pence } from '../money.js';
 import { carer, child, d, depsWithMeansTest, finances, input, p } from './fixtures.js';
 import type { CalculatorResult, PerChildResult } from '../types.js';
@@ -196,4 +197,95 @@ describe('the shipped citation copy keeps what is rendered', () => {
     }
   });
 
+});
+
+/**
+ * The Job A review, on the warnings side. Same reasoning as the letters: none
+ * of these would break a build or look wrong on screen, and all of them are one
+ * tidy-up away from coming back.
+ */
+describe('the Job A review findings, pinned', () => {
+  const ctx = {
+    councilName: 'Anytown Council',
+    coreWeekly: pence(12000),
+    nationalWeekly: pence(18700),
+    ageBand: '5-10',
+    previousWeekly: pence(30000),
+    monthsSinceOrder: 18,
+    savingsCapital: pence(700000),
+    taperMethod: 'pound-for-pound',
+    livingCostsPercent: 100,
+    modelLivingCostsPercent: 125,
+    policySummary: 'A summary.',
+    decisionDate: '2024-01-25',
+    policySourceUrl: 'https://example.invalid/decision',
+    policyChangedOn: '1 January 2024',
+    supersededSummary: 'A later complaint was not upheld.',
+  };
+
+  it('no warning tells a carer regulation 7 protects them', () => {
+    for (const code of Object.keys(FLAG_CATALOGUE) as FlagCode[]) {
+      const flag = makeFlag(code, ctx);
+      expect(`${flag.title} ${flag.body}`, `${code} still says protected`).not.toMatch(
+        /\bprotect(s|ed|ion)\b/i,
+      );
+    }
+  });
+
+  it('says the two-year point can end the reward element as well as continue it', () => {
+    expect(makeFlag('REG7_EXPIRING', ctx).body).toMatch(/cuts both ways/i);
+    expect(makeFlag('REG7_EXPIRING', ctx).body).toMatch(/can lawfully stop/i);
+  });
+
+  it('does not tell a carer a fixed percentage has been ruled unlawful', () => {
+    const flag = makeFlag('FIXED_PERCENTAGE_POLICY', ctx);
+    expect(flag.title).not.toMatch(/unlawful/i);
+    // The counterweight the guidance page had and the warning did not.
+    expect(flag.body).toMatch(/does not have to pay every special guardian/i);
+    expect(flag.body).toMatch(/unjustified departure/);
+  });
+
+  it('leads the Child Benefit warning with what the regulations permit', () => {
+    const flag = makeFlag('UNLAWFUL_CB_DEDUCTION_RISK', ctx);
+    const permitted = flag.body.indexOf('regulations allow a council');
+    const finding = flag.body.indexOf('found a council at fault');
+    expect(permitted).toBeGreaterThan(-1);
+    expect(finding).toBeGreaterThan(permitted);
+    expect(flag.body).toMatch(/within 12 months/);
+    expect(flag.citation?.id).toBe('sg-regs-2005-reg13');
+  });
+
+  it('does not read the national minimum as a floor for the carer', () => {
+    const body = makeFlag('BELOW_NMA', ctx).body;
+    expect(body).toMatch(/minimum for fostering allowances, not a floor/i);
+    expect(body).toMatch(/figure your council starts from, not the amount you end up with/i);
+  });
+
+  it('shows the date and link on an Ombudsman finding, and nothing when absent', () => {
+    const withBoth = makeFlag('LGSCO_FINDING_FORMER_POLICY', ctx).body;
+    expect(withBoth).toMatch(/The decision was made on 2024-01-25/);
+    expect(withBoth).toMatch(/https:\/\/example\.invalid\/decision/);
+    // Nothing hardcoded: with no council data, no council sentence appears.
+    const bare = makeFlag('LGSCO_FINDING_FORMER_POLICY', {}).body;
+    expect(bare).not.toMatch(/1 January 2024|The decision was made|changed that policy/);
+  });
+
+  it('never claims a council must assess, while the provision is unconfirmed', () => {
+    for (const code of ['NOT_LOOKED_AFTER_BEFORE_ORDER', 'LOOKED_AFTER_STATUS_UNKNOWN'] as const) {
+      expect(makeFlag(code, ctx).body).not.toMatch(/must\*\* assess|must assess/);
+    }
+  });
+
+  it('does not assert a published policy duty it cannot cite', () => {
+    const flag = makeFlag('COUNCIL_POLICY_UNKNOWN', ctx);
+    expect(flag.body).not.toMatch(/Councils must have a published policy/);
+    expect(flag.body).toMatch(/kinship local offer/);
+    expect(flag.citation?.id).toBe('kinship-care-guidance-2024');
+  });
+
+  it('does not contradict itself about when rates change', () => {
+    // RATES_STALE said rates change on 1 April full stop; APRIL_RATE_BOUNDARY
+    // explains that the government uses a tax year. Both appear on one result.
+    expect(makeFlag('RATES_STALE', ctx).body).not.toMatch(/take effect on 1 April each year/);
+  });
 });

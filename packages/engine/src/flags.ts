@@ -200,11 +200,16 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     citationId: 'lgsco-southend-2020',
     actionUrl: '/guidance/former-foster-carers',
   },
+  // Neither of these two says "must" any more. The claim that a council must
+  // assess where the child was looked after is very likely right, but reg 6
+  // governs when financial support is PAYABLE rather than when an assessment is
+  // owed, and the reviewer's instruction was not to guess the provision that
+  // does. Tracked in data/watchlist.json as must-assess-provision.
   NOT_LOOKED_AFTER_BEFORE_ORDER: {
     severity: 'important',
-    title: 'Your assessment is discretionary, not automatic',
+    title: 'Your assessment is not automatic',
     body: () =>
-      'Because the child was not in the council\'s care immediately before the order, the council does not have to assess you for financial support. But it can, and you can ask it to.\n\n' +
+      'Because the child was not in the council\'s care immediately before the order, the circumstances in which financial support is payable are narrower. It is discretionary, which means it is up to the council. That does not shut the door: it can still consider your case, and you can ask.\n\n' +
       'Put the request in writing and ask for the decision and its reasons in writing too.',
     citationId: 'sg-regs-2005-reg6',
     actionUrl: '/guidance/who-can-get-an-allowance',
@@ -213,7 +218,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'info',
     title: 'Worth checking: was the child in care just before the order?',
     body: () =>
-      'You told us you were not sure. It matters: if the child was in the council\'s care immediately before the order, the council **must** assess you for financial support. If not, it may still assess you but does not have to.\n\n' +
+      'You told us you were not sure. It matters, because it changes how strong your position is. If the child was in the council\'s care immediately before the order, you are squarely within the circumstances where financial support is payable. If not, those circumstances are narrower, though you can still ask.\n\n' +
       'Your social worker or the court paperwork will say.',
     citationId: 'sg-regs-2005-reg6',
     actionUrl: '/guidance/who-can-get-an-allowance',
@@ -279,7 +284,16 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     title: 'We had to assume how your council reduces the allowance',
     body: (c) =>
       `There is **no published national rule** for how much of your spare income a council takes off the allowance. Policies vary.\n\n` +
-      `We have assumed ${c.taperMethod === 'pound-for-pound' ? 'pound-for-pound, which is the most common approach' : `the "${c.taperMethod}" method`}. Your council may use another. Ask it which it uses.`,
+      // Without a guard this rendered: 'We have assumed the "undefined" method.'
+      // The engine happens always to supply one today, so nothing was reaching a
+      // carer, but a flag body must read as a sentence whatever it is handed.
+      `We have assumed ${
+        c.taperMethod === undefined
+          ? 'the most common approach, which is pound for pound'
+          : c.taperMethod === 'pound-for-pound'
+            ? 'pound-for-pound, which is the most common approach'
+            : `the "${c.taperMethod}" method`
+      }. Your council may use another. Ask it which it uses.`,
     citationId: 'corambaaf-pn75',
     actionUrl: '/guidance/how-the-means-test-works',
   },

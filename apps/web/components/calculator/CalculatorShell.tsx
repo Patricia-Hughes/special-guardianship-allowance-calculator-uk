@@ -730,7 +730,7 @@ export function CalculatorShell() {
               <>
                 <MoneyInput
                   label="What were you paid as a foster carer, per week?"
-                  hint="Including the reward or fee element. This protects your figure for two years."
+                  hint="Including the reward or fee element. Your council can keep paying that part for two years after the order."
                   name="previousWeeklyFosteringAllowance"
                   required
                   value={previousAllowance.raw}
