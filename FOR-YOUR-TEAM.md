@@ -48,10 +48,12 @@ closed.
 
 There are three groups, in order of risk.
 
-### 1. The five warning messages that make a legal claim (highest risk)
+### 1. The warning messages (highest risk)
 
 These appear automatically on a carer's result page when their answers match
-certain conditions. The full current wording is in Appendix 1 below. They are:
+certain conditions. There are 34 in total. The five that make a legal claim are
+reproduced in Appendix 1 below, and **all 34 are in `sgo-review-pack.zip`**,
+split by how loudly they are shown. The five are:
 
 1. Taking Child Benefit off your allowance may not be lawful in your case
 2. A fixed percentage of the fostering rate has been ruled unlawful
@@ -62,8 +64,14 @@ certain conditions. The full current wording is in Appendix 1 below. They are:
 ### 2. The eight letter templates (high risk)
 
 Carers copy these, put their own details in, and send them to their council.
-They are listed in Appendix 2. The full text can be seen on the live site, or
-we can export them to a document if that is easier.
+
+**The full text of all eight is in `sgo-review-pack.zip`**, exported 1 September
+2026. An earlier version of this file listed them by title alone, which was not
+something anybody could review, and the reviewer was right to say so. Each
+letter now comes with the version a carer with full details receives, the
+version someone who told us less receives, the warning that promotes it to the
+top of the list, and the guidance page that links to it, so a question about
+sequencing can actually be answered.
 
 ### 3. The sixteen guidance pages (lower risk, but worth a skim)
 
