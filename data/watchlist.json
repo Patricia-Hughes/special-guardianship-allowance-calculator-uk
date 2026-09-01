@@ -2,17 +2,9 @@
   "note": "Documents we know exist, or expect to exist, and are waiting on. Each one is a short lookup rather than a piece of research. check-staleness warns once checkAfter has passed, so nothing here can quietly rot in a markdown file. Adding a row is cheap; leaving a known gap unrecorded is not.",
   "items": [
     {
-      "id": "ni-model-scheme-2024-25",
-      "what": "Open the Department of Health (Northern Ireland) model scheme PDF for 2024-25 and read the four weekly figures out of it.",
-      "why": "Northern Ireland backdating for 2024/25 is switched off for want of this. Two independent secondary sources give 149, 166, 187 and 219 pounds, and three of those four reproduce the 2026/27 table when the announced uplifts are applied, but the 5-10 figure does not, so the figures are not shipped. The DoH server blocks automated access, which is why this needs a person with a browser.",
-      "url": "https://www.health-ni.gov.uk/sites/default/files/publications/health/model-scheme-2024-25.pdf",
-      "checkAfter": "2026-09-30",
-      "openItem": "1b"
-    },
-    {
       "id": "ni-model-scheme-2025-26",
-      "what": "The same for the 2025-26 and 2026-27 model scheme PDFs, now published on the same page.",
-      "why": "Would give Northern Ireland a primary source for the current year as well as the past ones.",
+      "what": "Open the Department of Health (Northern Ireland) model scheme PDFs for 2025-26 and 2026-27 and read the SCALE RATES table out of each.",
+      "why": "2024/25 is now sourced from the 2024-25 model scheme, so Northern Irish backdating works for that year and blocks 2025/26. Note the trap: each scheme prints a second REDUCED RATES table for enhanced allowances and short breaks, about 28 per cent lower, which is not the allowance.",
       "url": "https://www.health-ni.gov.uk/publications/foster-care-allowances",
       "checkAfter": "2026-09-30",
       "openItem": "1b"

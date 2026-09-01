@@ -670,6 +670,27 @@ describe('backdating', () => {
     expect(r.totalActuallyPaid).toBeGreaterThan(r.totalShouldHaveBeenPaid);
   });
 
+  // Northern Ireland's model scheme prints two tables: the scale rates, which
+  // are the allowance, and a reduced rates table about 28% lower that exists
+  // only for enhanced allowances and short breaks. Taking the wrong one is the
+  // obvious way to get this nation badly wrong, so the right figure is pinned.
+  it('uses the Northern Irish scale rates, never the reduced ones', () => {
+    const r = calculateBackdating({
+      base: input({
+        carer: carer({ nation: 'northern-ireland', englandRegion: undefined }),
+        children: [child({ ageYears: 8, dateOfBirth: d('2018-06-01') })],
+      }),
+      fromDate: d('2024-06-01'),
+      toDate: d('2025-03-01'),
+      actuallyPaidWeekly: p(0),
+    });
+    const seg = r.segments.find((x) => x.financialYear === '2024-25');
+    expect(seg, '2024/25 should no longer be blocked for Northern Ireland').toBeDefined();
+    // Scale rate for 5-10 from 1 April 2024. The reduced rate is 12000.
+    expect(seg!.maximumWeekly).toBe(16600);
+    expect(r.blockedYears).not.toContain('2024-25');
+  });
+
   // Open item 11. Councils uplift on 1 April; the DfE states the same rates on a
   // tax year beginning 6 April. The tool pays out on the council convention,
   // because that is what decides what a carer was actually paid, but the five

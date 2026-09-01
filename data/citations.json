@@ -343,5 +343,13 @@
     "retrieved": "2026-08-31",
     "holding": "Draft revisions would require all services to pay the national minimum allowance and introduce an enhanced fostering allowance and fee.",
     "note": "DRAFT, consultation closed 7 April 2026, outcome not published. Nothing on this site may state these as the law. The Special Guardianship Orders code is being revised alongside the Part 6 code and is directly relevant to the Wales pages when the outcome lands."
+  },
+  "ni-model-scheme-2024-25": {
+    "label": "Department of Health (Northern Ireland), Foster care allowances, Model Scheme 2024-25",
+    "url": "https://www.health-ni.gov.uk/sites/default/files/publications/health/model-scheme-2024-25.pdf",
+    "kind": "dataset",
+    "retrieved": "2026-09-01",
+    "holding": "Sets the weekly foster care scale rates in Northern Ireland from 1 April 2024 at 149, 166, 187 and 219 pounds across four age bands.",
+    "note": "Section 1, SCALE RATES. The same document prints a REDUCED RATES table on page 2 (108, 120, 135, 158) which is the scale rate less pocket money and clothing, used only for enhanced allowances and short break payments. Do not confuse the two."
   }
 }

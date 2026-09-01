@@ -114,7 +114,7 @@ the two things that could not be sourced are recorded rather than guessed.
 
 | Item | Outcome |
 |---|---|
-| B1. Older rates for the other nations | **Scotland is in.** The allowance was frozen for 2024/25, so the August 2023 rates stood, and Scottish backdating now covers that year. Northern Ireland is **not** in: the figures could not be read from the primary document, and when the announced uplifts are applied, three of the four reproduce the current table exactly and one does not. A one-pound discrepancy is not something to ship. Wales could not be sourced at all. |
+| B1. Older rates for the other nations | **Scotland and Northern Ireland are both in.** Scotland's allowance was frozen for 2024/25, so the August 2023 rates stood. Northern Ireland's figures were confirmed from the Department of Health model scheme itself on 1 September, once somebody opened the PDF in a browser: 149, 166, 187 and 219 pounds a week, each matching its own per-4-weeks column. Backdating now covers 2024/25 for both nations. Wales could not be sourced at all. |
 | B2. The Welsh circular | **The publication route is now known**, which was the real blocker. Welsh rates go out as bilingual Care Inspectorate Wales bulletins, and the 2023/24 one is confirmed. The years we want are not, and the rate table inside is an image, so retrieving them needs a person rather than a script. |
 | B3. Devon and Leeds | **Both are now in use.** Devon brought a real find with it: its policy allows basic living costs at 100% of the Income Support rate where the standard model allows 125%, which makes a Devon carer's assessed contribution larger and their allowance smaller. The calculator now applies Devon's own figure and tells the carer why theirs differs. Leeds is in use with its policy under review said plainly on the result, and with no Child Benefit claim attached, because the only source for that was a superseded freedom of information response. |
 | B4. The four Ombudsman decisions | **All four found, and three of them corrected what we held.** North Tyneside's report is from 2018, not 2019. Southend's reference and date were both wrong. The Rochdale entry was linking to a Shropshire council document by mistake. And the Rochdale decision survived a High Court challenge, which is what makes it safe to rely on at all. |
@@ -130,11 +130,12 @@ that on.
 **Two short lookups are left**, both now on an automatic reminder rather than a
 list somebody has to remember to read:
 
-1. Open the Northern Ireland model scheme PDF in a browser and read the four
-   figures out of it. The server blocks automated access, so it needs a person.
-   Five minutes.
-2. Find the Care Inspectorate Wales bulletins for 2024/25 and 2026/27. The
-   2023/24 address gives the pattern.
+1. Find the Care Inspectorate Wales bulletins for 2024/25 and 2026/27. The
+   2023/24 address gives the pattern, and the rates inside are an image, so a
+   person has to read them.
+2. The Northern Ireland model scheme PDFs for 2025-26 and 2026-27, on the same
+   page as the 2024-25 one that has now been read. Take the SCALE RATES table,
+   not the REDUCED RATES table below it.
 
 Neither blocks anything. Both are worth doing when somebody has a spare morning.
 

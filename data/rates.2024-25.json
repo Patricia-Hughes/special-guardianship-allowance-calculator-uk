@@ -6,7 +6,7 @@
   "dfeStatedTaxYearTo": "2025-04-05",
   "councilApplicationFrom": "2024-04-01",
   "dataVersion": "2024-25.1",
-  "note": "England and Scotland. England is transcribed from the National Archives snapshot of 6 September 2024 of the GOV.UK page, under the heading 'Weekly allowances for the tax year from 6 April 2024 to 5 April 2025', as published at the time and NOT back-calculated from the 6.88% uplift. That page states 'This guidance applies to England'. Scotland was added on 31 August 2026: the Scottish Recommended Allowance was not uprated for 2024/25, so the rates introduced on 29 August 2023 stood for the whole year. Wales and Northern Ireland stay null, so backdating blocks 2024/25 for those two nations rather than guessing. Cross-check for England: applying the announced 3.55% uplift to every one of these 15 cells reproduces the 2025/26 table within a pound, and the range 165 to 289 pounds matches the endpoints reported independently in secondary sources.",
+  "note": "England, Scotland and Northern Ireland. England is transcribed from the National Archives snapshot of 6 September 2024 of the GOV.UK page, under the heading 'Weekly allowances for the tax year from 6 April 2024 to 5 April 2025', as published at the time and NOT back-calculated from the 6.88% uplift. That page states 'This guidance applies to England'. Scotland was added on 31 August 2026: the Scottish Recommended Allowance was not uprated for 2024/25, so the rates introduced on 29 August 2023 stood for the whole year. Northern Ireland was added on 1 September 2026 from the Department of Health model scheme PDF. Wales stays null, so backdating blocks 2024/25 there rather than guessing. Cross-check for England: applying the announced 3.55% uplift to every one of these 15 cells reproduces the 2025/26 table within a pound, and the range 165 to 289 pounds matches the endpoints reported independently in secondary sources.",
   "england": {
     "sourceId": "dfe-nma-2024-25",
     "unit": "weekly-pence",
@@ -63,7 +63,25 @@
     }
   },
   "wales": null,
-  "northern-ireland": null,
+  "northern-ireland": {
+    "sourceId": "ni-model-scheme-2024-25",
+    "unit": "weekly-pence",
+    "upliftPercent": 3.0,
+    "note": "Read from the Department of Health model scheme PDF on 1 September 2026, Section 1, FOSTER CARE ALLOWANCES, SCALE RATES, 'From 1st April 2024'. Transcribed as printed. The document prints a per-4-weeks column alongside, and all four rows multiply exactly (149x4=596, 166x4=664, 187x4=748, 219x4=876), which is the document checking itself.",
+    "verifyNote": "TRAP, read this before touching these figures. The same PDF prints a second table headed REDUCED RATES on page 2: 108, 120, 135 and 158 pounds a week. Those are NOT the fostering allowance. They are the scale rate less the pocket money and clothing components, used only for calculating Enhanced Allowances and Short Break Payments. Taking them by mistake would understate every Northern Irish figure by about 28 per cent. The rates below are the SCALE rates from page 1.",
+    "ageBands": [
+      { "id": "0-4",   "minAge": 0,  "maxAge": 4 },
+      { "id": "5-10",  "minAge": 5,  "maxAge": 10 },
+      { "id": "11-15", "minAge": 11, "maxAge": 15 },
+      { "id": "16-17", "minAge": 16, "maxAge": 17 }
+    ],
+    "rates": {
+      "0-4": 14900,
+      "5-10": 16600,
+      "11-15": 18700,
+      "16-17": 21900
+    }
+  },
   "scotland": {
     "sourceId": "sra-2024-25",
     "unit": "weekly-pence",

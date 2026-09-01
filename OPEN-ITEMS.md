@@ -15,7 +15,7 @@ it does not go in the product. Flag it, open an issue, ship without it.
 
 | # | Item | Blocks | Where it is tracked in the code | Owner |
 |---|---|---|---|---|
-| 1b | Source the 2024/25 rates for **Wales and Northern Ireland**, and 2025/26 for Scotland, Wales and Northern Ireland. England is done; Scotland 2024/25 is now done. | Backdating outside England, in the years still null | `data/rates.2024-25.json`, `rates.2025-26.json`; `data/watchlist.json` rows `ni-model-scheme-2024-25`, `scotland-2025-26` | |
+| 1b | Source the 2024/25 rates for **Wales**, and 2025/26 for Scotland, Wales and Northern Ireland. England, Scotland and Northern Ireland are done for 2024/25. | Backdating in the years still null | `data/rates.2025-26.json`; `data/watchlist.json` rows `ni-model-scheme-2025-26`, `scotland-2025-26`, `ciw-nma-bulletins` | |
 | 2 | Retrieve the Care Inspectorate Wales bulletins for 2024/25 and 2026/27. The publication route is now known and the 2023/24 bulletin is confirmed, so this is a lookup rather than a hunt. A person has to read the table, because it is an image. | Nothing, quality only | `data/citations.json` `ciw-nma-bulletin-2023-24`; watchlist row `ciw-nma-bulletins` | |
 | 4 | Confirm the DfE taper method across more published LA policies. Four councils looked at so far and none states a taper explicitly. If they diverge, ship configurable with explicit disclosure. Do not invent a national figure. | Means-test accuracy | `meansTest.ts` `DEFAULT_TAPER`; `TAPER_METHOD_ASSUMED` flag | |
 | 5 | Wait for Leeds's final revised support offer. The March 2024 offer is now used for a carer who picks Leeds, with an on-screen note saying the policy is under review, and no Child Benefit claim attached, because the only source for that is a superseded freedom of information response. | How much we can say about Leeds | `data/la-overrides.json` `leeds.policyUnderReview`; watchlist row `leeds-final-offer` | |
@@ -28,6 +28,12 @@ it does not go in the product. Flag it, open an issue, ship without it.
 > English authorities, and for the six councils whose published policy we hold,
 > that detail appears on the carer's own result rather than on a page of its
 > own. Nobody should be briefed to review a page that does not exist.
+
+## Closed on 1 September 2026
+
+| # | Item | How it closed |
+|---|---|---|
+| 1b (Northern Ireland) | 2024/25 Northern Irish rates | The Department of Health model scheme PDF was opened by hand, since its server refuses automated requests. Section 1, SCALE RATES, from 1 April 2024: 149, 166, 187 and 219 pounds a week. The document prints a per-4-weeks column beside them and all four rows multiply exactly, which is the document checking itself, so the pound of doubt raised by the uplift arithmetic on 31 August is resolved: the secondary sources were right and the rounding chain simply does not reproduce. Northern Irish backdating now works for 2024/25. **The same PDF prints a REDUCED RATES table (108, 120, 135, 158) for enhanced allowances and short breaks only. It is about 28 per cent lower and is not the allowance. A test pins the scale rate so the wrong table cannot be picked up later.** |
 
 ## Closed on 31 August 2026
 
