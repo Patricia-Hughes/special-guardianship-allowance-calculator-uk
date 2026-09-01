@@ -19,6 +19,7 @@
     "check:review-dates": "tsx scripts/check-content.ts",
     "check:headers": "tsx scripts/check-security-headers.ts",
     "check:bundle": "tsx scripts/check-bundle-budget.ts",
+    "export:content": "tsx scripts/export-content-pack.ts",
     "test:e2e": "pnpm --filter @sgo/web test:e2e",
     "test:a11y": "pnpm --filter @sgo/web test:a11y",
     "verify": "pnpm typecheck && pnpm test:unit && pnpm validate:data && pnpm check:staleness && pnpm check:content && pnpm check:headers"
