@@ -18,28 +18,6 @@ async function toChildren(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Continue' }).click();
 }
 
-/**
- * Wait for a smooth scroll to finish.
- *
- * Measuring position after `scrollY > 0` measures mid-animation, so the number
- * depends on how loaded the machine is. That is a race in the test rather than
- * in the page, and it failed once under a full parallel run while passing alone,
- * which is the signature. Poll until the position stops moving instead.
- */
-async function scrollSettled(page: Page): Promise<void> {
-  await page.waitForFunction(
-    () =>
-      new Promise<boolean>((resolve) => {
-        const start = window.scrollY;
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => resolve(Math.abs(window.scrollY - start) < 1)),
-        );
-      }),
-    undefined,
-    { timeout: 5000 },
-  );
-}
-
 /** How far down the viewport an element sits, as a fraction of its height. */
 async function verticalPosition(page: Page, selector: string): Promise<number> {
   return page.evaluate((sel) => {
@@ -67,13 +45,31 @@ test('the result is scrolled to, not left below the fold', async ({ page }) => {
   await page.getByRole('button', { name: 'Show me the figure' }).click();
 
   await expect(page.getByText('£255', { exact: false }).first()).toBeVisible();
-  await page.waitForFunction(() => window.scrollY > 0 || document.body.scrollHeight <= window.innerHeight);
-  await scrollSettled(page);
 
-  // The headline figure should be in the upper half of the screen, not off it.
-  const pos = await verticalPosition(page, 'h2#maximum-heading');
-  expect(pos, 'the result heading is not on screen').toBeLessThan(0.9);
-  expect(pos, 'the result heading is above the viewport').toBeGreaterThan(-0.5);
+  // Poll rather than measure once. The scroll is animated, so a single reading
+  // taken after "scrollY > 0" samples the middle of the animation, and where
+  // that lands depends on how loaded the machine is. An earlier version of this
+  // test did exactly that and reported a regression that was not there: left to
+  // finish, the heading settles about a quarter of the way down the screen.
+  // One polled assertion covering both bounds. Two separate reads are not safe
+  // here: the result step focuses the step heading and then scrolls to the
+  // results panel, so there is a moment in between when the figure is above the
+  // viewport. Asserting the range in a single retrying check waits for the
+  // whole sequence to finish instead of catching it halfway.
+  await expect
+    .poll(
+      async () => {
+        const v = await verticalPosition(page, 'h2#maximum-heading');
+        return v > -0.1 && v < 0.5;
+      },
+      {
+        message:
+          'the headline figure never settled in the upper part of the screen. Run the probe in ' +
+          'scrolling.spec.ts to see where it lands.',
+        timeout: 5000,
+      },
+    )
+    .toBe(true);
 });
 
 test('adding a child moves you to the new row and puts the cursor in it', async ({ page }) => {
