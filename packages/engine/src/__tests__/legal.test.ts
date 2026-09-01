@@ -372,9 +372,10 @@ describe('SGO engine — legal correctness', () => {
   });
 
   it('T24 backdating refuses to estimate across a year it has no verified rates for', () => {
-    // The archived GOV.UK table that unblocked 2024/25 says in terms that it
-    // applies to England. Wales has no 2024/25 or 2025/26 figures at all, so
-    // those years must be left out — never filled in from England's.
+    // A year sourced for one nation is never borrowed by another. Wales now has
+    // 2024/25, from the Welsh Government circular of 26 February 2024, but no
+    // 2025/26 figures at all, so that year must be left out rather than filled
+    // in from England's or interpolated between the two Welsh years we hold.
     const r = calculateBackdating({
       base: input({
         carer: carer({ nation: 'wales', englandRegion: undefined, orderDate: d('2024-06-01') }),
@@ -384,12 +385,12 @@ describe('SGO engine — legal correctness', () => {
       toDate: d('2026-08-01'),
       actuallyPaidWeekly: p(10000),
     });
-    expect(r.blockedYears).toContain('2024-25');
-    expect(r.blockedYears).toContain('2025-26');
-    expect(r.yearsCovered).toEqual(['2026-27']);
-    // No figure is invented for a blocked year: every segment names a covered one.
+    expect(r.blockedYears).toEqual(['2025-26']);
+    expect(r.yearsCovered).toEqual(['2024-25', '2026-27']);
+    // A gap in the middle is the hard case: it would be easy to bridge and
+    // wrong to. No figure is invented, so every segment names a covered year.
     for (const s of r.segments) expect(r.blockedYears).not.toContain(s.financialYear);
-    expect(r.caveats[0]).toMatch(/left out 2024-25, 2025-26/);
+    expect(r.caveats[0]).toMatch(/left out 2025-26/);
   });
 
   it('T24b backdating now covers 2024/25 in England, from the archived table', () => {

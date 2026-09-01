@@ -394,7 +394,10 @@ function sgoPath(
   const flags: Flag[] = standingFlags(input, asAt, rates, deps);
   const warnings: string[] = [];
 
-  if (la?.lawfulnessFlag) {
+  // Only an upheld finding is served. A complaint that was not upheld, or one
+  // whose outcome we have not recorded, is not something to put in front of a
+  // carer as a finding against their council.
+  if (la?.lawfulnessFlag && la.lawfulnessFlag.code === 'LGSCO_UPHELD') {
     const lf = la.lawfulnessFlag;
     flags.push(
       makeFlag(lf.concernsFormerPolicy ? 'LGSCO_FINDING_FORMER_POLICY' : 'LGSCO_FINDING_AGAINST_LA', {
@@ -404,6 +407,7 @@ function sgoPath(
         // Where the criticised policy has been changed, or a later complaint
         // about the current practice was not upheld, the flag says so with the
         // finding rather than after it.
+        ...(lf.decisionDate ? { decisionDate: lf.decisionDate } : {}),
         ...(lf.policyChangedOn ? { policyChangedOn: lf.policyChangedOn } : {}),
         ...(lf.supersededBy ? { supersededSummary: lf.supersededBy.summary } : {}),
       }),
@@ -422,7 +426,14 @@ function sgoPath(
   // model years ago, must not be accused of running one. See LaOverride.
   const fixedFraction = la?.fixedPercentageOfFosteringRate;
   if (la && typeof fixedFraction === 'number' && fixedFraction < 1) {
-    flags.push(makeFlag('FIXED_PERCENTAGE_POLICY', { councilName: la.name }));
+    flags.push(
+      makeFlag('FIXED_PERCENTAGE_POLICY', {
+        councilName: la.name,
+        // Dated, so it reads as an observation of a policy at a moment rather
+        // than a standing claim about the council.
+        ...(la.policySourceDate ? { policyCheckedOn: la.policySourceDate } : {}),
+      }),
+    );
   }
 
   // A carer in a Kinship Zone who is already on reg 6 support runs the normal

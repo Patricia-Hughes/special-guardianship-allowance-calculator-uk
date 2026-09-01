@@ -58,12 +58,19 @@ const SPARSE: LetterContext = {
   flagsRaised: [],
 };
 
-/** Enough context that every flag body renders its longest form. */
+/**
+ * Enough context that every flag body renders its longest form, with every
+ * filled-in value written as an obvious placeholder. The first export used
+ * realistic values, and a reviewer reasonably read one of them as hardcoded
+ * text sitting in a generic warning. Nothing here should look like copy.
+ */
 const FLAG_CTX: FlagContext = {
-  councilName: 'Anytown Council',
+  councilName: '[COUNCIL NAME]',
   coreWeekly: pence(12000),
   nationalWeekly: pence(18700),
   ageBand: '5-10',
+  policyCheckedOn: '[DATE WE LAST READ THE POLICY]',
+  decisionDate: '[DECISION DATE]',
   previousWeekly: pence(30000),
   monthsSinceOrder: 18,
   kinshipZoneWeekly: pence(18700),
@@ -75,7 +82,7 @@ const FLAG_CTX: FlagContext = {
   effectiveTo: '2027-03-31',
   livingCostsPercent: 100,
   modelLivingCostsPercent: 125,
-  policyChangedOn: '1 January 2024',
+  policyChangedOn: '[THE DATE THIS COUNCIL CHANGED ITS POLICY]',
   supersededSummary: '[The later decision that did not uphold the complaint goes here.]',
   policyUnderReviewNote: '[The council\'s own words about its policy being rewritten go here.]',
 };

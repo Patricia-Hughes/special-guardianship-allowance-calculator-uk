@@ -23,6 +23,7 @@ export type LetterTemplate =
   | 'request-calculation-breakdown'
   | 'challenge-child-benefit-deduction'
   | 'challenge-fixed-percentage'
+  | 'ask-which-element-reduced'
   | 'request-reg7-extension'
   | 'request-annual-review'
   | 'request-enhancement-disability'
@@ -76,6 +77,17 @@ interface TemplateSpec {
   citationIds: string[];
   /** Offer this letter first when one of these flags fired. */
   suggestedBy: FlagCode[];
+  /**
+   * Letters that should have been sent, and answered badly or not at all,
+   * before this one is worth sending.
+   *
+   * Only the formal complaint has any. A complaint made before the carer holds
+   * the written policy and the calculation breakdown has no evidence attached,
+   * is easy to answer with a general reassurance, and starts formal clocks the
+   * carer then cannot restart. So it is never promoted by a flag: the UI asks
+   * whether the earlier letters have been sent, and offers those instead if not.
+   */
+  requiresFirst?: LetterTemplate[];
 }
 
 export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
@@ -92,8 +104,11 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
       (ctx.onMeansTestedBenefits
         ? 'I receive means-tested benefits. In 2024 the Local Government and Social Care Ombudsman found that deducting Child Benefit as a blanket rule from carers in that position was not appropriate, and asked the council concerned to recalculate its awards. I would be grateful if you could confirm how your policy takes that decision into account.\n\n'
         : 'I would also be grateful if you could send me the part of your policy that covers this.\n\n') +
+      // Concedes nothing the council would not say in its first reply, and moves
+      // the exchange straight onto the ground the carer can actually win on.
+      'I understand the regulations allow Child Benefit to be taken into account. I am asking how that was decided in my case, rather than whether it is permitted.\n\n' +
       signOff(),
-    citationIds: ['lgsco-devon-2024', 'sg-regs-2005-reg6'],
+    citationIds: ['lgsco-devon-2024', 'sg-regs-2005-reg13', 'sg-regs-2005-reg6'],
     suggestedBy: ['UNLAWFUL_CB_DEDUCTION_RISK'],
   },
 
@@ -103,7 +118,11 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
-      `My understanding is that the national minimum fostering allowance for a child in the ${ctx.childAgeBand} age band in ${REGION_LABEL[ctx.region]} is ${formatMoney(ctx.nmaWeekly)} a week, and that the statutory guidance treats the core fostering allowance as the starting point for a special guardianship allowance.\n\n` +
+      // Attributed, so the carer is quoting a published source rather than
+      // asserting a number of ours. If our rate data or region mapping were ever
+      // wrong, an unattributed figure would cost them credibility on their
+      // strongest point.
+      `My understanding is that the national minimum fostering allowance published by the Department for Education for a child in the ${ctx.childAgeBand} age band in ${REGION_LABEL[ctx.region]} is ${formatMoney(ctx.nmaWeekly)} a week, and that the statutory guidance treats the core fostering allowance as the starting point for a special guardianship allowance.\n\n` +
       'Please could you tell me:\n\n' +
       '1. what figure you used as the starting point for my allowance;\n' +
       '2. whether a fixed percentage or proportion was applied at any stage; and\n' +
@@ -114,23 +133,48 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
     suggestedBy: ['FIXED_PERCENTAGE_POLICY', 'BELOW_NMA'],
   },
 
+  // Two letters, because one was doing two jobs badly. A carer whose whole
+  // allowance is being stepped down was being handed the extension letter,
+  // which never asks the tapering question and whose second question accepts
+  // that the allowance will drop. That gave away the strongest argument they
+  // had. See REG7_MISAPPLICATION_WARNING and the Southend decision.
+  'ask-which-element-reduced': {
+    title: 'Ask which part of your allowance is being reduced',
+    subject: () => `Special guardianship allowance, how it is being reduced, ref ${PLACEHOLDER_REF}`,
+    body: (ctx) =>
+      `${to(ctx)}\n\n` +
+      `I am the special guardian for ${PLACEHOLDER_CHILD}, and I was ${PLACEHOLDER_CHILD}'s foster carer before the special guardianship order was made` +
+      (ctx.orderDate ? ` on ${ctx.orderDate}` : '') +
+      `. ${paidLine(ctx)}` +
+      'My payments are being reduced, and I would like to understand exactly what is being reduced and why. Please could you confirm:\n\n' +
+      '1. which element of my allowance is being reduced, and by how much;\n' +
+      '2. the basis on which that reduction is being made; and\n' +
+      '3. if regulation 7 is being relied on, how it is being applied in my case.\n\n' +
+      'I ask because regulation 7 concerns the reward element of a former foster carer\'s allowance. The Ombudsman found in 2020 that reducing an entire allowance in stages misapplied that rule. I would like to understand which of these applies to my payments.\n\n' +
+      signOff(),
+    citationIds: ['sg-regs-2005-reg7', 'lgsco-southend-2020'],
+    suggestedBy: ['REG7_MISAPPLICATION_WARNING'],
+  },
+
   'request-reg7-extension': {
-    title: 'Ask for your two-year former foster carer protection to continue',
+    title: 'Ask for the reward element to continue past two years',
     subject: () => `Special guardianship allowance, continuing the reward element, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}, and I was ${PLACEHOLDER_CHILD}'s foster carer before the special guardianship order was made` +
       (ctx.orderDate ? ` on ${ctx.orderDate}` : '') +
       `. ${paidLine(ctx)}` +
-      'I understand that for the first two years after the order, the reward element of my former fostering allowance is protected, and that a council can agree to continue it after that where the child\'s needs justify it.\n\n' +
+      // Regulation 7 is a power, not an entitlement. Opening with "is protected"
+      // hands the council an easy correction and weakens everything after it.
+      'I understand that your council can continue paying the reward element of my former fostering allowance for two years after the order, and for longer where it considers that appropriate.\n\n' +
       'I would be grateful if you could confirm:\n\n' +
       '1. the date on which that two-year period ends;\n' +
-      '2. what my allowance will be after that date; and\n' +
-      '3. how I can ask for the reward element to continue, and what information would help you decide.\n\n' +
+      '2. how I can ask for the reward element to continue beyond it, and what information would help you decide; and\n' +
+      '3. how you would decide that.\n\n' +
       `${PLACEHOLDER_CHILD}'s needs have not reduced, and I would like to set out why continuing it would help. Please let me know what you need from me.\n\n` +
       signOff(),
-    citationIds: ['sg-regs-2005-reg7', 'tower-hamlets-2013', 'lgsco-southend-2020'],
-    suggestedBy: ['REG7_EXPIRING', 'REG7_EXTENSION_AVAILABLE', 'REG7_FLOOR_APPLIED', 'REG7_MISAPPLICATION_WARNING'],
+    citationIds: ['sg-regs-2005-reg7', 'tower-hamlets-2013'],
+    suggestedBy: ['REG7_EXPIRING', 'REG7_EXTENSION_AVAILABLE', 'REG7_FLOOR_APPLIED'],
   },
 
   'request-enhancement-disability': {
@@ -146,7 +190,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
       '  • [add as many as apply]\n\n' +
       'I would be grateful if you could assess whether an enhancement to my allowance would be appropriate, and let me know what evidence would help.\n\n' +
       signOff(),
-    citationIds: ['sg-regs-2005-reg6'],
+    citationIds: ['sg-regs-2005-reg6-2-b'],
     suggestedBy: ['ENHANCEMENT_AVAILABLE'],
   },
 
@@ -173,7 +217,10 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
-      'I would be grateful for a written breakdown of how that figure was calculated, showing:\n\n' +
+      // "that figure" pointed at a sentence that only appears when the carer
+      // told us what they are paid. Without it the letter asked about a figure
+      // it had never mentioned.
+      `I would be grateful for a written breakdown of how ${ctx.currentlyPaidWeekly === undefined ? 'my allowance' : 'that figure'} was calculated, showing:\n\n` +
       '1. the starting figure and where it came from;\n' +
       '2. what income was taken into account, and what was disregarded;\n' +
       '3. what outgoings were allowed; and\n' +
@@ -210,13 +257,17 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
       'What I would like to happen:\n\n' +
       '  • [e.g. a written explanation of how the figure was calculated]\n' +
       '  • [e.g. a reassessment]\n\n' +
-      'I have raised this before' +
-      (ctx.currentlyPaidWeekly !== undefined ? ' and have not had a full answer' : '') +
-      ', so I am now asking for it to be looked at under your complaints procedure. Please confirm you have received this and let me know when I can expect a reply.\n\n' +
+      '[I raised this on [DATE] and have not had a full answer. If you have not raised it before, delete this sentence.]\n\n' +
+      'I am asking for it to be looked at under your complaints procedure. Please confirm you have received this and let me know when I can expect a reply.\n\n' +
       'If I am not satisfied with the outcome, I understand I can ask the Local Government and Social Care Ombudsman to look at it.\n\n' +
       signOff(),
     citationIds: ['sg-regs-2005-reg6'],
-    suggestedBy: ['LGSCO_FINDING_AGAINST_LA'],
+    // Deliberately empty. A published decision about a different carer is not a
+    // reason for this carer to complain, and this site's own warning says so.
+    // Promoting a formal complaint on the strength of it sent carers into the
+    // process without the evidence to make it stick.
+    suggestedBy: [],
+    requiresFirst: ['request-written-policy', 'request-calculation-breakdown'],
   },
 };
 
@@ -248,6 +299,7 @@ export function suggestLetters(flagsRaised: FlagCode[]): LetterTemplate[] {
   const PRIORITY: LetterTemplate[] = [
     'challenge-child-benefit-deduction',
     'challenge-fixed-percentage',
+    'ask-which-element-reduced',
     'request-reg7-extension',
     'request-enhancement-disability',
     'request-calculation-breakdown',
@@ -257,7 +309,22 @@ export function suggestLetters(flagsRaised: FlagCode[]): LetterTemplate[] {
   ];
   const byPriority = (a: LetterTemplate, b: LetterTemplate): number =>
     PRIORITY.indexOf(a) - PRIORITY.indexOf(b);
-  return [...matched.sort(byPriority), ...rest.sort(byPriority)];
+  // A letter with prerequisites is never promoted, whatever fired. It sits at
+  // the end of the list until the carer says they have already asked the
+  // questions it assumes they asked.
+  const gated = (t: LetterTemplate): boolean =>
+    (LETTER_TEMPLATES[t].requiresFirst ?? []).length > 0;
+  const ordered = [...matched.sort(byPriority), ...rest.sort(byPriority)];
+  return [...ordered.filter((t) => !gated(t)), ...ordered.filter(gated)];
+}
+
+/**
+ * What a carer must already have done before this letter is worth sending, as
+ * the titles of the letters that come first. Empty for every letter but the
+ * formal complaint.
+ */
+export function lettersRequiredFirst(t: LetterTemplate): string[] {
+  return (LETTER_TEMPLATES[t].requiresFirst ?? []).map((r) => LETTER_TEMPLATES[r].title);
 }
 
 export function letterTitle(t: LetterTemplate): string {
@@ -271,7 +338,11 @@ export function letterAsPlainText(letter: GeneratedLetter): string {
     .join('\n');
   return (
     `Subject: ${letter.subject}\n\n${letter.body}\n\n` +
-    `---\nWhat this letter refers to:\n${sources}\n\n` +
+    `---\nWho to send this to:\n` +
+    '  For the first three years after the order, the council that looked after the child stays\n' +
+    '  responsible, even if you have moved away. After that it is usually the council where you\n' +
+    '  live. See /guidance/which-council-is-responsible if you are not sure.\n\n' +
+    `What this letter refers to:\n${sources}\n\n` +
     'This letter was prepared using an online estimate. It is not legal advice.\n'
   );
 }

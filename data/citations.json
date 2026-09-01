@@ -94,11 +94,12 @@
   },
   "lgsco-north-tyneside-17002928": {
     "label": "LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018)",
-    "url": "https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf",
+    "url": "https://web.archive.org/web/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf",
     "kind": "ombudsman",
-    "retrieved": "2026-08-31",
+    "retrieved": "2026-09-01",
     "holding": "Calculating a special guardianship allowance as a percentage of the fostering allowance was contrary to statutory guidance and case law. The council identified 171 families who may not have received the right support, and payments were backdated to November 2013.",
-    "note": "This is a 2018 report. The site previously carried it as 2019, which was wrong. It concerns the policy North Tyneside abolished in 2018, not its current one."
+    "note": "Served from the web archive because the Ombudsman's own asset server times out on this PDF. Original address, kept as provenance: https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf. A third copy sits in North Tyneside's own committee papers if both fail. The remedy was 200 pounds already paid plus a further 200 pounds each ordered, so 400 pounds each to two people. This is a February 2018 report, and it concerns the policy North Tyneside abolished that year.",
+    "archivedFrom": "https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf"
   },
   "corambaaf-pn75": {
     "label": "CoramBAAF Practice Note 75 - special guardianship financial support",
@@ -190,20 +191,20 @@
     "note": "Published 11 October 2024, replacing the 2010 Family and Friends Care guidance. A 2024 restatement of the para 65 principle, and so a fresher citation than the 2017 guidance for the single most important rule on this site."
   },
   "lgsco-rochdale-2019": {
-    "label": "LGSCO decision, Rochdale MBC (May 2019), upheld on judicial review (December 2019)",
-    "url": "https://www.lgo.org.uk/information-centre/news/2019/dec/rochdale-council-s-legal-challenge-rejected-and-it-must-now-consider-ombudsman-s-recommendations",
+    "label": "LGSCO decision, Rochdale MBC (17 010 167, May 2019), upheld on judicial review",
+    "url": "https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/17-010-167",
     "kind": "ombudsman",
-    "retrieved": "2026-08-31",
-    "holding": "The council was found at fault for underpaying special guardianship allowances under a policy departing from statutory guidance and the case law without a rational explanation. Rochdale challenged the finding in the High Court; permission was refused, the challenge was dismissed and the council was ordered to pay costs, so the decision stands.",
-    "note": "The judicial review outcome is what makes this decision safe to rely on, and it was the open question when this citation was first added. Corroborated by CYP Now and Local Government Lawyer. The URL is the Ombudsman's own news item confirming the outcome. The previous URL on this entry pointed at a Shropshire Council policy PDF, which was wrong."
+    "retrieved": "2026-09-01",
+    "holding": "Grandparents were paid 119.18 pounds a week where the council's own fostering rate was 132 pounds, about 13 pounds a week short, under a policy departing from the statutory guidance without a rational explanation. Backdating to November 2013 was recommended.",
+    "note": "The council challenged the finding in the High Court in December 2019. Permission was refused, the challenge was dismissed and costs were awarded against it, which is what makes this decision safe to rely on. Ombudsman news item confirming that outcome: https://www.lgo.org.uk/information-centre/news/2019/dec/rochdale-council-s-legal-challenge-rejected-and-it-must-now-consider-ombudsman-s-recommendations. Reference corrected from an earlier entry that carried no decision number and linked to a Shropshire policy PDF."
   },
   "sg-regs-2005-reg13": {
     "label": "Special Guardianship Regulations 2005, reg 13(2)",
     "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/13",
     "kind": "regulation",
-    "retrieved": "2026-08-29",
-    "holding": "The local authority must take account of any other grant, benefit, allowance or resource available to the person in respect of their needs as a result of becoming a special guardian of the child.",
-    "note": "The actual statutory hook for the means test, and the provision councils rely on to deduct Child Benefit. Cited directly on the Child Benefit page rather than left to reg 6 and reg 7."
+    "retrieved": "2026-09-01",
+    "holding": "Requires a council to take into account other grants, benefits, allowances and resources available to the guardian, and allows it to deduct an amount to take account of Child Benefit received for the child.",
+    "note": "This is the provision the site never mentioned. Because it expressly permits the deduction, a carer who was told only that the Ombudsman found a deduction wrong had nothing prepared for the obvious reply. The Devon decision records reg 13 at its own paragraph 8. What Devon got wrong was applying it to everyone on Universal Credit as a blanket rule; the Brent decision (20 008 652) frames the test as whether the council had justification, not whether deduction is permitted at all."
   },
   "north-tyneside-decision-2025": {
     "label": "North Tyneside Council, Decision Record: Foster Care, Special Guardianship, Adoption and Child Arrangement Order Allowance Increases",
@@ -351,5 +352,22 @@
     "retrieved": "2026-09-01",
     "holding": "Sets the weekly foster care scale rates in Northern Ireland from 1 April 2024 at 149, 166, 187 and 219 pounds across four age bands.",
     "note": "Section 1, SCALE RATES. The same document prints a REDUCED RATES table on page 2 (108, 120, 135, 158) which is the scale rate less pocket money and clothing, used only for enhanced allowances and short break payments. Do not confuse the two."
+  },
+  "wg-nma-2024-25": {
+    "label": "Welsh Government, National Minimum Allowances for foster carers 2024 to 2025, circular of 26 February 2024",
+    "url": "",
+    "kind": "dataset",
+    "retrieved": "2026-09-01",
+    "holding": "Sets the Welsh national minimum allowances from 1 April 2024 at 218 pounds for ages 0 to 4, 199 pounds for 5 to 15 and 248 pounds for 16 and over, a rise of 3 per cent.",
+    "note": "On Welsh Government letterhead, signed Alistair Davey. Supplied by the reviewer on 1 September 2026 and transcribed as printed. This is the primary source the site had been missing for Wales: it confirms directly that the 0 to 4 band is paid more than the 5 to 15 band, which had only been corroborated from secondary reports. The top band is printed \"16+\", not \"16 to 17\", so it is not stored as a closed range. Rates apply from 1 April, the council convention, not the tax year.",
+    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2"
+  },
+  "sg-regs-2005-reg6-2-b": {
+    "label": "Special Guardianship Regulations 2005, reg 6(2)(b)",
+    "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/6",
+    "kind": "regulation",
+    "retrieved": "2026-09-01",
+    "holding": "The specific provision on taking a child's needs into account when deciding financial support, including any disability or the consequences of earlier abuse or neglect.",
+    "note": "Cited specifically rather than as reg 6 as a whole, on the reviewer's instruction of 1 September 2026, so an enhancement request points at the sub paragraph it rests on."
   }
 }

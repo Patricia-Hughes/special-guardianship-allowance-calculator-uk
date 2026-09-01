@@ -169,14 +169,16 @@ for (const [file, doc] of rateDocs) {
         const message =
           `${file} ${set.label}: band ${band.id} (${value}p) is lower than ${previousBand} (${previous}p). ` +
           'Rates must not fall as age rises — this is usually a transcription error.';
-        if (set.unverified) {
-          // Known-suspect and explicitly marked. Check 12 below decides whether
-          // it may be served: only if the anomaly has been corroborated.
-          note(
-            set.anomalyConfirmed
-              ? `${message} Corroborated as genuinely published — served with an on-screen explanation.`
-              : `${message} Marked verify: true — route must stay disabled.`,
-          );
+        if (set.anomalyConfirmed) {
+          // Established as genuinely published. This no longer requires
+          // verify: true, because verify means "we doubt this figure" and a
+          // primary source removes the doubt without removing the oddity.
+          // Wales is the case: the Welsh Government's own circular prints the
+          // younger band higher, so the data is confirmed and not suspect.
+          // Check 12 still insists on the corroboration and the on-screen line.
+          note(`${message} Corroborated as genuinely published, and served with an explanation.`);
+        } else if (set.unverified) {
+          note(`${message} Marked verify: true, so the route must stay disabled.`);
         } else {
           fail('2 monotonic', message);
         }
@@ -219,16 +221,26 @@ for (const [, doc] of rateDocs) {
   if (doc.status === 'PENDING_SOURCE') continue;
   for (const nation of NATIONS) {
     const section = doc[nation] as RateSection | null | undefined;
-    if (section?.verify !== true) continue;
-    if (!section.verifyNote) {
+    if (!section) continue;
+    // Either state brings a section in here. verify: true means we doubt the
+    // figure. anomalyConfirmed means we have established an odd-looking one is
+    // genuinely published. A section can now be the second without the first,
+    // once a primary source lands, and it must not escape the requirements
+    // below by dropping verify.
+    if (section.verify !== true && section.anomalyConfirmed !== true) continue;
+    if (section.verify === true && !section.verifyNote) {
       fail('12 verify', `${nation} rates are marked verify: true with no verifyNote saying what to check`);
     }
     const flagName = ROUTE_FLAG_FOR_NATION[nation];
     if (!flagName) {
-      fail('12 verify', `${nation} rates are marked verify: true but no route flag is defined for that nation`);
-      continue;
+      if (section.verify === true) {
+        fail('12 verify', `${nation} rates are marked verify: true but no route flag is defined for that nation`);
+        continue;
+      }
+      // Confirmed but not doubted, and no route flag exists for this nation.
+      // Nothing to gate; the corroboration rules below still apply.
     }
-    const enabled = new RegExp(`${flagName}:\\s*true`).test(featureFlagsSource);
+    const enabled = flagName ? new RegExp(`${flagName}:\\s*true`).test(featureFlagsSource) : true;
 
     // An odd-looking figure has two quite different states, and conflating them
     // either strands a whole nation or ships a number nobody has checked.
@@ -267,8 +279,11 @@ for (const [, doc] of rateDocs) {
         );
       }
       note(
-        `${nation} rates carry a confirmed anomaly, corroborated by ${sources.length} sources; ` +
-          `${flagName} may be on. Primary source still outstanding.`,
+        `${nation} rates carry a confirmed anomaly, corroborated by ${sources.length} sources` +
+          `${flagName ? `; ${flagName} may be on` : ''}. ` +
+          (section.verify === true
+            ? 'Primary source still outstanding.'
+            : 'Confirmed against a primary source.'),
       );
     } else if (enabled) {
       fail(
@@ -645,6 +660,54 @@ for (const la of authorities) {
         'the later decision. Saying a council has been cleared needs the same evidence as saying it ' +
         'was at fault.',
     );
+  }
+}
+
+// ── 18. Every warning and letter that makes a claim carries a source ───────
+//
+// The citation gate covered the guidance pages and the data, and stopped there.
+// So twelve of the thirty-four warnings shown on a result carried no source at
+// all, including one that asserted "councils must have a published policy" with
+// nothing behind it. The reviewer spotted the gap by counting, and observed that
+// if the gate had covered warnings, those would have failed it. It does now.
+//
+// The exceptions are listed by name rather than inferred, so adding one is a
+// decision somebody makes on purpose.
+const WARNINGS_WITHOUT_A_SOURCE = new Map<string, string>([
+  ['LGSCO_FINDING_AGAINST_LA', 'its source is the specific decision, passed in per council'],
+  ['LGSCO_FINDING_FORMER_POLICY', 'same, the decision is per council'],
+  ['LA_POLICY_UNDER_REVIEW', "it reports the council's own words about its own policy"],
+  ['RATES_STALE', 'it describes the state of this site, not the law'],
+]);
+
+const flagsSource = readFileSync(join(root, 'packages', 'engine', 'src', 'flags.ts'), 'utf8');
+const catalogueBody = flagsSource.slice(flagsSource.indexOf('FLAG_CATALOGUE'));
+for (const m of catalogueBody.matchAll(/^ {2}([A-Z][A-Z_0-9]+): \{(.*?)^ {2}\},/gms)) {
+  const [, code, body] = m as unknown as [string, string, string];
+  const hasCitation = /citationId:/.test(body);
+  const exempt = WARNINGS_WITHOUT_A_SOURCE.has(code);
+  if (!hasCitation && !exempt) {
+    fail(
+      '18 warning sources',
+      `flags.ts "${code}" makes a claim to a carer with no citationId. Give it one, or add it to ` +
+        'WARNINGS_WITHOUT_A_SOURCE in this script with the reason it does not need one.',
+    );
+  }
+  if (hasCitation && exempt) {
+    fail(
+      '18 warning sources',
+      `flags.ts "${code}" now has a citationId but is still listed as not needing one. Remove it ` +
+        'from WARNINGS_WITHOUT_A_SOURCE.',
+    );
+  }
+}
+
+const lettersSource = readFileSync(join(root, 'packages', 'letters', 'src', 'index.ts'), 'utf8');
+for (const m of lettersSource.matchAll(/^ {2}'([a-z0-9-]+)': \{(.*?)^ {2}\},/gms)) {
+  const [, template, body] = m as unknown as [string, string, string];
+  const ids = /citationIds:\s*\[([^\]]*)\]/.exec(body);
+  if (!ids || ids[1]!.trim() === '') {
+    fail('18 warning sources', `letters "${template}" cites nothing. Every letter states a position.`);
   }
 }
 

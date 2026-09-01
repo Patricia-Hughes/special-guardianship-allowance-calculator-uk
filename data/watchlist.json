@@ -2,6 +2,13 @@
   "note": "Documents we know exist, or expect to exist, and are waiting on. Each one is a short lookup rather than a piece of research. check-staleness warns once checkAfter has passed, so nothing here can quietly rot in a markdown file. Adding a row is cheap; leaving a known gap unrecorded is not.",
   "items": [
     {
+      "id": "must-assess-provision",
+      "what": "Identify the provision that creates the duty to assess a special guardian for support where the child was looked after immediately before the order, and confirm it. Also confirm that regs 10 and 11 are the right citation for the annual review, and that reg 5 is right for the three year responsibility rule.",
+      "why": "The site said the council \"must\" assess, citing regulation 6. Regulation 6 governs when financial support is payable, not when an assessment is owed, so the citation did not support the claim. The reviewer said the claim looks right but not to guess the provision. The wording has been changed so nothing rests on the wrong source, and an on-screen note says why. This is the only finding from the review that is parked rather than fixed.",
+      "checkAfter": "2026-09-30",
+      "openItem": "6"
+    },
+    {
       "id": "ni-model-scheme-2025-26",
       "what": "Open the Department of Health (Northern Ireland) model scheme PDFs for 2025-26 and 2026-27 and read the SCALE RATES table out of each.",
       "why": "2024/25 is now sourced from the 2024-25 model scheme, so Northern Irish backdating works for that year and blocks 2025/26. Note the trap: each scheme prints a second REDUCED RATES table for enhanced allowances and short breaks, about 28 per cent lower, which is not the allowance.",

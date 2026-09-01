@@ -1,20 +1,55 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://sgo-calculator.example/schema/citations.schema.json",
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "$id": "https://sgo-calculator.example/schema/citations.schema.json",
+ "type": "object",
+ "propertyNames": {
+  "pattern": "^[a-z0-9-]+$"
+ },
+ "additionalProperties": {
   "type": "object",
-  "propertyNames": { "pattern": "^[a-z0-9-]+$" },
-  "additionalProperties": {
-    "type": "object",
-    "required": ["label", "url", "kind", "retrieved"],
-    "additionalProperties": false,
-    "properties": {
-      "label": { "type": "string", "minLength": 1 },
-      "url": { "type": "string" },
-      "kind": { "type": "string", "enum": ["statute", "regulation", "guidance", "case", "ombudsman", "dataset"] },
-      "retrieved": { "type": "string", "format": "date" },
-      "holding": { "type": "string" },
-      "note": { "type": "string" },
-      "pendingSourceIssue": { "type": "string", "format": "uri" }
-    }
+  "required": [
+   "label",
+   "url",
+   "kind",
+   "retrieved"
+  ],
+  "additionalProperties": false,
+  "properties": {
+   "label": {
+    "type": "string",
+    "minLength": 1
+   },
+   "url": {
+    "type": "string"
+   },
+   "kind": {
+    "type": "string",
+    "enum": [
+     "statute",
+     "regulation",
+     "guidance",
+     "case",
+     "ombudsman",
+     "dataset"
+    ]
+   },
+   "retrieved": {
+    "type": "string",
+    "format": "date"
+   },
+   "holding": {
+    "type": "string"
+   },
+   "note": {
+    "type": "string"
+   },
+   "pendingSourceIssue": {
+    "type": "string",
+    "format": "uri"
+   },
+   "archivedFrom": {
+    "type": "string"
+   }
   }
+ }
 }

@@ -419,6 +419,8 @@ export interface LaOverride {
   policyUnderReview?: boolean;
   policyUnderReviewNote?: string;
   policySourceUrl: string;
+  /** When the policy we are describing was published, so a claim can be dated. */
+  policySourceDate?: string;
   verifiedOn: string;
 }
 
