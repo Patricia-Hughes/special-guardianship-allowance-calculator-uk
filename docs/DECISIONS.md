@@ -281,3 +281,69 @@ The reasoning, from §42: an invented number can cost a carer money or lose them
 an argument with their council. A figure that looks precise and is a few pounds
 out is worse than no figure, because they will take it to a complaint and it
 will be dismissed — along with everything else they said.
+
+---
+
+## ADR-0008: The one chunk we wrote is obfuscated; nothing else is
+
+**Date:** 1 September 2026
+
+### Context
+
+Anything a browser runs, a visitor can read. Before this change, opening dev
+tools and pressing Ctrl+F on the shipped bundle found the rate tables as raw
+numbers, every warning sentence verbatim, all 34 warning codes and every
+citation id. A working copy of the calculator was an afternoon's work for
+anybody who wanted one.
+
+The owner asked whether that could be prevented. It cannot. The question worth
+answering is a different one: what does it cost to make a copy unrewarding, and
+is that cost paid by the right person?
+
+Three options were built and measured on the real bundle, then run against the
+full 188-test browser suite:
+
+| | Our chunk | Whole page | Poor mobile | Suite |
+|---|---|---|---|---|
+| Minified only, as before | 39 KB | 155 KB | 3.1s | passes |
+| **String array, no eval** | **99 KB** | **218 KB** | **4.2s** | **passes** |
+| Control-flow flattening, dead code, self-defending | 303 KB | 419 KB | 8.4s | passes |
+
+### Decision
+
+Take the middle option, and apply it only to the single chunk containing code
+we wrote.
+
+React and Next.js are public open source: obfuscating them would cost a carer
+bytes and protect nothing. The chunk is found by searching for our own markers
+rather than by name, because Next.js hashes filenames on every build, and the
+script fails the build if it finds no match rather than shipping unobfuscated
+and reporting success.
+
+`eval` and the self-defending traps are off. Our CSP forbids `eval`, and a
+defence that works by breaking the page for someone with dev tools open
+punishes curious users rather than thieves. The heavy option also breaks the
+§31 page-weight budget, which is not a threshold to relax quietly.
+
+### Consequence
+
+Searching the shipped file for `rest-of-england`, `unjustified departure`,
+`LGSCO_UPHELD` or `20500` now returns nothing. A copy runs but cannot be read,
+searched or updated, which matters most in April when the rates change.
+
+It costs about one extra second on a poor mobile connection. That is a real
+cost to the actual audience and it was weighed rather than waved through.
+
+Two things this does not do, and neither should be misrepresented to anybody:
+
+- **The sixteen guidance pages stay readable.** They are HTML, their text has
+  to render, and we want search engines to index it. View-source shows the lot.
+- **It stops the opportunist, not the determined.** Obfuscation is a lock on a
+  garden gate. What actually protects the work is copyright, and being the
+  version that is still correct next April.
+
+A first attempt used a string array alone and left object keys untouched, so
+the rate tables were still greppable as `{"rest-of-england": {"0-2": 20500}}`.
+The verification step at the end of the script caught it. That step is the
+reason the decision is trustworthy: an obfuscation pass that quietly does half
+the job is worse than none, because you stop looking.
