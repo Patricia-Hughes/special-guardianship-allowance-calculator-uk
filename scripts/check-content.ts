@@ -119,13 +119,17 @@ for (const kind of ['guidance', 'la'] as const) {
 // that removes the dash is almost always the clearer sentence anyway.
 //
 // Code comments are exempt: nobody reads them but us.
+// Whole trees, not a list of files. This was a hand-maintained list naming
+// flags.ts and schema.ts, and it missed the arithmetic breakdown in
+// meansTest.ts, which a carer reads line by line. Any opt-in list has that
+// failure mode: a new file that speaks to a user is not on it. These cover
+// every file that can produce user-facing text, so a new one is covered the
+// day it is written.
 const EM_DASH_ROOTS = [
   join(root, 'apps', 'web', 'content'),
   join(root, 'apps', 'web', 'app'),
   join(root, 'apps', 'web', 'components'),
-  join(root, 'packages', 'engine', 'src', 'flags.ts'),
-  // Validation messages are read by users too, and were missed the first time.
-  join(root, 'packages', 'engine', 'src', 'schema.ts'),
+  join(root, 'packages', 'engine', 'src'),
   join(root, 'packages', 'letters', 'src'),
 ];
 
