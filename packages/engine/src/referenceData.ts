@@ -1,18 +1,21 @@
 /**
- * Reference data access. [R10] Rate data is never hardcoded in engine source —
- * it lives in versioned JSON under /data with an effective date, copied into
- * this package at build time by scripts/sync-engine-data.ts.
+ * Reference data access.
+ *
+ * [R10] Rate data is never hardcoded in engine source. It lives in versioned
+ * JSON under /data with an effective date, copied into this package at build
+ * time by scripts/sync-engine-data.ts, which also strips the maintainer-only
+ * fields so they are not shipped to a browser.
  */
 
-import rates202627 from './data/rates.2026-27.json' ;
-import rates202526 from './data/rates.2025-26.json';
-import rates202425 from './data/rates.2024-25.json';
-import benefits202627 from './data/benefits.2026-27.json';
 import benefits202526 from './data/benefits.2025-26.json';
+import benefits202627 from './data/benefits.2026-27.json';
 import citationsJson from './data/citations.json';
 import kinshipZonesJson from './data/kinship-zones.json';
 import laOverridesJson from './data/la-overrides.json';
 import laRegionMapJson from './data/la-region-map.json';
+import rates202425 from './data/rates.2024-25.json';
+import rates202526 from './data/rates.2025-26.json';
+import rates202627 from './data/rates.2026-27.json';
 
 import { DataError } from './errors.js';
 import type {
@@ -24,6 +27,10 @@ import type {
   LaOverride,
   RateTable,
 } from './types.js';
+
+export const ENGINE_VERSION = '0.1.0';
+
+// ─── Tables, newest first ──────────────────────────────────────────────────
 
 export const RATE_TABLES: RateTable[] = [
   rates202627 as unknown as RateTable,
@@ -38,12 +45,11 @@ export const BENEFIT_TABLES: BenefitTable[] = [
 
 export const KINSHIP_ZONES = kinshipZonesJson as unknown as KinshipZones;
 
-type RawCitation = Omit<Citation, 'id' | 'retrieved'> & { retrieved: string };
-const CITATIONS = citationsJson as unknown as Record<string, RawCitation>;
+// ─── Councils ──────────────────────────────────────────────────────────────
 
 /**
- * All seeded LA overrides, including those not yet publishable.
- * Use `publishableLaOverride()` for anything that reaches a user.
+ * All seeded LA overrides, including those not yet publishable. Use
+ * publishableLaOverride for anything that reaches a user.
  */
 export const LA_OVERRIDES_ALL: Record<string, LaOverride> = Object.fromEntries(
   (laOverridesJson.authorities as unknown as LaOverride[]).map((a) => [a.slug, a]),
@@ -52,15 +58,13 @@ export const LA_OVERRIDES_ALL: Record<string, LaOverride> = Object.fromEntries(
 /**
  * [HARD R9] Any statement about a NAMED council must be backed by a stored,
  * dated, live source URL. An entry without one is invisible to the engine: the
- * calculation falls back to national minimums and raises COUNCIL_POLICY_UNKNOWN.
+ * calculation falls back to national minimums and raises COUNCIL_POLICY_UNKNOWN,
+ * which is an honest gap rather than an unsourced claim about a real body.
  */
 export function isPublishable(la: LaOverride | undefined): la is LaOverride {
-  if (!la) return false;
-  if (!la.publishable) return false;
-  if (!la.policySourceUrl) return false;
-  if (la.lawfulnessFlag && (!la.lawfulnessFlag.sourceUrl || !la.lawfulnessFlag.decisionDate)) {
-    return false;
-  }
+  if (!la || !la.publishable || !la.policySourceUrl) return false;
+  const finding = la.lawfulnessFlag;
+  if (finding && (!finding.sourceUrl || !finding.decisionDate)) return false;
   return true;
 }
 
@@ -93,8 +97,11 @@ export function hasUnpublishableLaOverride(slug: string | undefined): boolean {
   return hasUnpublishableLaOverrideIn(LA_OVERRIDES_ALL, slug);
 }
 
+// ─── Regions ───────────────────────────────────────────────────────────────
+
 export const LA_REGION_MAP = laRegionMapJson.map as Record<string, EnglandRegion>;
 export const LA_NAMES = laRegionMapJson.names as Record<string, string>;
+
 /**
  * verificationNote and knownDiscrepancies are maintainer prose and are stripped
  * from the shipped copy by sync-engine-data. They live in /data if you want the
@@ -108,15 +115,18 @@ export const LA_REGION_MAP_META = {
   expectedAuthorityCount: laRegionMapJson.expectedAuthorityCount,
 };
 
+// ─── Citations ─────────────────────────────────────────────────────────────
+
+type RawCitation = Omit<Citation, 'id' | 'retrieved'> & { retrieved: string };
+const CITATIONS = citationsJson as unknown as Record<string, RawCitation>;
+
 /** Resolve a citation id to a full Citation. Throws on an unknown id [R3]. */
 export function cite(id: string): Citation {
-  const c = CITATIONS[id];
-  if (!c) throw new DataError(`Unknown citation id: "${id}"`);
-  return { id, ...c, retrieved: c.retrieved as IsoDate };
+  const citation = CITATIONS[id];
+  if (!citation) throw new DataError(`Unknown citation id: "${id}"`);
+  return { id, ...citation, retrieved: citation.retrieved as IsoDate };
 }
 
 export function allCitationIds(): string[] {
   return Object.keys(CITATIONS);
 }
-
-export const ENGINE_VERSION = '0.1.0';

@@ -1,30 +1,41 @@
 /**
- * Backdating module — spec §16.
+ * Backdating module, spec §16.
  *
  * High value: the Ombudsman has ordered councils to backdate, so "what should I
  * have been paid since the order?" is a real question with real money attached.
  *
- * [HARD] If any segment falls in a financial year whose rate data is
- * PENDING_SOURCE, we do not estimate it. It goes in `blockedYears` and the user
- * sees a partial total with an explicit note. A backdating figure built on a
- * guessed historic rate is worse than no figure — the carer takes it to a
+ * The work is all in the segmenting. The rate changes on every 1 April, on
+ * every birthday that crosses an age band, and when the reg 7 window closes, so
+ * the period is cut at each of those and each piece is priced on its own.
+ *
+ * [HARD] If a segment falls in a financial year whose rate data is
+ * PENDING_SOURCE, it is not estimated. The year goes in `blockedYears` and the
+ * carer sees a partial total with an explicit note. A backdating figure built
+ * on a guessed historic rate is worse than no figure: the carer takes it to a
  * complaint and it gets shot down.
  */
 
 import {
+  addDays,
+  addMonths,
   ageAt,
   ageBandChangeDates,
-  addDays,
   daysBetween,
   financialYearBoundaries,
   financialYearOf,
   monthsBetween,
   nthBirthday,
 } from './dates.js';
+import { defaultDeps, type EngineDeps } from './deps.js';
 import { DataError } from './errors.js';
 import { add, clampMin0, formatMoney, mul, pence, sub, type Pence } from './money.js';
-import { defaultDeps, lookupRate, resolveAgeBand, type EngineDeps } from './engine.js';
-import type { CalculatorInput, IsoDate, Nation, RateTable } from './types.js';
+import { lookupRate, resolveAgeBand } from './rates.js';
+import { REG7_WINDOW_MONTHS } from './resolve.js';
+import type { AgeBand, CalculatorInput, ChildInput, IsoDate, Nation, RateTable } from './types.js';
+
+const DAYS_PER_WEEK = 7;
+
+// ─── Shape ─────────────────────────────────────────────────────────────────
 
 export interface BackdatingInput {
   base: CalculatorInput;
@@ -82,18 +93,21 @@ export interface BackdatingResult {
 }
 
 export const BACKDATING_CAVEATS: string[] = [
-  'This shows the difference against your council\'s lawful maximum, not a guaranteed entitlement.',
+  "This shows the difference against your council's lawful maximum, not a guaranteed entitlement.",
   'A council can lawfully pay less after properly assessing your circumstances.',
   'The Ombudsman normally expects complaints within 12 months of you becoming aware, though there is discretion.',
   'Backdating has been ordered in real cases (Devon 2024; North Tyneside 17 002 928).',
 ];
 
+// ─── Where to cut ──────────────────────────────────────────────────────────
+
 /**
  * Split the period at every point where the rate could change (§16):
- *   1. each 1 April (financial year boundary)
- *   2. each birthday that crosses an age band boundary
- *   3. the 24-month reg 7 anniversary
- *   4. the start and end of the requested period
+ *   1. each 1 April, the financial year boundary
+ *   2. each 6 April, where the DfE's tax year disagrees with it
+ *   3. each birthday that crosses an age band boundary
+ *   4. the 24-month reg 7 anniversary
+ *   5. the start of the requested period
  */
 export function segmentBoundaries(
   input: BackdatingInput,
@@ -101,33 +115,33 @@ export function segmentBoundaries(
 ): Array<{ date: IsoDate; reason: SegmentReason }> {
   const { fromDate, toDate, base } = input;
   const points = new Map<string, SegmentReason>();
+
+  // First writer wins throughout, so a date that is both a year boundary and a
+  // birthday keeps the reason listed first here.
+  const cut = (date: IsoDate, reason: SegmentReason): void => {
+    if (date > fromDate && date <= toDate && !points.has(date)) points.set(date, reason);
+  };
+
   points.set(fromDate, 'period-start');
 
-  for (const b of financialYearBoundaries(fromDate, toDate)) {
-    if (!points.has(b)) points.set(b, 'financial-year-change');
+  for (const boundary of financialYearBoundaries(fromDate, toDate)) {
+    if (!points.has(boundary)) points.set(boundary, 'financial-year-change');
     // The five days a council and the DfE disagree about. Cutting here keeps
     // 1 to 5 April in a segment of its own, so the part of the total that
     // depends on which convention the council follows can be stated rather
     // than buried inside a longer segment.
-    const taxYearStart = `${b.slice(0, 4)}-04-06` as IsoDate;
-    if (taxYearStart > fromDate && taxYearStart <= toDate && !points.has(taxYearStart)) {
-      points.set(taxYearStart, 'april-tax-year-boundary');
-    }
+    cut(`${boundary.slice(0, 4)}-04-06` as IsoDate, 'april-tax-year-boundary');
   }
 
   for (const child of base.children) {
-    const dob = child.dateOfBirth;
-    if (!dob) continue;
-    for (const d of ageBandChangeDates(dob, fromDate, toDate, bands)) {
-      if (!points.has(d)) points.set(d, 'age-band-change');
+    if (!child.dateOfBirth) continue;
+    for (const date of ageBandChangeDates(child.dateOfBirth, fromDate, toDate, bands)) {
+      cut(date, 'age-band-change');
     }
   }
 
   if (base.carer.wasFosterCarerForThisChild && base.carer.orderDate) {
-    const anniversary = addMonthsIso(base.carer.orderDate, 24);
-    if (anniversary > fromDate && anniversary <= toDate && !points.has(anniversary)) {
-      points.set(anniversary, 'reg7-anniversary');
-    }
+    cut(addMonths(base.carer.orderDate, REG7_WINDOW_MONTHS), 'reg7-anniversary');
   }
 
   return [...points.entries()]
@@ -135,25 +149,15 @@ export function segmentBoundaries(
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-function addMonthsIso(date: IsoDate, months: number): IsoDate {
-  const d = new Date(`${date}T00:00:00Z`);
-  const day = d.getUTCDate();
-  d.setUTCDate(1);
-  d.setUTCMonth(d.getUTCMonth() + months);
-  const lastDay = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
-  d.setUTCDate(Math.min(day, lastDay));
-  return d.toISOString().slice(0, 10) as IsoDate;
-}
+// ─── Finding a rate for a date ─────────────────────────────────────────────
 
-function rateTableFor(
-  tables: RateTable[],
-  asAt: IsoDate,
-  nation: Nation,
-): RateTable | { blocked: string } {
+type TableOrBlocked = RateTable | { blocked: string };
+
+function rateTableFor(tables: RateTable[], asAt: IsoDate, nation: Nation): TableOrBlocked {
   const match = tables.find((t) => asAt >= t.effectiveFrom && asAt <= t.effectiveTo);
   if (!match) return { blocked: financialYearOf(asAt) };
   if (match.status === 'PENDING_SOURCE') return { blocked: match.financialYear };
-  // A year can be sourced for one nation and not another — the archived GOV.UK
+  // A year can be sourced for one nation and not another: the archived GOV.UK
   // table for 2024/25 says in terms that it applies to England. Block the year
   // for the others, so an English carer still gets their figure and a Welsh one
   // gets an honest gap instead of a thrown error.
@@ -161,96 +165,73 @@ function rateTableFor(
   return match;
 }
 
+/**
+ * The band for a child at a moment.
+ *
+ * Segmentation guarantees the band does not change inside a segment, so the age
+ * at the start is the age throughout. The date of birth is dropped because the
+ * age has already been resolved and passing both would resolve it twice.
+ */
+function bandAt(
+  table: RateTable,
+  nation: Nation,
+  child: ChildInput,
+  ageYears: number,
+  at: IsoDate,
+): AgeBand {
+  return resolveAgeBand(table, nation, { ...child, ageYears, dateOfBirth: undefined }, at);
+}
+
+// ─── The calculation ───────────────────────────────────────────────────────
+
 export function calculateBackdating(
   input: BackdatingInput,
   depsOverride?: Partial<EngineDeps>,
 ): BackdatingResult {
   const deps: EngineDeps = { ...defaultDeps(), ...depsOverride };
   const { base, fromDate, toDate, actuallyPaidWeekly } = input;
+  const nation = base.carer.nation;
+
   if (toDate < fromDate) {
     throw new DataError('The end of the backdating period is before its start.');
   }
   if (base.children.length !== 1) {
     // Apportioning a household contribution across a period, per child, with
-    // age-band changes at different dates, is not specified. Refuse rather
-    // than invent an allocation.
+    // age-band changes at different dates, is not specified. Refuse rather than
+    // invent an allocation.
     throw new DataError('Backdating currently supports one child at a time.');
   }
   const child = base.children[0];
   /* c8 ignore next */
   if (!child) throw new DataError('Backdating needs a child.');
 
-  // Age bands come from the CURRENT table; they have been stable across the
-  // sourced years and a change would be caught by the data validation gate.
-  const currentTable = deps.rateTables.find((t) => t.status !== 'PENDING_SOURCE');
-  /* c8 ignore next */
-  if (!currentTable) throw new DataError('No sourced rate table available.');
-  const bandsSource =
-    base.carer.nation === 'england' ? currentTable.england : currentTable[base.carer.nation];
-  if (!bandsSource) {
-    throw new DataError(`No ${base.carer.nation} rates available for backdating.`);
-  }
-
-  const boundaries = segmentBoundaries(input, bandsSource.ageBands);
+  const boundaries = segmentBoundaries(input, ageBandsFor(deps, nation));
 
   const segments: BackdatingSegment[] = [];
   const blockedYears = new Set<string>();
   const yearsCovered = new Set<string>();
   let aprilBoundaryDifference = pence(0);
 
-  /** True for 1 to 5 April, the days the two conventions disagree about. */
-  const inAprilWindow = (date: IsoDate): boolean => {
-    const md = date.slice(5);
-    return md >= '04-01' && md <= '04-05';
-  };
-
-  for (let i = 0; i < boundaries.length; i++) {
-    const start = boundaries[i];
-    /* c8 ignore next */
-    if (!start) continue;
-    const nextBoundary = boundaries[i + 1];
+  for (const [i, start] of boundaries.entries()) {
     // Segments are half-open: [start, nextStart). The displayed `to` is the day
     // before the next segment begins, so the period reads naturally.
-    const endExclusive = nextBoundary ? nextBoundary.date : (addDays(toDate, 1) as IsoDate);
+    const next = boundaries[i + 1];
+    const endExclusive = next ? next.date : addDays(toDate, 1);
     const displayTo = addDays(endExclusive, -1);
     if (displayTo < start.date) continue;
 
-    const days = daysBetween(start.date, endExclusive);
-    const weeks = days / 7;
-
-    const table = rateTableFor(deps.rateTables, start.date, base.carer.nation);
+    const table = rateTableFor(deps.rateTables, start.date, nation);
     if ('blocked' in table) {
       blockedYears.add(table.blocked);
       continue;
     }
     yearsCovered.add(table.financialYear);
 
-    // Age at the START of the segment. Segmentation guarantees the band does
-    // not change inside a segment (when a date of birth was given).
-    const ageAtStart = child.dateOfBirth ? ageAt(child.dateOfBirth, start.date) : child.ageYears;
-    const band = resolveAgeBand(
-      table,
-      base.carer.nation,
-      { ...child, ageYears: ageAtStart, dateOfBirth: undefined },
-      start.date,
-    );
+    const weeks = daysBetween(start.date, endExclusive) / DAYS_PER_WEEK;
+    const age = child.dateOfBirth ? ageAt(child.dateOfBirth, start.date) : child.ageYears;
+    const band = bandAt(table, nation, child, age, start.date);
     const maximumWeekly = lookupRate(table, base.carer, band, deps);
-
-    // Within the reg 7 two-year window, a former foster carer's previous
-    // allowance is the floor [R4].
-    const prev = base.carer.previousWeeklyFosteringAllowance;
-    const monthsAtStart = base.carer.orderDate
-      ? monthsBetween(base.carer.orderDate, start.date)
-      : base.carer.monthsSinceOrderMade;
-    const shouldHaveBeenPaidWeekly =
-      base.carer.wasFosterCarerForThisChild && monthsAtStart < 24 && prev !== undefined && prev > maximumWeekly
-        ? prev
-        : maximumWeekly;
-
-    const segmentShortfall = mul(
-      clampMin0(sub(shouldHaveBeenPaidWeekly, actuallyPaidWeekly)),
-      weeks,
-    );
+    const shouldHaveBeenPaidWeekly = applyReg7Floor(base, start.date, maximumWeekly);
 
     const segment: BackdatingSegment = {
       from: start.date,
@@ -261,44 +242,93 @@ export function calculateBackdating(
       maximumWeekly,
       shouldHaveBeenPaidWeekly,
       actuallyPaidWeekly,
-      segmentShortfall,
+      segmentShortfall: mul(clampMin0(sub(shouldHaveBeenPaidWeekly, actuallyPaidWeekly)), weeks),
       reason: start.reason,
     };
 
-    // On 1 to 5 April the council convention (this table) and the DfE tax year
-    // (the previous one) give different rates. We pay out on the council
-    // convention, because that is what decides what a carer was actually paid,
-    // and record what the other reading would have given so the difference is
-    // visible instead of assumed away. If the previous year is not sourced,
-    // there is nothing to compare against and nothing is claimed.
-    if (inAprilWindow(start.date)) {
-      const previous = rateTableFor(deps.rateTables, addDays(start.date, -7), base.carer.nation);
-      if (!('blocked' in previous)) {
-        const previousBand = resolveAgeBand(
-          previous,
-          base.carer.nation,
-          { ...child, ageYears: ageAtStart, dateOfBirth: undefined },
-          start.date,
-        );
-        const alternativeWeekly = lookupRate(previous, base.carer, previousBand, deps);
-        segment.taxYearAlternativeWeekly = alternativeWeekly;
-        aprilBoundaryDifference = add(
-          aprilBoundaryDifference,
-          mul(clampMin0(sub(maximumWeekly, alternativeWeekly)), weeks),
-        );
-      }
+    const alternative = taxYearAlternative(deps, base, child, age, start.date, maximumWeekly);
+    if (alternative) {
+      segment.taxYearAlternativeWeekly = alternative.weekly;
+      aprilBoundaryDifference = add(aprilBoundaryDifference, mul(alternative.difference, weeks));
     }
 
     segments.push(segment);
   }
 
-  const totalShouldHaveBeenPaid = add(
-    ...segments.map((s) => mul(s.shouldHaveBeenPaidWeekly, s.weeks)),
-  );
-  const totalActuallyPaid = add(...segments.map((s) => mul(s.actuallyPaidWeekly, s.weeks)));
-  const shortfall = add(...segments.map((s) => s.segmentShortfall));
+  return {
+    segments,
+    totalShouldHaveBeenPaid: add(...segments.map((s) => mul(s.shouldHaveBeenPaidWeekly, s.weeks))),
+    totalActuallyPaid: add(...segments.map((s) => mul(s.actuallyPaidWeekly, s.weeks))),
+    shortfall: add(...segments.map((s) => s.segmentShortfall)),
+    yearsCovered: [...yearsCovered].sort(),
+    blockedYears: [...blockedYears].sort(),
+    aprilBoundaryDifference,
+    caveats: caveatsFor(blockedYears, aprilBoundaryDifference),
+  };
+}
 
+/**
+ * Age bands come from the CURRENT table. They have been stable across the
+ * sourced years, and a change would be caught by the data validation gate.
+ */
+function ageBandsFor(deps: EngineDeps, nation: Nation): AgeBand[] {
+  const current = deps.rateTables.find((t) => t.status !== 'PENDING_SOURCE');
+  /* c8 ignore next */
+  if (!current) throw new DataError('No sourced rate table available.');
+  const section = nation === 'england' ? current.england : current[nation];
+  if (!section) throw new DataError(`No ${nation} rates available for backdating.`);
+  return section.ageBands;
+}
+
+/**
+ * [R4] Within the reg 7 window a former foster carer's previous allowance is
+ * the floor, so a segment inside the window is priced at whichever is higher.
+ */
+function applyReg7Floor(base: CalculatorInput, at: IsoDate, maximumWeekly: Pence): Pence {
+  const previous = base.carer.previousWeeklyFosteringAllowance;
+  if (!base.carer.wasFosterCarerForThisChild || previous === undefined) return maximumWeekly;
+
+  const months = base.carer.orderDate
+    ? monthsBetween(base.carer.orderDate, at)
+    : base.carer.monthsSinceOrderMade;
+  return months < REG7_WINDOW_MONTHS && previous > maximumWeekly ? previous : maximumWeekly;
+}
+
+/** 1 to 5 April: the days the council convention and the DfE tax year disagree. */
+function inAprilWindow(date: IsoDate): boolean {
+  const monthDay = date.slice(5);
+  return monthDay >= '04-01' && monthDay <= '04-05';
+}
+
+/**
+ * What the DfE tax year reading would have paid for this segment.
+ *
+ * The payout follows the council convention, because that is what decides what
+ * a carer was actually paid. This records the other reading so the difference
+ * is visible instead of assumed away. If the previous year is not sourced there
+ * is nothing to compare against, and nothing is claimed.
+ */
+function taxYearAlternative(
+  deps: EngineDeps,
+  base: CalculatorInput,
+  child: ChildInput,
+  age: number,
+  at: IsoDate,
+  maximumWeekly: Pence,
+): { weekly: Pence; difference: Pence } | null {
+  if (!inAprilWindow(at)) return null;
+
+  const previous = rateTableFor(deps.rateTables, addDays(at, -7), base.carer.nation);
+  if ('blocked' in previous) return null;
+
+  const band = bandAt(previous, base.carer.nation, child, age, at);
+  const weekly = lookupRate(previous, base.carer, band, deps);
+  return { weekly, difference: clampMin0(sub(maximumWeekly, weekly)) };
+}
+
+function caveatsFor(blockedYears: Set<string>, aprilBoundaryDifference: Pence): string[] {
   const caveats = [...BACKDATING_CAVEATS];
+
   if (aprilBoundaryDifference > 0) {
     caveats.unshift(
       `Councils normally raise their rates on 1 April and we have used that date. The Department for ` +
@@ -312,17 +342,7 @@ export function calculateBackdating(
         `${blockedYears.size === 1 ? 'that year' : 'those years'}. The total below covers only the years we can evidence.`,
     );
   }
-
-  return {
-    segments,
-    totalShouldHaveBeenPaid,
-    totalActuallyPaid,
-    shortfall,
-    yearsCovered: [...yearsCovered].sort(),
-    blockedYears: [...blockedYears].sort(),
-    aprilBoundaryDifference,
-    caveats,
-  };
+  return caveats;
 }
 
 export { nthBirthday, pence };
