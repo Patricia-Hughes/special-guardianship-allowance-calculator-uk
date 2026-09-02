@@ -15,7 +15,7 @@ export function Markdown({ children }: { children: string }) {
   return (
     <>
       {paragraphs.map((para, i) => (
-        <p key={i} style={{ margin: i === paragraphs.length - 1 ? 0 : '0 0 0.75rem' }}>
+        <p key={i} className="md-para">
           {inline(para)}
         </p>
       ))}

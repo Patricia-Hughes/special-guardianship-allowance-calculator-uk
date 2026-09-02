@@ -158,13 +158,7 @@ function BackdatingResultView({ result }: { result: BackdatingResult }) {
       ) : (
         <>
           <p
-            style={{
-              color: 'var(--brand)',
-              fontSize: '2.25rem',
-              lineHeight: 1.1,
-              fontWeight: 700,
-              margin: '0.25rem 0',
-            }}
+            className="backdating__figure"
           >
             {formatMoney(result.shortfall)}
           </p>
@@ -212,12 +206,7 @@ function BackdatingResultView({ result }: { result: BackdatingResult }) {
               <tr key={i}>
                 <th scope="row" className="table__rowlabel nowrap">
                   {formatDate(s.from)} to {formatDate(s.to)}
-                  <div
-                    style={{
-                      fontSize: 'var(--text-sm)',
-                      color: 'var(--ink-muted)',
-                    }}
-                  >
+                  <div className="table__note">
                     {s.financialYear.replace('-', '/')} · {reasonLabel(s.reason)}
                   </div>
                 </th>

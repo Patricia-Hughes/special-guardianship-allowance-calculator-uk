@@ -31,24 +31,14 @@ export function ArithmeticPanel({ breakdown }: { breakdown: MeansTestBreakdown }
               <tr key={i}>
                 <th scope="row" className="table__rowlabel">
                   {step.label}
-                  {step.note && (
-                    <div
-                      style={{
-                        fontSize: 'var(--text-sm)',
-                        color: 'var(--ink-muted)',
-                        marginTop: '0.25rem',
-                      }}
-                    >
-                      {step.note}
-                    </div>
-                  )}
+                  {step.note && <div className="table__note">{step.note}</div>}
                 </th>
                 <td className="nowrap">
                   {step.operation === 'subtract' && '−'}
                   {step.operation === 'add' && '+'}
                   {formatMoney(step.valuePence)}
                 </td>
-                <td style={{ whiteSpace: 'nowrap', fontWeight: step.operation === 'result' ? 700 : 400 }}>
+                <td className={step.operation === 'result' ? 'nowrap strong' : 'nowrap'}>
                   {formatMoney(step.runningTotalPence)}
                 </td>
               </tr>
