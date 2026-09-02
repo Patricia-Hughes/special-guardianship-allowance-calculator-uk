@@ -1,11 +1,16 @@
 /**
  * Engine error taxonomy.
  *
- * These are distinguished because the UI treats them differently (spec §33):
- *  - ValidationError    → show the field error, keep the user on the step
- *  - DataError          → "we don't have verified rates for that date yet"
- *  - GuardrailViolation → never shown raw; log the rule code and fall back
- *  - MoneyError         → a programming error; should never reach a user
+ * These are separate classes because the UI treats them differently (spec §33),
+ * and because collapsing them would mean showing a carer an internal failure as
+ * though it were something they typed wrong:
+ *
+ *   ValidationError     show the field error, keep the person on the step
+ *   DataError           "we don't have verified rates for that date yet"
+ *   GuardrailViolation  never shown raw; log the rule code and fall back
+ *   MoneyError          a programming error, and should never reach a user
+ *
+ * GuardrailViolation lives in guardrails.ts, with the rules it reports on.
  */
 
 export class EngineError extends Error {

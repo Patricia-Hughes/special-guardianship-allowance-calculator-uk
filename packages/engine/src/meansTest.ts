@@ -1,15 +1,14 @@
 /**
- * Means test module — spec §14.
+ * Means test module, spec §14.
  *
  * This models the DfE Standardised Means Test Model, which most English
- * councils use. It is NOT statutory and it pre-dates Universal Credit
- * [R6] — every result that uses it carries MEANS_TEST_MODEL_OUTDATED.
+ * councils use. It is NOT statutory and it pre-dates Universal Credit [R6], so
+ * every result that uses it carries MEANS_TEST_MODEL_OUTDATED.
  *
- * Blocked at the data layer: the 125% core living-costs step needs the DWP
- * Income Support applicable amounts, which are PENDING_SOURCE (spec §8.4,
- * §14.5). Until they are populated this module throws DataError and the
- * means-test route stays behind FLAGS.MEANS_TEST_ENABLED. We do not estimate
- * the missing figures.
+ * The order of the steps is the part that gets implemented wrong. The 20%
+ * disregard comes off INCOME, before any expenditure. Applying it to what is
+ * left after outgoings doubles the answer, and it is the single most common
+ * error in this calculation. Test T17 exists only to catch it.
  */
 
 import { DataError } from './errors.js';
@@ -28,9 +27,12 @@ import type {
   BreakdownStep,
   CapitalConfig,
   FinancesInput,
+  IncomeSupportApplicableAmounts,
   MeansTestBreakdown,
   TaperConfig,
 } from './types.js';
+
+// ─── What counts ───────────────────────────────────────────────────────────
 
 /**
  * Income that counts. Encoded as data rather than prose because social workers
@@ -63,24 +65,28 @@ export const DISREGARDED_INCOME = [
   'fostering-income-other-children', // where the carer still fosters
   'guardians-allowance',
   'sg-allowance-itself',
-  'child-benefit-assessed-child', // handled separately at step 6
+  'child-benefit-assessed-child', // handled separately, and only on opt-in
   'wtc-childcare-element',
 ] as const;
 
 export type CountableIncomeKind = (typeof COUNTABLE_INCOME)[number];
 export type DisregardedIncomeKind = (typeof DISREGARDED_INCOME)[number];
 
+// ─── The model's own numbers ───────────────────────────────────────────────
+
 export const DISREGARD_RATE = 0.2;
+
 /**
  * The DfE standardised model allows basic living costs at 125% of the Income
- * Support applicable amount. Councils may differ, and at least one does: Devon's
- * published procedures set it at 100%. So this is the default, not the law.
+ * Support applicable amount. Councils may differ, and at least one does:
+ * Devon's published procedures set it at 100%. So this is the default, not the
+ * law.
  */
 export const CORE_LIVING_COSTS_MULTIPLIER = 1.25;
 
 export const DEFAULT_TAPER: TaperConfig = { method: 'pound-for-pound' };
 
-/** Common pattern (Wolverhampton model). Default OFF — see spec §14.4. */
+/** Common pattern (Wolverhampton model). Default OFF, see spec §14.4. */
 export const DEFAULT_CAPITAL: CapitalConfig = {
   thresholdPence: pence(600000),
   tariffPerBlockPence: pence(100),
@@ -89,95 +95,131 @@ export const DEFAULT_CAPITAL: CapitalConfig = {
   enabled: false,
 };
 
+// ─── Allowable expenditure ─────────────────────────────────────────────────
+
 /**
  * The Income Support applicable amount for this household, WEEKLY.
  *
- * The unit is in the name because getting it wrong is expensive and silent:
+ * The unit is in the name because getting it wrong is expensive and silent.
  * DWP publishes these figures weekly, the means test works monthly, and the
  * applicable amount feeds the single largest line of allowable expenditure.
  * Treating a weekly figure as monthly shrinks that line by a factor of 4.33,
  * which inflates disposable income, which inflates the contribution the council
- * expects, which cuts the carer's allowance. See runMeansTest, which converts.
+ * expects, which cuts the carer's allowance. runMeansTest converts.
  *
- * [HARD] Throws while the DWP figures are PENDING_SOURCE. Do not estimate:
- * a wrong applicable amount silently shifts every means-tested result.
+ * [HARD] Throws while the DWP figures are PENDING_SOURCE. Do not estimate: a
+ * wrong applicable amount silently shifts every means-tested result.
  */
 export function incomeSupportApplicableAmountWeekly(
   f: FinancesInput,
   benefits: BenefitTable,
 ): Pence {
-  const isa = benefits.incomeSupportApplicableAmounts;
-  if (isa.status === 'PENDING_SOURCE') {
+  const amounts = benefits.incomeSupportApplicableAmounts;
+  if (amounts.status === 'PENDING_SOURCE') {
     throw new DataError(
       `Income Support applicable amounts for ${benefits.financialYear} are not yet sourced. ` +
         'The means test cannot run without them and they must not be estimated (spec §8.4, §14.5).',
     );
   }
-  const s = isa.schema;
-  const need = (v: number | null, name: string): number => {
-    if (v === null) {
+
+  const schema = amounts.schema;
+  const need = (value: number | null | undefined, name: string): number => {
+    if (value === null || value === undefined) {
       throw new DataError(`Income Support applicable amount "${name}" is missing`);
     }
-    return v;
+    return value;
   };
 
   const couple = f.adultsInHousehold >= 2;
-  const personal = couple
-    ? need(s.couplePence, 'couplePence')
+  let total = couple
+    ? need(schema.couplePence, 'couplePence')
     : f.claimantUnder25 === true
-      ? need(s.singleUnder25Pence, 'singleUnder25Pence')
-      : need(s.single25PlusPence, 'single25PlusPence');
+      ? need(schema.singleUnder25Pence, 'singleUnder25Pence')
+      : need(schema.single25PlusPence, 'single25PlusPence');
 
-  let total = personal;
-  total += need(s.dependentChildPence, 'dependentChildPence') * f.dependentChildrenInHousehold;
+  total += need(schema.dependentChildPence, 'dependentChildPence') * f.dependentChildrenInHousehold;
   if (f.dependentChildrenInHousehold > 0) {
-    total += need(s.familyPremiumPence, 'familyPremiumPence');
+    total += need(schema.familyPremiumPence, 'familyPremiumPence');
   }
   if (f.householdHasDisabilityPremium === true) {
-    // DWP publishes a separate, higher couple rate. Charging a couple the
-    // single rate understates the applicable amount, which understates
-    // allowable expenditure, which overstates the contribution the council
-    // expects — the direction of error that costs the carer money. Falls back
-    // to the single rate for a table sourced before the couple rate was.
-    const coupleRate = s.disabilityPremiumCouplePence;
-    total +=
-      couple && coupleRate != null && coupleRate !== undefined
-        ? coupleRate
-        : need(s.disabilityPremiumPence, 'disabilityPremiumPence');
+    total += disabilityPremium(schema, couple, need);
   }
   if (f.householdHasCarerPremium === true) {
-    total += need(s.carerPremiumPence, 'carerPremiumPence');
+    total += need(schema.carerPremiumPence, 'carerPremiumPence');
   }
   return pence(total);
 }
+
+/**
+ * DWP publishes a separate, higher couple rate. Charging a couple the single
+ * rate understates the applicable amount, which understates allowable
+ * expenditure, which overstates the contribution the council expects: the
+ * direction of error that costs the carer money. Falls back to the single rate
+ * for a table sourced before the couple rate was.
+ */
+function disabilityPremium(
+  schema: IncomeSupportApplicableAmounts['schema'],
+  couple: boolean,
+  need: (value: number | null | undefined, name: string) => number,
+): number {
+  const coupleRate = schema.disabilityPremiumCouplePence;
+  if (couple && coupleRate !== null && coupleRate !== undefined) return coupleRate;
+  return need(schema.disabilityPremiumPence, 'disabilityPremiumPence');
+}
+
+// ─── Capital and taper ─────────────────────────────────────────────────────
 
 /** Tariff income from capital. Only runs where an LA override enables it. */
 export function tariffIncome(savings: Pence, capital: CapitalConfig): Pence {
   if (!capital.enabled) return pence(0);
   if (savings <= capital.thresholdPence) return pence(0);
+
   const above = savings - capital.thresholdPence;
   const blocks = Math.ceil(above / capital.blockSizePence);
   const perPeriod = pence(blocks * capital.tariffPerBlockPence);
-  // The config expresses the tariff weekly or monthly; the means test is monthly.
-  return capital.period === 'weekly' ? pence(Math.round((perPeriod * 52) / 12)) : perPeriod;
+
+  // The config states the tariff weekly or monthly; the means test is monthly.
+  return capital.period === 'weekly' ? weeklyToMonthly(perPeriod) : perPeriod;
 }
 
 /**
- * The taper — genuinely underdetermined (spec §14.3).
+ * The taper, genuinely underdetermined (spec §14.3).
  *
- * There is NO published national taper. Policies vary between pound-for-pound
- * (most common), a percentage of disposable income, and a threshold below which
- * nothing is deducted. Configurable, defaulting to pound-for-pound, and every
- * result that uses it carries TAPER_METHOD_ASSUMED.
+ * There is NO published national taper. Policies vary between pound-for-pound,
+ * which is the most common, a percentage of disposable income, and a threshold
+ * below which nothing is deducted. Configurable, defaulting to
+ * pound-for-pound, and every result that uses it carries TAPER_METHOD_ASSUMED.
  */
-export function applyTaper(disposable: Pence, t: TaperConfig): Pence {
-  switch (t.method) {
+export function applyTaper(disposable: Pence, taper: TaperConfig): Pence {
+  switch (taper.method) {
     case 'pound-for-pound':
       return disposable;
     case 'percentage':
-      return mul(disposable, t.percentage ?? 1);
+      return mul(disposable, taper.percentage ?? 1);
     case 'threshold':
-      return clampMin0(sub(disposable, t.thresholdMonthly ?? pence(0)));
+      return clampMin0(sub(disposable, taper.thresholdMonthly ?? pence(0)));
+  }
+}
+
+// ─── The calculation ───────────────────────────────────────────────────────
+
+/**
+ * Records each step as it goes, so the result page can show the arithmetic and
+ * a carer can check it or hand it to their council.
+ */
+class Breakdown {
+  readonly steps: BreakdownStep[] = [];
+
+  add(
+    label: string,
+    operation: BreakdownStep['operation'],
+    valuePence: Pence,
+    runningTotalPence: Pence,
+    note?: string,
+  ): void {
+    const step: BreakdownStep = { label, operation, valuePence, runningTotalPence };
+    if (note) step.note = note;
+    this.steps.push(step);
   }
 }
 
@@ -188,104 +230,28 @@ export function runMeansTest(
   capital: CapitalConfig,
   livingCostsMultiplier: number = CORE_LIVING_COSTS_MULTIPLIER,
 ): MeansTestBreakdown {
-  const steps: BreakdownStep[] = [];
-  const step = (
-    label: string,
-    operation: BreakdownStep['operation'],
-    valuePence: Pence,
-    runningTotalPence: Pence,
-    note?: string,
-  ): void => {
-    const s: BreakdownStep = { label, operation, valuePence, runningTotalPence };
-    if (note) s.note = note;
-    steps.push(s);
-  };
+  const breakdown = new Breakdown();
 
-  // ── Step 1: countable income (monthly) ──────────────────────────────────
-  steps.push({
-    label: 'Net earnings (monthly)',
-    operation: 'add',
-    valuePence: f.netEarnings,
-    runningTotalPence: f.netEarnings,
-  });
-  let running = f.netEarnings;
-  running = add(running, f.otherIncome);
-  step('Other income: pensions, maintenance received, lodgers', 'add', f.otherIncome, running);
-  running = add(running, f.countableBenefits);
-  step(
-    'Benefits that count',
-    'add',
-    f.countableBenefits,
-    running,
-    'Disability benefits for the child, Guardian\'s Allowance and the allowance itself are all ignored.',
-  );
-  running = add(running, f.childBenefitOtherChildren);
-  step(
-    'Child Benefit for your other children',
-    'add',
-    f.childBenefitOtherChildren,
-    running,
-    'Child Benefit for the child this assessment is about is NOT counted here. It is only ever a separate, opt-in deduction at the end.',
-  );
+  const income = countableIncome(f, breakdown);
+  const afterDisregard = applyDisregard(income, breakdown);
+  const coreLiving = coreLivingCosts(f, benefits, livingCostsMultiplier);
+  const expenditure = allowableExpenditure(f, coreLiving, livingCostsMultiplier, afterDisregard, breakdown);
 
-  const income = running;
-
-  // ── Step 2: the 20% disregard, applied to INCOME, BEFORE expenditure ────
-  // [HARD] Correct:   (3000 × 0.8) − 2000 = 400
-  //        Wrong:     (3000 − 2000) × 0.8 = 800
-  // This is the single most common implementation error. Test T17 exists
-  // solely to catch it.
-  const afterDisregard = mul(income, 1 - DISREGARD_RATE);
-  step(
-    '20% of your income is ignored',
-    'multiply',
-    sub(income, afterDisregard),
-    afterDisregard,
-    'The disregard comes off your income first, before any of your outgoings are taken into account.',
-  );
-
-  // ── Step 3: allowable expenditure ───────────────────────────────────────
-  // DWP publishes the applicable amounts weekly; everything else in this
-  // function is monthly. Convert before applying the 25% uplift.
-  const applicableWeekly = incomeSupportApplicableAmountWeekly(f, benefits);
-  const coreLiving = mul(weeklyToMonthly(applicableWeekly), livingCostsMultiplier);
-
-  let expenditure = pence(0);
-  const spend = (label: string, v: Pence, note?: string): void => {
-    expenditure = add(expenditure, v);
-    step(label, 'subtract', v, sub(afterDisregard, expenditure), note);
-  };
-  spend('Rent or mortgage', f.housingCosts);
-  spend('Council tax', f.councilTax);
-  spend('Essential loan repayments', f.essentialLoanRepayments);
-  spend('Maintenance you pay out', f.maintenancePaid);
-  spend('Pension contributions', f.pensionContributions);
-  spend('Childcare costs', f.childcareCosts);
-  // The note has to state the council's own percentage. Saying "plus 25%" to a
-  // Devon carer, whose council allows 100%, would describe a calculation the
-  // page is not showing them.
-  const upliftPercent = Math.round((livingCostsMultiplier - 1) * 100);
-  spend(
-    'Basic living costs',
-    coreLiving,
-    upliftPercent === 0
-      ? 'Income Support rates for a household your size.'
-      : `Income Support rates for a household your size, plus ${upliftPercent}%.`,
-  );
-
-  // ── Step 4: disposable income ───────────────────────────────────────────
   const disposable = clampMin0(sub(afterDisregard, expenditure));
-  step('Income left over', 'result', disposable, disposable);
+  breakdown.add('Income left over', 'result', disposable, disposable);
 
-  // ── Step 5: capital tariff ──────────────────────────────────────────────
   const capitalTariff = capital.enabled ? tariffIncome(f.savingsCapital, capital) : pence(0);
   if (capital.enabled) {
-    step('Assumed income from savings', 'add', capitalTariff, add(disposable, capitalTariff));
+    breakdown.add(
+      'Assumed income from savings',
+      'add',
+      capitalTariff,
+      add(disposable, capitalTariff),
+    );
   }
 
-  // ── Step 6: taper ───────────────────────────────────────────────────────
   const contributionMonthly = applyTaper(add(disposable, capitalTariff), taper);
-  step(
+  breakdown.add(
     'What the council expects you to put in (monthly)',
     'result',
     contributionMonthly,
@@ -294,7 +260,7 @@ export function runMeansTest(
   );
 
   const contributionWeekly = monthlyToWeekly(contributionMonthly);
-  step(
+  breakdown.add(
     'What the council expects you to put in (weekly)',
     'result',
     contributionWeekly,
@@ -314,8 +280,106 @@ export function runMeansTest(
     taperMethod: taper.method,
     assessedContributionMonthly: contributionMonthly,
     assessedContributionWeekly: contributionWeekly,
-    steps,
+    steps: breakdown.steps,
   };
+}
+
+/** Step 1: everything that counts as income, monthly. */
+function countableIncome(f: FinancesInput, breakdown: Breakdown): Pence {
+  let running = f.netEarnings;
+  breakdown.add('Net earnings (monthly)', 'add', f.netEarnings, running);
+
+  running = add(running, f.otherIncome);
+  breakdown.add(
+    'Other income: pensions, maintenance received, lodgers',
+    'add',
+    f.otherIncome,
+    running,
+  );
+
+  running = add(running, f.countableBenefits);
+  breakdown.add(
+    'Benefits that count',
+    'add',
+    f.countableBenefits,
+    running,
+    "Disability benefits for the child, Guardian's Allowance and the allowance itself are all ignored.",
+  );
+
+  running = add(running, f.childBenefitOtherChildren);
+  breakdown.add(
+    'Child Benefit for your other children',
+    'add',
+    f.childBenefitOtherChildren,
+    running,
+    'Child Benefit for the child this assessment is about is NOT counted here. It is only ever a separate, opt-in deduction at the end.',
+  );
+
+  return running;
+}
+
+/**
+ * Step 2: the 20% disregard, applied to INCOME, BEFORE expenditure.
+ *
+ * [HARD] Correct:  (3000 × 0.8) − 2000 = 400
+ *        Wrong:    (3000 − 2000) × 0.8 = 800
+ */
+function applyDisregard(income: Pence, breakdown: Breakdown): Pence {
+  const afterDisregard = mul(income, 1 - DISREGARD_RATE);
+  breakdown.add(
+    '20% of your income is ignored',
+    'multiply',
+    sub(income, afterDisregard),
+    afterDisregard,
+    'The disregard comes off your income first, before any of your outgoings are taken into account.',
+  );
+  return afterDisregard;
+}
+
+function coreLivingCosts(
+  f: FinancesInput,
+  benefits: BenefitTable,
+  livingCostsMultiplier: number,
+): Pence {
+  // DWP publishes the applicable amounts weekly; everything else here is
+  // monthly. Convert before applying the uplift.
+  return mul(weeklyToMonthly(incomeSupportApplicableAmountWeekly(f, benefits)), livingCostsMultiplier);
+}
+
+/** Step 3: allowable expenditure, ending with basic living costs. */
+function allowableExpenditure(
+  f: FinancesInput,
+  coreLiving: Pence,
+  livingCostsMultiplier: number,
+  afterDisregard: Pence,
+  breakdown: Breakdown,
+): Pence {
+  let total = pence(0);
+  const spend = (label: string, amount: Pence, note?: string): void => {
+    total = add(total, amount);
+    breakdown.add(label, 'subtract', amount, sub(afterDisregard, total), note);
+  };
+
+  spend('Rent or mortgage', f.housingCosts);
+  spend('Council tax', f.councilTax);
+  spend('Essential loan repayments', f.essentialLoanRepayments);
+  spend('Maintenance you pay out', f.maintenancePaid);
+  spend('Pension contributions', f.pensionContributions);
+  spend('Childcare costs', f.childcareCosts);
+
+  // The note states the council's own percentage. Saying "plus 25%" to a Devon
+  // carer, whose council allows 100%, would describe a calculation the page is
+  // not showing them.
+  const upliftPercent = Math.round((livingCostsMultiplier - 1) * 100);
+  spend(
+    'Basic living costs',
+    coreLiving,
+    upliftPercent === 0
+      ? 'Income Support rates for a household your size.'
+      : `Income Support rates for a household your size, plus ${upliftPercent}%.`,
+  );
+
+  return total;
 }
 
 /** True when the means test can run at all for this benefit table. */
