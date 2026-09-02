@@ -210,7 +210,7 @@ export function runMeansTest(
   });
   let running = f.netEarnings;
   running = add(running, f.otherIncome);
-  step('Other income — pensions, maintenance received, lodgers', 'add', f.otherIncome, running);
+  step('Other income: pensions, maintenance received, lodgers', 'add', f.otherIncome, running);
   running = add(running, f.countableBenefits);
   step(
     'Benefits that count',
