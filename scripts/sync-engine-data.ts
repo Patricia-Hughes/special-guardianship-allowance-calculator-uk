@@ -118,7 +118,12 @@ const referenced = referencedCitationIds();
  */
 function strictlyRenderedCitationIds(): string[] {
   const out = new Set<string>();
-  const flagsSrc = readFileSync(join(root, 'packages', 'engine', 'src', 'flags.ts'), 'utf8');
+  // flagCatalogue.ts holds the citationIds now. Reading flags.ts would find
+  // none, and every citation a warning renders would be stripped as unused.
+  const flagsSrc = readFileSync(
+    join(root, 'packages', 'engine', 'src', 'flagCatalogue.ts'),
+    'utf8',
+  );
   for (const m of flagsSrc.matchAll(/citationId:\s*['"]([^'"]+)['"]/g)) out.add(m[1]!);
   const contentDir = join(root, 'apps', 'web', 'content');
   const walk = (dir: string): void => {

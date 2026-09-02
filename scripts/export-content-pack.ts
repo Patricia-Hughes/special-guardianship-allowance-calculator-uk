@@ -33,7 +33,11 @@ const citations = JSON.parse(
   readFileSync(join(root, 'data', 'citations.json'), 'utf8'),
 ) as Record<string, Citation>;
 
-const lettersSrc = readFileSync(join(root, 'packages', 'letters', 'src', 'index.ts'), 'utf8');
+// templates.ts holds the letter titles now; index.ts is only the code.
+const lettersSrc = readFileSync(
+  join(root, 'packages', 'letters', 'src', 'templates.ts'),
+  'utf8',
+);
 const letterTitles = new Map<string, string>();
 for (const m of lettersSrc.matchAll(/'([a-z0-9-]+)':\s*\{\s*\n\s*title:\s*(['"])(.*?)\2/g)) {
   letterTitles.set(m[1]!, m[3]!);

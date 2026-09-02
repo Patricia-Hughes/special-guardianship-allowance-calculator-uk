@@ -26,7 +26,10 @@ const LETTER_ENTRY = /^ {2}'([a-z0-9-]+)': \{(.*?)^ {2}\},/gms;
 export function checkClaimSources(ctx: GateContext): void {
   const { report } = ctx;
 
-  const flags = ctx.sourceOf('packages', 'engine', 'src', 'flags.ts');
+  // flagCatalogue.ts, not flags.ts: the warning wording moved into its own file
+  // and this gate has to follow it, or it reads a file with no warnings in it
+  // and passes without checking anything.
+  const flags = ctx.sourceOf('packages', 'engine', 'src', 'flagCatalogue.ts');
   const catalogue = flags.slice(flags.indexOf('FLAG_CATALOGUE'));
   for (const [, code, body] of catalogue.matchAll(CATALOGUE_ENTRY)) {
     const hasCitation = /citationId:/.test(body!);
@@ -34,14 +37,14 @@ export function checkClaimSources(ctx: GateContext): void {
     if (!hasCitation && !exempt) {
       report.fail(
         '18 warning sources',
-        `flags.ts "${code}" makes a claim to a carer with no citationId. Give it one, or add it to ` +
+        `flagCatalogue.ts "${code}" makes a claim to a carer with no citationId. Give it one, or add it to ` +
           'WARNINGS_WITHOUT_A_SOURCE in this script with the reason it does not need one.',
       );
     }
     if (hasCitation && exempt) {
       report.fail(
         '18 warning sources',
-        `flags.ts "${code}" now has a citationId but is still listed as not needing one. Remove it ` +
+        `flagCatalogue.ts "${code}" now has a citationId but is still listed as not needing one. Remove it ` +
           'from WARNINGS_WITHOUT_A_SOURCE.',
       );
     }
