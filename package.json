@@ -14,7 +14,7 @@
     "test:unit": "turbo run test:unit",
     "validate:data": "tsx scripts/validate-data.ts",
     "check:staleness": "tsx scripts/check-staleness.ts",
-    "check:citations": "tsx scripts/check-citations.ts",
+    "check:citations": "tsx scripts/check-citations.mts",
     "check:content": "tsx scripts/check-content.ts",
     "check:review-dates": "tsx scripts/check-content.ts",
     "check:headers": "tsx scripts/check-security-headers.ts",
