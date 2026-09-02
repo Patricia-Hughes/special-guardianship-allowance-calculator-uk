@@ -47,7 +47,10 @@ export function checkClaimSources(ctx: GateContext): void {
     }
   }
 
-  const letters = ctx.sourceOf('packages', 'letters', 'src', 'index.ts');
+  // templates.ts, not index.ts: the letter wording moved into its own file and
+  // this gate has to follow it, or it reads a file with no letters in it and
+  // passes without checking anything.
+  const letters = ctx.sourceOf('packages', 'letters', 'src', 'templates.ts');
   for (const [, template, body] of letters.matchAll(LETTER_ENTRY)) {
     const ids = /citationIds:\s*\[([^\]]*)\]/.exec(body!);
     if (!ids || ids[1]!.trim() === '') {
