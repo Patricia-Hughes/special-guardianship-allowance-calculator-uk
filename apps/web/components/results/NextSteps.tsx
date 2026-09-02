@@ -13,7 +13,12 @@ export function NextSteps({ result }: { result: CalculatorResult }) {
 
   steps.push({
     title: 'Ask for your council’s written policy',
-    body: 'Councils must have a published policy on financial support for special guardians. It is the document every later question rests on.',
+    // Was "Councils must have a published policy", with nothing behind it. The
+    // same sentence was removed from the COUNCIL_POLICY_UNKNOWN warning after
+    // the legal review of 1 September; this copy of it lives on the result page
+    // and so was not in the packs the reviewer was given. What is on record is
+    // the October 2024 duty to publish a kinship local offer.
+    body: 'Every council in England has to publish a kinship local offer setting out the support it provides, and most publish a financial support policy as well. It is the document every later question rests on.',
     href: '/guidance/asking-for-the-policy',
   });
 
@@ -26,7 +31,9 @@ export function NextSteps({ result }: { result: CalculatorResult }) {
   if (has('UNLAWFUL_CB_DEDUCTION_RISK')) {
     steps.push({
       title: 'Query the Child Benefit deduction',
-      body: 'You are on means-tested benefits and your council takes Child Benefit off your allowance. The Ombudsman has found that approach wrong when applied as a blanket rule.',
+      // The regulations permit the deduction. Saying only that the Ombudsman
+      // found one wrong points the carer at a question they cannot win.
+      body: 'The regulations allow a council to take Child Benefit into account, so the question is not whether yours may. It is whether it decided your case individually. The Ombudsman found a council at fault for applying the same rule to everybody.',
       href: '/guidance/child-benefit-deduction',
     });
   }
