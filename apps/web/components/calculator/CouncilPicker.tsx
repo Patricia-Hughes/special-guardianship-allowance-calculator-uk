@@ -130,7 +130,7 @@ export function CouncilPicker({
           <button type="button" className="btn btn--secondary" onClick={findMyCouncil} disabled={looking}>
             {looking ? 'Looking…' : 'Find my council'}
           </button>
-          <p ref={statusRef} tabIndex={-1} aria-live="polite" style={{ marginTop: '0.75rem' }}>
+          <p ref={statusRef} tabIndex={-1} aria-live="polite" className="gap-md">
             {status}
           </p>
         </details>

@@ -99,10 +99,10 @@ type MoneyFieldName = (typeof MONEY_FIELDS)[number][0];
  * Index of the oldest child entered, or 0 when no age has been typed yet.
  *
  * Only the eldest attracts the higher rate of Child Benefit, so this decides
- * money. It is a function rather than state for that reason: it used to be kept
- * in a useEffect, and a shared link carrying several children calculated before
- * that effect had run, marking whichever child happened to be first as the
- * eldest. The figure was wrong and nothing said so.
+ * money. It is derived on every render rather than held in state, because state
+ * updated by an effect is not yet correct on the render that a shared link
+ * calculates from, and the wrong child would take the higher rate with nothing
+ * on screen to say so.
  */
 const indexOfOldest = (kids: Array<{ ageYears: string }>): number => {
   let best = 0;
@@ -269,8 +269,8 @@ export function CalculatorShell() {
     const key = childFocusKey;
     setChildFocusKey(null);
     scrollToElementAfterPaint(
-      () => document.querySelector<HTMLElement>(`[data-child-key="${key}"] input`),
-      { focus: true },
+      () => document.querySelector<HTMLElement>(`[data-child-key="${key}"]`),
+      { focusWithin: 'input' },
     );
   }, [childFocusKey]);
 
@@ -282,10 +282,8 @@ export function CalculatorShell() {
     // already is. Removing the first child leaves nothing above it, so fall
     // back to Add another child rather than dropping focus on the document.
     scrollToElementAfterPaint(
-      () =>
-        document.querySelector<HTMLElement>(`[data-child-key="${key}"] input`) ??
-        addChildRef.current,
-      { focus: true },
+      () => document.querySelector<HTMLElement>(`[data-child-key="${key}"]`) ?? addChildRef.current,
+      { focusWithin: 'input' },
     );
   }, [childRemovedFocusKey]);
 
@@ -428,10 +426,10 @@ export function CalculatorShell() {
           className="callout callout--critical"
           aria-labelledby="error-summary-heading"
         >
-          <h2 id="error-summary-heading" style={{ marginTop: 0, fontSize: '1.15rem' }}>
+          <h2 id="error-summary-heading" className="flush-top big">
             There is a problem
           </h2>
-          <ul style={{ margin: 0 }}>
+          <ul className="flush">
             {elsewhereErrors.map((e, i) => {
               const target = FIELD_ANCHORS[e.path];
               return (
@@ -480,7 +478,7 @@ export function CalculatorShell() {
 
             {nation === 'wales' && !FLAGS.WALES_ROUTE_ENABLED && (
               <div className="callout callout--important" role="note" aria-label="Important">
-                <p style={{ margin: 0 }}>
+                <p className="flush">
                   <strong>We are not showing Welsh figures yet.</strong> We are checking the Welsh
                   rates against the Welsh Government&apos;s own published table before we publish
                   them, one of the age bands in the sources we have looks wrong, and a wrong figure
@@ -556,12 +554,7 @@ export function CalculatorShell() {
               <fieldset
                 key={c.key}
                 data-child-key={c.key}
-                style={{
-                  border: '2px solid var(--colour-line)',
-                  borderRadius: 'var(--radius)',
-                  padding: '1rem',
-                  marginBottom: '1.5rem',
-                }}
+                className="panel"
               >
                 <legend>Child {i + 1}</legend>
                 <div className="field">
@@ -839,7 +832,7 @@ export function CalculatorShell() {
         {step === 'finances' && FLAGS.MEANS_TEST_ENABLED && (
           <StepPanel heading="Your finances" headingRef={stepHeadingRef} stepNumber={5}>
             <div className="callout" role="note" aria-label="Note">
-              <p style={{ margin: 0 }}>
+              <p className="flush">
                 <strong>You can skip this.</strong> Fill it in only if you want an estimate of what
                 you might get after a means test. Nothing you type here leaves your browser, there
                 is no server to send it to.
@@ -971,13 +964,13 @@ export function CalculatorShell() {
       )}
 
       {result && step !== 'result' && (
-        <p className="print-hide" style={{ color: 'var(--colour-text-muted)' }}>
+        <p className="print-hide muted" >
           {SHARE_EXPLANATION}
         </p>
       )}
 
       {maxStepReached !== 'where' && (
-        <p className="print-hide" style={{ color: 'var(--colour-text-muted)' }}>
+        <p className="print-hide muted" >
           Nothing you have typed has been sent anywhere, and nothing has been saved. If you refresh
           this page, you will start again.
         </p>
@@ -1000,10 +993,9 @@ const ORDER: StepId[] = ['where', 'children', 'result', 'history', 'benefits', '
  * The step that owns each error, so a message can be shown once, beside the box
  * it belongs to.
  *
- * The summary at the top used to list every error as well, so a carer who typed
- * an impossible age read the same sentence twice, once above the calculator and
- * once inside it. The summary now carries only what has nowhere else to go: an
- * error on a step you are not currently looking at.
+ * The summary at the top carries only what has nowhere else to go: an error
+ * whose box is on a step the carer is not currently looking at. Anything else
+ * would be said twice, once above the calculator and once beside the field.
  */
 function stepForPath(path: string): StepId | null {
   if (path === 'children' || path.startsWith('children.')) return 'children';
@@ -1021,8 +1013,8 @@ const FIELD_ANCHORS: Record<string, string> = {
   'finances.adultsInHousehold': 'adults',
   'finances.dependentChildrenInHousehold': 'household-children',
   children: 'age-0',
-  // Ten, because ten is the limit the schema allows. The old list stopped at
-  // four, so an error on a fifth child linked nowhere.
+  // Ten, because ten is the limit the schema allows. Anything short of that
+  // leaves an error on a later child linking nowhere.
   ...Object.fromEntries(
     Array.from({ length: 10 }, (_, i) => [`children.${i}.ageYears`, `age-${i}`]),
   ),
@@ -1055,9 +1047,9 @@ function StepPanel({
   return (
     <section>
       {stepNumber && (
-        <p style={{ color: 'var(--colour-text-muted)', margin: 0 }}>Step {stepNumber}</p>
+        <p className="step-label">Step {stepNumber}</p>
       )}
-      <h2 ref={headingRef} tabIndex={-1} style={{ marginTop: '0.25rem' }}>
+      <h2 ref={headingRef} tabIndex={-1} className="gap-sm">
         {heading}
       </h2>
       {children}
@@ -1082,7 +1074,7 @@ function Nav({
   nextSecondary?: boolean;
 }) {
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginTop: '1.5rem' }}>
+    <div className="row gap-lg">
       {onBack && (
         <button type="button" className="btn btn--secondary" onClick={onBack}>
           Back
@@ -1112,7 +1104,7 @@ function Nav({
 function EngineErrorFallback({ kind }: { kind: 'guardrail' | 'data' }) {
   return (
     <div className="callout callout--critical" role="alert">
-      <h2 style={{ marginTop: 0, fontSize: '1.15rem' }}>
+      <h2 className="flush-top big">
         {kind === 'guardrail'
           ? "We can't produce a reliable estimate for your situation"
           : "We don't have verified figures for that"}
@@ -1122,7 +1114,7 @@ function EngineErrorFallback({ kind }: { kind: 'guardrail' | 'data' }) {
           ? 'Something about your answers means we cannot give you a figure we are confident is right. We would rather tell you that than show you a number that might be wrong.'
           : 'Rather than guess, we have stopped. This usually means we do not yet hold a verified rate table or benefit figure for the date or the situation you gave us.'}
       </p>
-      <p style={{ marginBottom: 0 }}>
+      <p className="flush-bot">
         Please talk to one of the advice organisations listed at the bottom of this page, they can
         look at your case properly.
       </p>

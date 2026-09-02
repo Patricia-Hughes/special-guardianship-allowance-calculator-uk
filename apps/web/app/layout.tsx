@@ -30,23 +30,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to the main content
         </a>
         <RatesStaleBanner />
-        <header className="site-header print-hide" style={{ borderBottom: '1px solid var(--colour-line)' }}>
-          <div className="wrap" style={{ padding: '0.75rem 1rem' }}>
-            <nav aria-label="Main">
-              <ul
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: '1.5rem',
-                  listStyle: 'none',
-                  margin: 0,
-                  padding: 0,
-                }}
-              >
+
+        <header className="masthead print-hide">
+          <div className="wrap masthead__inner">
+            <a className="masthead__brand" href="/">
+              Special guardianship allowance calculator
+            </a>
+            <nav className="masthead__nav" aria-label="Main">
+              <ul>
                 <li>
-                  <a href="/" style={{ fontWeight: 700 }}>
-                    Calculator
-                  </a>
+                  <a href="/">Calculator</a>
                 </li>
                 <li>
                   <a href="/guidance">Guides</a>
@@ -62,29 +55,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
 
-        <main id="main" className="wrap" style={{ paddingTop: '2rem', paddingBottom: '3rem' }}>
+        <main id="main" className="wrap site-main">
           {children}
         </main>
 
-        <footer className="site-footer print-hide" style={{ borderTop: '1px solid var(--colour-line)' }}>
-          <div className="wrap" style={{ padding: '1.5rem 1rem' }}>
-            <p style={{ fontSize: 'var(--font-size-sm)' }}>
+        <footer className="site-footer print-hide">
+          <div className="wrap">
+            <p>
               This site gives general information, not legal advice. Financial support for special
               guardians is discretionary and your council decides it. Always check anything that
               matters to your case with an adviser.
             </p>
             <nav aria-label="Footer">
-              <ul
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: '1.25rem',
-                  listStyle: 'none',
-                  margin: 0,
-                  padding: 0,
-                  fontSize: 'var(--font-size-sm)',
-                }}
-              >
+              <ul>
                 <li><a href="/privacy">Privacy</a></li>
                 <li><a href="/terms">Terms of use</a></li>
                 <li><a href="/accessibility">Accessibility</a></li>

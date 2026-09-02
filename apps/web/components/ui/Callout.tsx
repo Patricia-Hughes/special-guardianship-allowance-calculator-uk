@@ -21,7 +21,7 @@ export function Callout({
 }) {
   return (
     <div className={`callout callout--${type} avoid-break`} role="note" aria-label={LABEL[type]}>
-      <p style={{ fontWeight: 700, margin: '0 0 0.5rem' }}>{LABEL[type]}</p>
+      <p className="callout__label">{LABEL[type]}</p>
       {children}
     </div>
   );

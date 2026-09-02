@@ -22,25 +22,45 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+export type ScrollOptions = {
+  /** Put focus on the element being scrolled to. */
+  focus?: boolean;
+  /**
+   * Put focus on a descendant instead, and scroll to the parent.
+   *
+   * A text box on its own tells you nothing. Scrolling to the box put the row's
+   * "Child 2" legend and its question above the top of the screen, leaving an
+   * empty field and no clue what it is asking. Scroll to the row, type into the
+   * box. Falls back to the element itself when nothing matches.
+   */
+  focusWithin?: string;
+};
+
 /**
  * Bring an element into view, and optionally put focus on it.
  *
- * `block: 'start'` with scroll-margin-top in the stylesheet keeps the heading
- * clear of the sticky banner rather than tucked underneath it.
+ * `block: 'start'` with scroll-padding-top in the stylesheet keeps the target
+ * clear of the top edge rather than flush against it.
  */
 export function scrollToElement(
   el: HTMLElement | null | undefined,
-  opts: { focus?: boolean } = {},
+  opts: ScrollOptions = {},
 ): void {
   if (!el) return;
 
-  if (opts.focus) {
+  const target = opts.focusWithin
+    ? el.querySelector<HTMLElement>(opts.focusWithin) ?? el
+    : opts.focus
+      ? el
+      : null;
+
+  if (target) {
     // preventScroll is not universal; where it is missing the browser jumps and
     // the smooth scroll below simply refines it, which is still correct.
     try {
-      el.focus({ preventScroll: true });
+      target.focus({ preventScroll: true });
     } catch {
-      el.focus();
+      target.focus();
     }
   }
 
@@ -60,7 +80,7 @@ export function scrollToElement(
  */
 export function scrollToElementAfterPaint(
   get: () => HTMLElement | null | undefined,
-  opts: { focus?: boolean } = {},
+  opts: ScrollOptions = {},
 ): void {
   if (typeof window === 'undefined') return;
   window.requestAnimationFrame(() => {

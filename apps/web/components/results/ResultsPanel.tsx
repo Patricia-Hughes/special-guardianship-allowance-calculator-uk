@@ -41,7 +41,7 @@ export function ResultsPanel({
   for (const f of result.flags) if (f.citation) citations.push(f.citation);
 
   return (
-    <div style={{ marginTop: '2.5rem', borderTop: '3px solid var(--colour-line)', paddingTop: '1.5rem' }}>
+    <div className="section">
       <PrintHeader result={result} />
       <PrintedInputs input={input} {...(councilName ? { councilName } : {})} />
 
@@ -65,7 +65,7 @@ export function ResultsPanel({
 
       <AdviceLines />
 
-      <p style={{ color: 'var(--colour-text-muted)', fontSize: 'var(--font-size-sm)' }}>
+      <p className="muted small">
         Calculated {new Date(result.computedAt).toLocaleString('en-GB')} · rates{' '}
         {result.financialYear.replace('-', '/')} (data version {result.dataVersion}) · engine{' '}
         {result.engineVersion}
@@ -82,7 +82,7 @@ export function ResultsPanel({
 function PrintHeader({ result }: { result: CalculatorResult }) {
   return (
     <div className="print-only avoid-break">
-      <h2 style={{ marginTop: 0 }}>Special guardianship allowance estimate</h2>
+      <h2 className="flush-top">Special guardianship allowance estimate</h2>
       <p>
         Generated {new Date(result.computedAt).toLocaleDateString('en-GB')} · rates for financial
         year {result.financialYear.replace('-', '/')} · produced with an online calculator, not by a
@@ -95,8 +95,8 @@ function PrintHeader({ result }: { result: CalculatorResult }) {
 function ShareControl({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className="print-hide" style={{ margin: '1.5rem 0' }}>
-      <h2 style={{ fontSize: '1.15rem' }}>Share this result</h2>
+    <div className="print-hide share">
+      <h2 className="big">Share this result</h2>
       <p>{SHARE_EXPLANATION}</p>
       <button
         type="button"
@@ -110,7 +110,7 @@ function ShareControl({ url }: { url: string }) {
       >
         Copy the link
       </button>
-      <p aria-live="polite" style={{ minHeight: '1.5rem', marginTop: '0.5rem' }}>
+      <p aria-live="polite" className="share__status">
         {copied ? 'Link copied.' : ''}
       </p>
     </div>

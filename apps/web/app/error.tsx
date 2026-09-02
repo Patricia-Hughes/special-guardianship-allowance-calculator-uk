@@ -11,14 +11,14 @@
  */
 export default function Error({ reset }: { error: Error; reset: () => void }) {
   return (
-    <main id="main" className="container" style={{ paddingTop: '3rem' }}>
+    <main id="main" className="container site-main">
       <h1>Something went wrong on this page</h1>
       <p>
         The calculator stopped rather than show you a figure it could not stand behind. That is
         deliberate, but it means you have not got an answer, and we are sorry.
       </p>
       <p>Try again. If it keeps happening, the guides and the rate tables still work.</p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginTop: '1.5rem' }}>
+      <div className="row gap-lg">
         <button type="button" className="btn" onClick={reset}>
           Try again
         </button>
@@ -29,7 +29,7 @@ export default function Error({ reset }: { error: Error; reset: () => void }) {
           See the rate tables
         </a>
       </div>
-      <p style={{ marginTop: '2rem' }}>
+      <p className="gap-xl">
         Nothing you typed was sent anywhere. It was only ever in your own browser, and this page has
         not kept it.
       </p>

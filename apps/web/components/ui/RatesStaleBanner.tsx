@@ -18,14 +18,10 @@ export function RatesStaleBanner() {
   return (
     <div
       role="alert"
-      style={{
-        background: 'var(--colour-critical)',
-        color: '#fff',
-        padding: '0.75rem 1rem',
-      }}
+      className="banner-critical"
     >
       <div className="wrap">
-        <p style={{ margin: 0, color: '#fff', maxWidth: 'none' }}>
+        <p>
           <strong>These rates may be out of date.</strong> Our newest figures ran to{' '}
           {newest.effectiveTo}. New rates take effect on 1 April each year. Please check the current
           national minimum allowance before using anything here in a letter.

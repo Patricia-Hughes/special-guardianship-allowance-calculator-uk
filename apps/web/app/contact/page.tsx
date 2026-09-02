@@ -14,7 +14,7 @@ export default function ContactPage() {
       <h1>Contact and corrections</h1>
 
       <Callout type="important">
-        <p style={{ marginBottom: 0 }}>
+        <p className="flush-bot">
           <strong>We cannot advise on your individual case.</strong> If you need someone to look at
           your situation, the organisations at the bottom of this page can, and they are independent
           of us.
@@ -68,7 +68,7 @@ export default function ContactPage() {
         */}
         Email <strong>corrections@example.invalid</strong>.
       </p>
-      <p style={{ color: 'var(--colour-text-muted)' }}>
+      <p className="muted">
         Please do not send us details of your child or your finances. We do not need them, and we
         would rather not hold them.
       </p>

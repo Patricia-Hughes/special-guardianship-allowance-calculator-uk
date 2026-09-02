@@ -11,7 +11,7 @@ export default function AccessibilityPage() {
     <>
       <h1>Accessibility statement</h1>
 
-      <p style={{ fontSize: '1.15rem' }}>
+      <p className="big">
         Most people who use this site are grandparents and other relatives in their fifties,
         sixties and seventies. Accessibility here is the core use case, not a compliance exercise.
       </p>

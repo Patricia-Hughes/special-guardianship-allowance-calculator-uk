@@ -18,7 +18,7 @@ export function SourceLink({ citation }: { citation: Citation }) {
       ) : (
         <span>{citation.label}</span>
       )}{' '}
-      <span style={{ color: 'var(--colour-text-muted)', fontSize: 'var(--font-size-sm)' }}>
+      <span className="muted small">
         {citation.url ? (
           <>
             (checked {citation.retrieved}
@@ -48,7 +48,7 @@ export function CitationsList({ citations }: { citations: Citation[] }) {
           <li key={c.id} className="citation-item">
             <SourceLink citation={c} />
             {c.holding && (
-              <div style={{ color: 'var(--colour-text-muted)', marginTop: '0.25rem' }}>
+              <div className="muted gap-sm">
                 {c.holding}
               </div>
             )}

@@ -10,7 +10,7 @@ export default function PrivacyPage() {
   return (
     <>
       <h1>Privacy notice</h1>
-      <p style={{ fontSize: '1.15rem' }}>
+      <p className="big">
         <strong>
           We do not collect, store or process any personal information about you or your child.
         </strong>{' '}

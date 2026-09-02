@@ -79,8 +79,25 @@ test('adding a child moves you to the new row and puts the cursor in it', async 
 
   // Focus lands in the new child's age box, ready to type.
   await expect(page.getByLabel('How old are they?').nth(1)).toBeFocused();
-  const pos = await verticalPosition(page, '[data-child-key]:nth-of-type(2)');
-  expect(pos, 'the new child row is off screen').toBeLessThan(1);
+
+  // Poll rather than measure once. Focus is set at the start of the scroll, so
+  // a single reading taken here catches the row wherever the animation happened
+  // to have got to, which on a phone is still below the fold. Left to finish it
+  // settles about a tenth of the way down the screen.
+  await expect
+    .poll(
+      async () => {
+        const top = await verticalPosition(page, '[data-child-key]:nth-of-type(2)');
+        return top > 0 && top < 0.5;
+      },
+      { message: 'the new child row never settled in view', timeout: 5000 },
+    )
+    .toBe(true);
+
+  // And it is the whole row that is on screen, not just the box. Scrolling to
+  // the box alone left "Child 2" above the top edge, so you were typing into an
+  // unlabelled field.
+  await expect(page.locator('[data-child-key]:nth-of-type(2) > legend')).toBeInViewport();
 });
 
 test('removing a child moves focus to the child above it', async ({ page }) => {

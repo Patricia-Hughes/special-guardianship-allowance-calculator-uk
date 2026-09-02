@@ -67,8 +67,8 @@ export function MoneyInput({
           {error}
         </span>
       )}
-      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-        <span aria-hidden="true" style={{ fontWeight: 600 }}>
+      <span className="money-input">
+        <span aria-hidden="true" className="money-input__prefix">
           £
         </span>
         <input

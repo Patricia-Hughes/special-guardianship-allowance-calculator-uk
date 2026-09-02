@@ -39,28 +39,14 @@ function FloorNotice({ result }: { result: CalculatorResult }) {
   const total = result.totalWeekly;
   return (
     <div
-      className="avoid-break"
-      style={{
-        border: '3px solid var(--colour-money)',
-        borderRadius: 'var(--radius)',
-        padding: '1rem 1.25rem',
-        margin: '1.5rem 0',
-      }}
+      className="avoid-break hero--assumed"
     >
-      <h3 style={{ marginTop: 0 }}>{FLOOR_HEADING['reg7-former-foster-carer']}</h3>
-      <p
-        style={{
-          color: 'var(--colour-money)',
-          fontSize: '2.25rem',
-          lineHeight: 1.1,
-          fontWeight: 700,
-          margin: '0 0 0.25rem',
-        }}
-      >
+      <h3 className="flush-top">{FLOOR_HEADING['reg7-former-foster-carer']}</h3>
+      <p className="hero__figure">
         {formatMoney(total)}
-        <span style={{ fontSize: '1.1rem', fontWeight: 600 }}> a week</span>
+        <span className="hero__unit"> a week</span>
       </p>
-      <p style={{ margin: 0 }}>
+      <p className="flush">
         You fostered this child before the order, and it was made less than two years ago. For that
         period your council can carry on paying the reward part of your fostering allowance, and it
         can carry on for longer if it thinks that right. We have assumed it does, which is why this
@@ -93,21 +79,13 @@ export function MaximumHero({
             : "The most your council should be starting from"}
       </h2>
       <p
-        style={{
-          color: 'var(--colour-money)',
-          fontSize: '3rem',
-          lineHeight: 1.1,
-          fontWeight: 700,
-          margin: '0.25rem 0',
-        }}
+        className="hero__figure"
       >
         {formatMoney(total)}
-        <span style={{ fontSize: '1.25rem', fontWeight: 600 }}> a week</span>
+        <span className="hero__unit"> a week</span>
       </p>
-      <p style={{ fontSize: '1.25rem', margin: '0 0 0.75rem', color: 'var(--colour-money)' }}>
-        {formatMoney(weeklyToAnnual(total))} a year
-      </p>
-      <p style={{ color: 'var(--colour-text-muted)' }}>
+      <p className="hero__annual">{formatMoney(weeklyToAnnual(total))} a year</p>
+      <p className="muted">
         {single ? (
           <>
             For a {single.ageAtCalculation}-year-old

@@ -109,13 +109,13 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     actionUrl: '/guidance/child-benefit-deduction',
   },
   FIXED_PERCENTAGE_POLICY: {
-    // The old heading said "has been ruled unlawful". No court has held that of
-    // fixed percentages as a class: Kirklees and Merton each concerned one
-    // council's policy on its own facts, and the Ombudsman says "fault", never
-    // "unlawful", of a council it investigates. The body keeps "unjustified
-    // departure", which is correct and stronger than it sounds, because
-    // departing from statutory guidance without good reason is where the
-    // unlawfulness lies. It is glossed once, for a reading age of 12 to 14.
+    // No court has held fixed percentages unlawful as a class: Kirklees and
+    // Merton each concerned one council's policy on its own facts, and the
+    // Ombudsman says "fault", reserving "unlawful" for what a court held. So
+    // the heading asks a question rather than making a finding. "Unjustified
+    // departure" stays, because departing from statutory guidance without good
+    // reason is where the unlawfulness lies, and is glossed once for a reading
+    // age of 12 to 14.
     severity: 'critical',
     title: 'Your council may be starting from the wrong figure',
     body: (c) =>
@@ -200,11 +200,11 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     citationId: 'lgsco-southend-2020',
     actionUrl: '/guidance/former-foster-carers',
   },
-  // Neither of these two says "must" any more. The claim that a council must
-  // assess where the child was looked after is very likely right, but reg 6
-  // governs when financial support is PAYABLE rather than when an assessment is
-  // owed, and the reviewer's instruction was not to guess the provision that
-  // does. Tracked in data/watchlist.json as must-assess-provision.
+  // Neither of these says "must". The claim that a council must assess where
+  // the child was looked after is very likely right, but reg 6 governs when
+  // financial support is PAYABLE rather than when an assessment is owed, so it
+  // does not support the claim, and the correct provision is not yet confirmed.
+  // Tracked in data/watchlist.json as must-assess-provision.
   NOT_LOOKED_AFTER_BEFORE_ORDER: {
     severity: 'important',
     title: 'Your assessment is not automatic',

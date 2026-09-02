@@ -74,7 +74,7 @@ export function BackdatingPanel({ input }: { input: CalculatorInput }) {
   };
 
   return (
-    <details className="avoid-break" style={{ marginTop: '1.5rem' }}>
+    <details className="avoid-break gap-lg" >
       <summary>Were you underpaid in the past?</summary>
       <p>
         If your council has been paying you less than it should have been, you can ask for the
@@ -132,7 +132,7 @@ export function BackdatingPanel({ input }: { input: CalculatorInput }) {
       </button>
 
       {error && (
-        <p className="field__error" role="alert" style={{ marginTop: '1rem' }}>
+        <p className="field__error gap-md" role="alert" >
           {error}
         </p>
       )}
@@ -146,7 +146,7 @@ function BackdatingResultView({ result }: { result: BackdatingResult }) {
   const nothingOwed = result.shortfall <= 0;
 
   return (
-    <div aria-live="polite" style={{ marginTop: '1.5rem' }}>
+    <div aria-live="polite" className="gap-lg">
       <h3>{nothingOwed ? 'We cannot see a shortfall' : 'The difference'}</h3>
 
       {nothingOwed ? (
@@ -159,7 +159,7 @@ function BackdatingResultView({ result }: { result: BackdatingResult }) {
         <>
           <p
             style={{
-              color: 'var(--colour-money)',
+              color: 'var(--brand)',
               fontSize: '2.25rem',
               lineHeight: 1.1,
               fontWeight: 700,
@@ -179,7 +179,7 @@ function BackdatingResultView({ result }: { result: BackdatingResult }) {
 
       {result.blockedYears.length > 0 && (
         <div className="callout" role="note" aria-label="Years left out">
-          <p style={{ margin: 0 }}>
+          <p className="flush">
             <strong>
               {result.blockedYears.map((y) => y.replace('-', '/')).join(' and ')}{' '}
               {result.blockedYears.length === 1 ? 'is' : 'are'} not included.
@@ -210,22 +210,22 @@ function BackdatingResultView({ result }: { result: BackdatingResult }) {
           <tbody>
             {result.segments.map((s, i) => (
               <tr key={i}>
-                <th scope="row" style={{ fontWeight: 400, whiteSpace: 'nowrap' }}>
+                <th scope="row" className="table__rowlabel nowrap">
                   {formatDate(s.from)} to {formatDate(s.to)}
                   <div
                     style={{
-                      fontSize: 'var(--font-size-sm)',
-                      color: 'var(--colour-text-muted)',
+                      fontSize: 'var(--text-sm)',
+                      color: 'var(--ink-muted)',
                     }}
                   >
                     {s.financialYear.replace('-', '/')} · {reasonLabel(s.reason)}
                   </div>
                 </th>
-                <td style={{ whiteSpace: 'nowrap' }}>{s.weeks}</td>
-                <td style={{ whiteSpace: 'nowrap' }}>{s.ageBand}</td>
-                <td style={{ whiteSpace: 'nowrap' }}>{formatMoney(s.shouldHaveBeenPaidWeekly)}</td>
-                <td style={{ whiteSpace: 'nowrap' }}>{formatMoney(s.actuallyPaidWeekly)}</td>
-                <td style={{ whiteSpace: 'nowrap', fontWeight: 600 }}>
+                <td className="nowrap">{s.weeks}</td>
+                <td className="nowrap">{s.ageBand}</td>
+                <td className="nowrap">{formatMoney(s.shouldHaveBeenPaidWeekly)}</td>
+                <td className="nowrap">{formatMoney(s.actuallyPaidWeekly)}</td>
+                <td className="nowrap strong">
                   {formatMoney(s.segmentShortfall)}
                 </td>
               </tr>

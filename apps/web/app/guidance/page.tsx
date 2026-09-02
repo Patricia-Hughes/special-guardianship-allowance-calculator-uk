@@ -21,17 +21,17 @@ export default function GuidanceIndex() {
         ])}
       />
       <h1>Guides</h1>
-      <p>
+      <p className="lede">
         Everything here is written to be read once, quickly, by someone who is tired and worried.
         Every legal point has its source next to it.
       </p>
-      <ul>
+      <ul className="cards">
         {docs.map((d) => (
-          <li key={d.frontmatter.slug} style={{ marginBottom: '1rem' }}>
-            <a href={`/guidance/${d.frontmatter.slug}`}>
-              <strong>{d.frontmatter.title}</strong>
+          <li key={d.frontmatter.slug}>
+            <a className="card" href={`/guidance/${d.frontmatter.slug}`}>
+              <span className="card__title">{d.frontmatter.title}</span>
+              <span className="card__meta">{d.frontmatter.description}</span>
             </a>
-            <div>{d.frontmatter.description}</div>
           </li>
         ))}
       </ul>

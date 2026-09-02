@@ -14,7 +14,7 @@ export default function AboutPage() {
     <>
       <h1>About this site</h1>
 
-      <p style={{ fontSize: '1.15rem' }}>
+      <p className="big">
         Most special guardians are paid less than they should be. Not usually because anyone
         intended it, but because councils apply blanket policies that have repeatedly been found
         wrong, and because almost nobody being paid too little knows what the right figure looks

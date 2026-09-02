@@ -19,7 +19,7 @@ export function Cite({ id }: { id: string }) {
 export function LetterCTA({ template }: { template: string }) {
   return (
     <div className="callout">
-      <p style={{ margin: 0 }}>
+      <p className="flush">
         <strong>There is a template letter for this.</strong> It is written and checked but not
         switched on yet, so for now the wording you need is in the guidance above.
         <span className="sr-only"> Template: {template}</span>
@@ -31,7 +31,7 @@ export function LetterCTA({ template }: { template: string }) {
 export function CalculatorCTA() {
   return (
     <div className="callout">
-      <p style={{ margin: 0 }}>
+      <p className="flush">
         <strong>
           <a href="/">Work out what your council should be paying you</a>
         </strong>{' '}

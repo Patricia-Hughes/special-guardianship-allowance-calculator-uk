@@ -597,15 +597,14 @@ for (const la of authorities) {
 // ── 15. The fixed-percentage accusation is recorded, never inferred ────────
 //
 // FIXED_PERCENTAGE_POLICY is a critical flag telling a carer their council may
-// be running a policy the courts struck down. It used to be raised by pattern
-// matching corePolicy for a percentage, which fired on North Tyneside, whose
-// policy summary says "Percentage model abolished 2018", and would have fired
-// on Devon, which pays the full rate. Both would have been accused of the
-// opposite of what they do.
+// be running a policy the courts struck down. It reads one recorded field, and
+// never the prose in corePolicy, which describes what a council does and says
+// nothing reliable about proportions: "Percentage model abolished 2018" and
+// "100% of core fostering allowance" both contain a proportion and neither
+// describes a council doing this.
 //
-// So the flag now reads one field, and this gate makes sure that field is
-// answered wherever the prose invites the question. null is a valid answer, and
-// means somebody looked.
+// This gate makes sure the field is answered wherever the prose invites the
+// question. null is a valid answer and means somebody looked.
 const PROPORTION_IN_PROSE = /\b(\d{1,3}\s?%|two[- ]thirds|one[- ]third|percentage|proportion)\b/i;
 for (const la of authorities) {
   const recorded = la.fixedPercentageOfFosteringRate;
@@ -665,11 +664,10 @@ for (const la of authorities) {
 
 // ── 18. Every warning and letter that makes a claim carries a source ───────
 //
-// The citation gate covered the guidance pages and the data, and stopped there.
-// So twelve of the thirty-four warnings shown on a result carried no source at
-// all, including one that asserted "councils must have a published policy" with
-// nothing behind it. The reviewer spotted the gap by counting, and observed that
-// if the gate had covered warnings, those would have failed it. It does now.
+// A warning shown on a result is a claim to a carer, so it needs a source for
+// the same reason a guidance page does. Covering the pages and the data and
+// stopping there is how an unsourced legal assertion reaches a result page
+// without anything objecting.
 //
 // The exceptions are listed by name rather than inferred, so adding one is a
 // decision somebody makes on purpose.

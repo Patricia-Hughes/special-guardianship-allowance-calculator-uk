@@ -15,8 +15,8 @@
 
   :root {
     /* Minimum 11pt body text. This audience is older. */
-    --font-size-base: 11pt;
-    --font-size-sm: 11pt;
+    --text-base: 11pt;
+    --text-sm: 11pt;
   }
 
   html,

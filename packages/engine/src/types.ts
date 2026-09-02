@@ -401,13 +401,11 @@ export interface LaOverride {
    * fixed one: 0.667 for two-thirds, and so on. `null` means "we looked, and it
    * does not", which is a different statement from the field being absent.
    *
-   * This exists because the flag used to be raised by pattern-matching the
-   * prose in `corePolicy`, which said "Percentage model abolished 2018" for
-   * North Tyneside and "100% of core fostering allowance" for Devon. Both
-   * tripped it. The site was telling carers that a council which had scrapped
-   * the practice in 2018, and one which pays the full rate, were operating the
-   * very policy the courts struck down. An accusation like that is never
-   * inferred from prose again: it is a recorded fact or it is not made.
+   * This is the only thing that raises FIXED_PERCENTAGE_POLICY. That flag tells
+   * a carer their council may be running a policy the courts struck down, and an
+   * accusation of that weight is recorded or it is not made. It is never
+   * inferred from the wording of `corePolicy`, which describes what a council
+   * does in prose and says nothing reliable about proportions. See ADR-0008.
    */
   fixedPercentageOfFosteringRate?: number | null;
   taper?: TaperConfig | null;

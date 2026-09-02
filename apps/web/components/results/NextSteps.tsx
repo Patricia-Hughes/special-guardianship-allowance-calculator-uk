@@ -79,7 +79,7 @@ export function NextSteps({ result }: { result: CalculatorResult }) {
       <h2 id="next-steps-heading">What to do next</h2>
       <ol>
         {steps.slice(0, 6).map((s, i) => (
-          <li key={i} style={{ marginBottom: '1rem' }}>
+          <li key={i}>
             <strong>{s.title}</strong>
             <div>{s.body}</div>
             {!s.href.startsWith('#') && <a href={s.href}>Read the guide</a>}

@@ -43,7 +43,7 @@ export default function RatesPage() {
 
       <h2>Wales</h2>
       <Callout type="important">
-        <p style={{ marginBottom: 0 }}>
+        <p className="flush-bot">
           In Wales the rate for a child <strong>under 5 is higher</strong> than for a child aged 5
           to 15. That is the opposite of every other table on this page, so it looks like a mistake
           It is how the rates are published, though, and the same pattern appears in the previous
@@ -62,7 +62,7 @@ export default function RatesPage() {
               <div key={t.financialYear}>
                 <h3>{t.financialYear.replace('-', '/')}</h3>
                 <Callout type="info">
-                  <p style={{ marginBottom: 0 }}>
+                  <p className="flush-bot">
                     We do not hold verified rates for {t.financialYear.replace('-', '/')}. We will
                     not work them backwards from the uplift percentage, because the rounding rules
                     are not published and a wrong historic rate would produce a wrong backdating

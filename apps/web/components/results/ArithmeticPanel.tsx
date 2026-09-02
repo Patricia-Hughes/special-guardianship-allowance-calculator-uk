@@ -29,13 +29,13 @@ export function ArithmeticPanel({ breakdown }: { breakdown: MeansTestBreakdown }
           <tbody>
             {breakdown.steps.map((step, i) => (
               <tr key={i}>
-                <th scope="row" style={{ fontWeight: 400 }}>
+                <th scope="row" className="table__rowlabel">
                   {step.label}
                   {step.note && (
                     <div
                       style={{
-                        fontSize: 'var(--font-size-sm)',
-                        color: 'var(--colour-text-muted)',
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--ink-muted)',
                         marginTop: '0.25rem',
                       }}
                     >
@@ -43,7 +43,7 @@ export function ArithmeticPanel({ breakdown }: { breakdown: MeansTestBreakdown }
                     </div>
                   )}
                 </th>
-                <td style={{ whiteSpace: 'nowrap' }}>
+                <td className="nowrap">
                   {step.operation === 'subtract' && '−'}
                   {step.operation === 'add' && '+'}
                   {formatMoney(step.valuePence)}

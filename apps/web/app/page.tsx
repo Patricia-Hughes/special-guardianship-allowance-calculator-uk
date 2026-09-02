@@ -19,7 +19,7 @@ export default function HomePage() {
 
       <h1>What should your special guardianship allowance be?</h1>
 
-      <p style={{ fontSize: '1.15rem' }}>
+      <p className="lede">
         Most special guardians are paid less than they should be, because councils apply blanket
         policies that have repeatedly been found wrong. This tool shows you the figure your council
         should be starting from, the rule it comes from, and what you can do about a gap.
@@ -51,7 +51,7 @@ export default function HomePage() {
         </div>
       </noscript>
 
-      <section aria-labelledby="rates-heading">
+      <section className="section" aria-labelledby="rates-heading">
         <h2 id="rates-heading">The national minimum allowance, 2026/27</h2>
         <p>
           These are the fostering national minimum allowances. The statutory guidance says the core
@@ -64,7 +64,7 @@ export default function HomePage() {
         </p>
       </section>
 
-      <section aria-labelledby="how-heading">
+      <section className="section" aria-labelledby="how-heading">
         <h2 id="how-heading">How councils are supposed to decide</h2>
         <ol>
           <li>

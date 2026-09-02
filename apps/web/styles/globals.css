@@ -3,76 +3,101 @@
 @tailwind utilities;
 
 /**
- * Design tokens — spec §23.
+ * The design system, spec §23.
  *
- * Set for an older, lower-confidence audience, not for visual fashion. The
- * primary users are grandparents in their sixties and seventies. Accessibility
- * here is the core use case, not a compliance exercise.
+ * Set for an older, lower-confidence audience rather than for visual fashion.
+ * The primary users are grandparents in their sixties and seventies, often
+ * reading on a phone at a stressful moment. Accessibility here is the use case,
+ * not a compliance exercise.
+ *
+ * Everything visual lives in this file. Components carry class names that say
+ * what a thing is, never how it looks.
  */
+
 :root {
-  --font-size-base: 18px;   /* NOT 16. This audience skews 55-75. */
-  --font-size-sm: 16px;     /* absolute floor anywhere on the site */
-  /* 1.7, not the 1.6 this started at. Presbyopia makes tightly set lines hard
-     to track: the eye returns to the start of the line and lands on the wrong
-     one. The extra leading costs a little scrolling and buys a lot of comfort. */
-  --line-height: 1.7;
-  --line-height-tight: 1.2;  /* headings, where a loose setting looks unmoored */
-  --measure: 64ch;           /* max line length for body copy */
-  --paragraph-gap: 1.15em;
+  /* Type. 18px base, not 16: this audience skews 55 to 75. */
+  --text-base: 18px;
+  --text-sm: 16px;          /* absolute floor anywhere on the site */
+  --text-lede: 1.2rem;
+  /* Scales with the viewport: 2.25rem is right on a laptop and takes four
+     lines on a 390px phone, which pushes the answer below the fold before
+     the reader has done anything. */
+  --text-h1: clamp(1.75rem, 1.35rem + 1.8vw, 2.25rem);
+  --text-h2: 1.6rem;
+  --text-h3: 1.25rem;
+  --text-h4: 1.05rem;
 
-  --touch-target: 48px;     /* WCAG 2.2 AA target size */
-  --focus-ring: 3px solid #0b57d0;
+  /* Presbyopia makes tightly set lines hard to track: the eye returns to the
+     start of a line and lands on the wrong one. The extra leading costs a
+     little scrolling and buys a lot of comfort. */
+  --leading: 1.7;
+  --leading-tight: 1.2;
+  --measure: 64ch;
+
+  /* One spacing scale, so rhythm is consistent rather than per-component. */
+  --s1: 0.25rem;
+  --s2: 0.5rem;
+  --s3: 0.75rem;
+  --s4: 1rem;
+  --s5: 1.5rem;
+  --s6: 2rem;
+  --s7: 3rem;
+  --s8: 4rem;
+
+  --ink: #1a1a1a;           /* 12.6:1 on white */
+  --ink-muted: #4a4a4a;     /* 8.9:1 on white */
+  --ink-inverse: #ffffff;
+
+  --brand: #0b3d2c;         /* the masthead and the hero figure */
+  --brand-bright: #0b57d0;  /* links and the primary action */
+  --brand-bright-hover: #08429c;
+
+  --critical: #a8071a;
+  --important: #8a4b00;
+
+  --surface: #ffffff;
+  --surface-sunk: #f4f4f2;
+  --surface-tint: #eef3fd;
+  --line: #d4d4d0;          /* quiet rules between sections */
+  --line-strong: #767676;   /* 4.5:1, for borders that must be perceivable */
+
+  --tap: 48px;              /* WCAG 2.2 AA target size */
+  --focus: 3px solid #0b57d0;
   --focus-offset: 2px;
-
-  --colour-text: #1a1a1a;         /* ≥ 7:1 on white */
-  --colour-text-muted: #4a4a4a;   /* 8.9:1 on white */
-  --colour-critical: #a8071a;
-  --colour-important: #8a4b00;
-  --colour-info: #0b57d0;
-  --colour-money: #0b3d2c;        /* the hero figure */
-
-  --colour-surface: #ffffff;
-  --colour-surface-sunken: #f4f4f2;
-  --colour-line: #767676;         /* 4.5:1 on white, so borders are perceivable */
-
-  --space: 1rem;
-  --radius: 6px;
+  --radius: 8px;
 }
 
+/* ── Base ───────────────────────────────────────────────────────────────── */
+
 html {
-  font-size: var(--font-size-base);
-  /* WCAG 2.2 SC 2.4.11: a sticky header must not obscure a focused control. */
-  scroll-padding-top: 5rem;
+  font-size: var(--text-base);
+  scroll-padding-top: var(--s8);   /* WCAG 2.2 SC 2.4.11 */
 }
 
 body {
   margin: 0;
-  color: var(--colour-text);
-  background: var(--colour-surface);
-  /* No web font on the critical path (§31), and none is needed: every one of
-     these is a well-drawn interface face with generous apertures and clearly
-     distinct 1/l/I, which matters more at this reading age than any typeface
-     we could download. It also costs nothing and cannot flash. */
+  color: var(--ink);
+  background: var(--surface);
+  /* No web font on the critical path (§31), and none is needed: each of these
+     is a well-drawn interface face with generous apertures and distinct 1/l/I,
+     which matters more at this reading age than anything we could download. */
   font-family: system-ui, -apple-system, 'Segoe UI Variable Text', 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
   font-size: 1rem;
-  line-height: var(--line-height);
-  /* Keep full-strength stems. Antialiasing tricks thin the type, which is the
-     wrong direction for readers with any degree of low vision. */
+  line-height: var(--leading);
   text-rendering: optimizeLegibility;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-/* Never remove the focus ring. WCAG 2.2 SC 2.4.11. */
 :focus-visible {
-  outline: var(--focus-ring);
+  outline: var(--focus);
   outline-offset: var(--focus-offset);
 }
 
-/* Respect prefers-reduced-motion. No auto-advancing anything (§24). */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -81,277 +106,390 @@ body {
 }
 
 h1, h2, h3, h4 {
-  line-height: var(--line-height-tight);
-  /* More space above than below, so a heading reads as belonging to what
-     follows it rather than floating between two blocks. */
-  margin: 1.75em 0 0.5em;
+  line-height: var(--leading-tight);
+  margin: var(--s6) 0 var(--s3);
   text-wrap: balance;
-  /* Large type set at default tracking looks loose; a touch negative settles
-     it. Small headings are left alone, where tightening hurts legibility. */
   letter-spacing: -0.011em;
 }
-h1 { font-size: 2.1rem; margin-top: 0; }
-h2 { font-size: 1.55rem; }
-h3 { font-size: 1.22rem; letter-spacing: 0; }
-h4 { font-size: 1.05rem; letter-spacing: 0; }
+h1 { font-size: var(--text-h1); margin-top: 0; letter-spacing: -0.02em; }
+h2 { font-size: var(--text-h2); }
+h3 { font-size: var(--text-h3); letter-spacing: 0; }
+h4 { font-size: var(--text-h4); letter-spacing: 0; }
 
 p, li { max-width: var(--measure); }
-p {
-  margin: 0 0 var(--paragraph-gap);
-  /* Avoids a single word stranded on the last line. Ignored where unsupported. */
-  text-wrap: pretty;
-}
+p { margin: 0 0 1.15em; text-wrap: pretty; }
 
-/* Lists in prose need the same air between items that paragraphs get between
-   blocks, or they read as one dense lump. */
-ul, ol {
-  margin: 0 0 var(--paragraph-gap);
-  padding-left: 1.4em;
-}
+/* Tailwind's preflight strips list markers. Restore them: an unmarked list
+   reads as loose paragraphs and loses the "these are separate points" signal. */
+ul, ol { margin: 0 0 1.15em; padding-left: 1.4em; }
+ul { list-style: disc; }
+ol { list-style: decimal; }
 li { margin-bottom: 0.45em; }
 li:last-child { margin-bottom: 0; }
 li > ul, li > ol { margin-top: 0.45em; }
+li::marker { color: var(--ink-muted); }
 
-/* A long unbroken string, a URL in a citation for instance, must not force the
-   page to scroll sideways on a phone. */
+/* A long URL in a citation must not push the page sideways on a phone. */
 p, li, dd, td, th { overflow-wrap: break-word; }
 
-/* Figures line up in columns only if the digits share a width. Applies to every
-   table and every money figure, where a ragged column is genuinely harder to
-   compare down. */
-table, .tabular { font-variant-numeric: tabular-nums; }
+/* Figures only line up in a column if the digits share a width. */
+table, .tabular, .money { font-variant-numeric: tabular-nums; }
 
-/* Emphasis carries meaning on this site, often the difference between what a
-   council must do and what it may do, so it needs to be visibly heavier. */
+/* Emphasis carries meaning here, often the difference between what a council
+   must do and what it may do, so it needs to be visibly heavier. */
 strong, b { font-weight: 650; }
 
 a {
-  color: var(--colour-info);
-  /* Explicit, because Tailwind's preflight sets text-decoration: inherit on
-     anchors, which removes the browser default. Links inside body text must be
-     distinguishable without relying on colour (WCAG 1.4.1). */
+  color: var(--brand-bright);
+  /* Explicit: Tailwind's preflight sets text-decoration: inherit on anchors.
+     Links in body text must be distinguishable without colour (WCAG 1.4.1). */
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 a:hover { text-decoration-thickness: 2px; }
-/* Buttons and nav items are distinguishable by shape and position instead. */
-.btn,
-.skip-link,
-nav a {
-  text-decoration: none;
-}
-nav a:hover { text-decoration: underline; }
 
-/* Every interactive control meets the 48×48 target with 8px spacing. */
-button,
-[role='button'],
-input[type='radio'],
-input[type='checkbox'],
-select,
-input:not([type='hidden']) {
-  min-height: var(--touch-target);
+button, [role='button'], select, input:not([type='hidden']) {
+  min-height: var(--tap);
   font-size: 1rem;
   font-family: inherit;
 }
-
-input[type='radio'],
-input[type='checkbox'] {
-  min-height: 24px;
-  min-width: 24px;
-  width: 24px;
-  height: 24px;
-  accent-color: var(--colour-info);
-}
-
-.skip-link {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  background: var(--colour-surface);
-  color: var(--colour-text);
-  padding: 0.75rem 1rem;
-  z-index: 100;
-}
-.skip-link:focus {
-  left: 0;
+input[type='radio'], input[type='checkbox'] {
+  min-height: 24px; min-width: 24px; width: 24px; height: 24px;
+  accent-color: var(--brand-bright);
 }
 
 .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
-/* ── Reusable pieces ────────────────────────────────────────────────────── */
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--surface); color: var(--ink);
+  padding: var(--s3) var(--s4); text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Layout ─────────────────────────────────────────────────────────────── */
 
 .wrap {
+  width: 100%;
   max-width: 46rem;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 var(--s4);
 }
 
+.masthead {
+  background: var(--brand);
+  color: var(--ink-inverse);
+}
+.masthead__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s2) var(--s5);
+  padding-top: var(--s3);
+  padding-bottom: var(--s3);
+}
+.masthead__brand {
+  color: var(--ink-inverse);
+  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  margin-right: auto;
+}
+.masthead__brand:hover { text-decoration: underline; }
+.masthead__nav ul {
+  display: flex; flex-wrap: wrap; gap: var(--s5);
+  list-style: none; margin: 0; padding: 0;
+}
+.masthead__nav a {
+  display: inline-block;
+  color: var(--ink-inverse);
+  text-decoration: none;
+  padding: var(--s2) 0;
+  font-size: var(--text-sm);
+}
+.masthead__nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.masthead__nav a[aria-current='page'] {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+}
+.masthead :focus-visible { outline-color: #ffffff; }
+
+.site-main {
+  flex: 1 0 auto;
+  padding-top: var(--s6);
+  padding-bottom: var(--s7);
+}
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: var(--surface-sunk);
+  padding: var(--s5) 0;
+  font-size: var(--text-sm);
+}
+.site-footer p { color: var(--ink-muted); }
+.site-footer ul {
+  display: flex; flex-wrap: wrap; gap: var(--s2) var(--s5);
+  list-style: none; margin: 0; padding: 0;
+}
+
+/* A rule above a section is the cheapest way to make a long page scannable. */
+.section {
+  margin-top: var(--s7);
+  padding-top: var(--s5);
+  border-top: 1px solid var(--line);
+}
+.section > :first-child { margin-top: 0; }
+
+/* ── Text ───────────────────────────────────────────────────────────────── */
+
+.lede {
+  font-size: var(--text-lede);
+  color: var(--ink);
+  margin-bottom: var(--s5);
+}
+
+.hint { color: var(--ink-muted); font-size: var(--text-sm); }
+
+/* ── Buttons ────────────────────────────────────────────────────────────── */
+
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: var(--touch-target);
-  padding: 0.6rem 1.25rem;
-  border: 2px solid var(--colour-info);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s2);
+  min-height: var(--tap);
+  padding: var(--s3) var(--s5);
+  border: 2px solid var(--brand-bright);
   border-radius: var(--radius);
-  background: var(--colour-info);
-  color: #fff;
+  background: var(--brand-bright);
+  color: var(--ink-inverse);
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
 }
-.btn:hover { background: #094bb5; border-color: #094bb5; }
-.btn--secondary {
-  background: var(--colour-surface);
-  color: var(--colour-info);
-}
-.btn--secondary:hover { background: #eef3fd; }
+.btn:hover { background: var(--brand-bright-hover); border-color: var(--brand-bright-hover); }
+.btn--secondary { background: var(--surface); color: var(--brand-bright); }
+.btn--secondary:hover { background: var(--surface-tint); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--s3); margin-top: var(--s5); }
 
-.field {
+/* ── Cards, used for the guide index ────────────────────────────────────── */
+
+.cards { list-style: none; margin: var(--s5) 0; padding: 0; display: grid; gap: var(--s3); }
+.cards li { margin: 0; max-width: none; }
+.card {
   display: block;
-  margin: 0 0 1.5rem;
+  padding: var(--s4) var(--s5);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--brand-bright);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
 }
-.field__label {
+.card:hover { background: var(--surface-tint); border-color: var(--brand-bright); }
+.card__title {
   display: block;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
+  font-weight: 650;
+  font-size: var(--text-h4);
+  color: var(--brand-bright);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  margin-bottom: var(--s1);
 }
-.field__hint {
-  display: block;
-  color: var(--colour-text-muted);
-  font-size: var(--font-size-sm);
-  margin-bottom: 0.5rem;
-}
-.field__error {
-  display: block;
-  color: var(--colour-critical);
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
+.card__meta { color: var(--ink-muted); max-width: var(--measure); }
+
+/* ── Forms ──────────────────────────────────────────────────────────────── */
+
+.field { display: block; margin: 0 0 var(--s5); }
+.field__label { display: block; font-weight: 600; margin-bottom: var(--s1); }
+.field__hint { display: block; color: var(--ink-muted); font-size: var(--text-sm); margin-bottom: var(--s2); }
+.field__error { display: block; color: var(--critical); font-weight: 600; margin-bottom: var(--s2); }
 .field input[type='text'],
 .field input[type='date'],
 .field select {
-  width: 100%;
-  max-width: 22rem;
-  padding: 0.5rem 0.75rem;
-  border: 2px solid var(--colour-text);
+  width: 100%; max-width: 22rem;
+  padding: var(--s2) var(--s3);
+  border: 2px solid var(--ink);
   border-radius: var(--radius);
-  background: var(--colour-surface);
+  background: var(--surface);
 }
-.field input[aria-invalid='true'] {
-  border-color: var(--colour-critical);
-  border-width: 3px;
-}
+.field input[aria-invalid='true'] { border-color: var(--critical); border-width: 3px; }
 
-fieldset { border: 0; margin: 0 0 1.5rem; padding: 0; }
-legend { font-weight: 600; padding: 0; margin-bottom: 0.5rem; }
+fieldset { border: 0; margin: 0 0 var(--s5); padding: 0; }
+legend { font-weight: 600; padding: 0; margin-bottom: var(--s2); }
 
 .choice {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  min-height: var(--touch-target);
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;   /* 8px spacing, WCAG 2.2 SC 2.5.8 */
-  border: 2px solid var(--colour-line);
+  display: flex; align-items: flex-start; gap: var(--s3);
+  min-height: var(--tap);
+  padding: var(--s2) var(--s3);
+  margin-bottom: var(--s2);        /* 8px spacing, WCAG 2.2 SC 2.5.8 */
+  border: 2px solid var(--line-strong);
   border-radius: var(--radius);
   cursor: pointer;
 }
-.choice:hover { background: var(--colour-surface-sunken); }
+.choice:hover { background: var(--surface-sunk); }
 .choice:has(input:checked) {
-  border-color: var(--colour-info);
+  border-color: var(--brand-bright);
   border-width: 3px;
-  background: #eef3fd;
+  background: var(--surface-tint);
 }
+
+/* ── Callouts ───────────────────────────────────────────────────────────── */
 
 .callout {
-  border-left: 6px solid var(--colour-info);
-  background: var(--colour-surface-sunken);
-  padding: 1rem 1.25rem;
-  margin: 1.5rem 0;
+  border-left: 6px solid var(--brand-bright);
+  background: var(--surface-sunk);
+  padding: var(--s4) var(--s5);
+  margin: var(--s5) 0;
   border-radius: 0 var(--radius) var(--radius) 0;
 }
-.callout--critical { border-left-color: var(--colour-critical); }
-.callout--important { border-left-color: var(--colour-important); }
+.callout > :last-child { margin-bottom: 0; }
+.callout--critical { border-left-color: var(--critical); }
+.callout--important { border-left-color: var(--important); }
 
-table { border-collapse: collapse; width: 100%; margin: 1.5rem 0; }
-th, td { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--colour-line); }
-th { font-weight: 600; background: var(--colour-surface-sunken); }
-caption { text-align: left; font-weight: 600; padding-bottom: 0.5rem; }
+/* ── Tables ─────────────────────────────────────────────────────────────── */
 
-/* Wide content scrolls inside its own container; the page body never does.
-   The container is focusable (see ScrollableTable) so a keyboard user can
-   actually scroll it, which means it needs a focus ring too. */
+table { border-collapse: collapse; width: 100%; margin: var(--s5) 0; }
+th, td { text-align: left; padding: var(--s3); border-bottom: 1px solid var(--line); }
+th { font-weight: 600; background: var(--surface-sunk); }
+caption { text-align: left; font-weight: 600; padding-bottom: var(--s2); }
+
+/* Wide content scrolls inside its own box; the page never scrolls sideways.
+   The box is focusable (see ScrollableTable) so a keyboard can reach it. */
 .scroll-x { overflow-x: auto; }
-.scroll-x:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+.scroll-x:focus-visible { outline: var(--focus); outline-offset: var(--focus-offset); }
 
 details {
-  border: 2px solid var(--colour-line);
+  border: 2px solid var(--line-strong);
   border-radius: var(--radius);
-  padding: 0.5rem 1rem;
-  margin: 1.5rem 0;
+  padding: var(--s2) var(--s4);
+  margin: var(--s5) 0;
 }
 summary {
-  min-height: var(--touch-target);
-  display: flex;
-  align-items: center;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0.5rem 0;
+  min-height: var(--tap);
+  display: flex; align-items: center;
+  font-weight: 600; cursor: pointer;
+  padding: var(--s2) 0;
 }
 
-/* ── Flags on the result ─────────────────────────────────────────────────── */
-/*
- * A section per severity, not a card per flag. The heading carries the severity
- * in words, so the rule down the left is reinforcement rather than the only
- * signal (§23: never colour alone).
- */
+/* ── Flags on the result ────────────────────────────────────────────────── */
+/* A section per severity, not a card per flag. The heading carries the
+   severity in words, so colour is reinforcement rather than the only signal. */
+
 .flag-group {
-  border-left: 6px solid var(--colour-line);
-  padding-left: 1.25rem;
-  margin: 2rem 0;
+  border-left: 6px solid var(--line-strong);
+  padding-left: var(--s5);
+  margin: var(--s6) 0;
 }
-.flag-group--critical { border-left-color: var(--colour-critical); }
-.flag-group--important { border-left-color: var(--colour-important); }
-.flag-group--info { border-left-color: var(--colour-info); }
+.flag-group--critical { border-left-color: var(--critical); }
+.flag-group--important { border-left-color: var(--important); }
+.flag-group--info { border-left-color: var(--brand-bright); }
+.flag-group__heading { margin-top: 0; margin-bottom: var(--s1); }
+.flag-group--critical .flag-group__heading { color: var(--critical); }
+.flag-group--important .flag-group__heading { color: var(--important); }
+.flag-group__blurb { margin: 0 0 var(--s5); color: var(--ink-muted); font-size: var(--text-sm); }
 
-.flag-group__heading {
-  margin-top: 0;
-  margin-bottom: 0.25rem;
-}
-.flag-group--critical .flag-group__heading { color: var(--colour-critical); }
-.flag-group--important .flag-group__heading { color: var(--colour-important); }
-
-.flag-group__blurb {
-  margin: 0 0 1.5rem;
-  color: var(--colour-text-muted);
-  font-size: var(--font-size-sm);
-}
-
-/* Indented under its own bold line, matching "What to do next". */
-.flag-item { margin-bottom: 1.75rem; }
+.flag-item { margin-bottom: var(--s5); }
 .flag-item:last-child { margin-bottom: 0; }
-.flag-item__title {
-  margin: 0 0 0.35rem;
-  font-size: 1.05rem;
-  font-weight: 650;
-}
-.flag-item__body { padding-left: 1.1rem; }
+.flag-item__title { margin: 0 0 var(--s1); font-size: var(--text-h4); font-weight: 650; }
+.flag-item__body { padding-left: var(--s4); }
 .flag-item__body > :last-child { margin-bottom: 0; }
-.flag-item__source,
-.flag-item__action {
-  margin: 0.5rem 0 0;
-  font-size: var(--font-size-sm);
+.flag-item__source, .flag-item__action { margin: var(--s2) 0 0; font-size: var(--text-sm); }
+
+/* ── Small utilities ────────────────────────────────────────────────────── */
+/* A short, closed set. These exist so spacing and colour stop being typed
+   into the markup; anything needing more than one of them earns a real class. */
+
+.flush      { margin: 0; }
+.flush-top  { margin-top: 0; }
+.flush-bot  { margin-bottom: 0; }
+.gap-sm     { margin-top: var(--s2); }
+.gap-md     { margin-top: var(--s3); }
+.gap-lg     { margin-top: var(--s5); }
+.gap-xl     { margin-top: var(--s6); }
+.muted      { color: var(--ink-muted); }
+.small      { font-size: var(--text-sm); }
+.big        { font-size: var(--text-lede); }
+.nowrap     { white-space: nowrap; }
+.strong     { font-weight: 600; }
+.row        { display: flex; flex-wrap: wrap; gap: var(--s3); }
+
+/* ── The headline figure ────────────────────────────────────────────────── */
+/* Spec §21: lead with the ceiling, not the estimate. This is the number the
+   whole page exists to show, so it gets the only really large type on the
+   site, and enough surrounding quiet to be read at a glance on a phone. */
+
+.hero__figure {
+  color: var(--brand);
+  font-size: 3rem;
+  line-height: 1.1;
+  font-weight: 700;
+  margin: var(--s1) 0;
 }
+.hero__figure .hero__unit { font-size: var(--text-h3); font-weight: 600; }
+.hero__annual {
+  font-size: var(--text-h3);
+  color: var(--brand);
+  margin: 0 0 var(--s3);
+}
+
+/* The reg 7 case: a second figure, framed as an assumption rather than an
+   answer, so it must read as secondary to the one above it. */
+.hero--assumed {
+  border: 3px solid var(--brand);
+  border-radius: var(--radius);
+  padding: var(--s4) var(--s5);
+  margin: var(--s5) 0;
+}
+.hero--assumed .hero__figure { font-size: 2.25rem; margin: 0 0 var(--s1); }
+.hero--assumed .hero__unit { font-size: var(--text-h4); }
+
+/* ── Result page pieces ─────────────────────────────────────────────────── */
+
+.banner-critical {
+  background: var(--critical);
+  color: var(--ink-inverse);
+  padding: var(--s3) 0;
+}
+.banner-critical p { margin: 0; color: var(--ink-inverse); max-width: none; }
+.banner-critical a { color: var(--ink-inverse); }
+
+.callout__label { font-weight: 700; margin: 0 0 var(--s2); }
+
+.estimate {
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: var(--s4) var(--s5);
+  margin: var(--s5) 0;
+}
+.estimate__figure { font-size: 1.75rem; font-weight: 700; margin: 0 0 var(--s1); }
+.estimate__note { color: var(--ink-muted); margin: 0 0 var(--s3); }
+
+.step-label { color: var(--ink-muted); margin: 0; }
+
+/* A row header in a working-out table is a label, not a heading, so it does
+   not take the bold weight `th` gets by default. */
+.table__rowlabel { font-weight: 400; }
+.table__total { font-weight: 700; }
+
+.money-input { display: inline-flex; align-items: center; gap: var(--s2); }
+.money-input__prefix { font-weight: 600; }
+
+.share { margin: var(--s5) 0; }
+/* Reserves the line the "copied" message appears on, so nothing below it
+   jumps when the message arrives. */
+.share__status { min-height: 1.5rem; margin-top: var(--s2); }
+
+.next-steps li { margin-bottom: var(--s4); }
+
+/* A bordered group: one child's questions, or the means-tested estimate. */
+.panel {
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: var(--s4) var(--s5);
+  margin: var(--s5) 0;
+}
+.panel > :first-child { margin-top: 0; }

@@ -13,24 +13,18 @@ export function EstimateCard({ result }: { result: CalculatorResult }) {
   return (
     <section
       aria-labelledby="estimate-heading"
-      className="avoid-break"
-      style={{
-        border: '2px solid var(--colour-line)',
-        borderRadius: 'var(--radius)',
-        padding: '1rem 1.25rem',
-        margin: '1.5rem 0',
-      }}
+      className="avoid-break panel"
     >
-      <h2 id="estimate-heading" style={{ marginTop: 0, fontSize: '1.25rem' }}>
+      <h2 id="estimate-heading" className="flush-top big">
         Your estimate after a means test
       </h2>
-      <p style={{ fontSize: '1.75rem', fontWeight: 700, margin: '0 0 0.25rem' }}>
+      <p className="estimate__figure">
         {formatMoney(result.totalWeekly)} a week
       </p>
-      <p style={{ color: 'var(--colour-text-muted)', margin: '0 0 0.75rem' }}>
+      <p className="estimate__note">
         {formatMoney(weeklyToAnnual(result.totalWeekly))} a year
       </p>
-      <p style={{ margin: 0 }}>
+      <p className="flush">
         This applies the means-test model most English councils use. It is{' '}
         <strong>not a statutory rule</strong>, and your council may work it out differently. The
         arithmetic is set out in full below so you can check it, or ask your council to.

@@ -45,7 +45,7 @@ export function PerChildTable({ result }: { result: CalculatorResult }) {
                 <td>
                   <strong>{formatMoney(c.estimatedAllowanceWeekly)}</strong>
                   {c.floorApplied && (
-                    <div style={{ fontSize: 'var(--font-size-sm)' }}>
+                    <div className="small">
                       {FLOOR_LABEL[c.floorApplied]}
                     </div>
                   )}

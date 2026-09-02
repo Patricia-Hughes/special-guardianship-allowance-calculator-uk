@@ -11,7 +11,7 @@ export function LastUpdated({
   ratesFinancialYear?: string;
 }) {
   return (
-    <p style={{ color: 'var(--colour-text-muted)', fontSize: 'var(--font-size-sm)' }}>
+    <p className="muted small">
       Last updated <time dateTime={updated}>{formatDate(updated)}</time>
       {reviewed && (
         <>
