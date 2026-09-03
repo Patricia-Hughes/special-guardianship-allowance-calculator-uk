@@ -45,7 +45,7 @@ import { ChildrenStep } from './steps/ChildrenStep';
 import { CouncilStep } from './steps/CouncilStep';
 import { FinancesStep } from './steps/FinancesStep';
 import { HistoryStep } from './steps/HistoryStep';
-import { ResultStep } from './steps/ResultStep';
+import { ResultContinuation, ResultStep } from './steps/ResultStep';
 import { WhereStep } from './steps/WhereStep';
 import { useChildFocus, useStepFocus, type PendingChildFocus } from './useStepFocus';
 
@@ -215,6 +215,9 @@ export function CalculatorShell() {
             regionLabel={form.region || undefined}
             councilName={form.la ? LA_NAMES[form.la] : undefined}
             shareUrl={shareUrl}
+            // Only on the interstitial. Once the carer has gone on through the
+            // later steps there is nothing to invite them to.
+            continuation={step === 'result' ? <ResultContinuation goTo={goTo} /> : undefined}
           />
         </div>
       )}

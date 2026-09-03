@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { FLAGS, type CalculatorInput, type CalculatorResult, type Citation } from '@sgo/engine';
 import { MaximumHero } from './MaximumHero';
 import { PrintedInputs } from './PrintedInputs';
@@ -31,12 +31,22 @@ export function ResultsPanel({
   regionLabel,
   councilName,
   shareUrl,
+  continuation,
 }: {
   result: CalculatorResult;
   input: CalculatorInput;
   regionLabel?: string;
   councilName?: string;
   shareUrl?: string;
+  /**
+   * The offer to answer more questions, on the interstitial step.
+   *
+   * It belongs here rather than in the form above, because pressing "Show me
+   * the figure" scrolls the reader down to the figure. Anything left above it
+   * is never seen. This is where the eye actually lands: after the number, the
+   * per-child table and the caveat, and before the wall of warnings.
+   */
+  continuation?: ReactNode;
 }) {
   const citations: Citation[] = result.perChild.flatMap((c) => c.citations);
   for (const f of result.flags) if (f.citation) citations.push(f.citation);
@@ -51,6 +61,8 @@ export function ResultsPanel({
       <PerChildTable result={result} />
 
       <Disclaimer />
+
+      {continuation}
 
       <FlagList flags={result.flags} />
 

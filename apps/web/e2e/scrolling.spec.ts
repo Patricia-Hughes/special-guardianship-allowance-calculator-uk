@@ -72,6 +72,56 @@ test('the result is scrolled to, not left below the fold', async ({ page }) => {
     .toBe(true);
 });
 
+test('the offer to answer more questions is where the reader lands, not above them', async ({
+  page,
+}) => {
+  // Pressing "Show me the figure" scrolls past the form to the figure, so the
+  // invitation to carry on has to be below it. It used to sit above, with the
+  // step heading, where nobody ever saw it.
+  await toChildren(page);
+  await page.getByLabel('How old are they?').nth(0).fill('12');
+  await page.getByRole('button', { name: 'Show me the figure' }).click();
+
+  await expect(page.getByText('£255', { exact: false }).first()).toBeVisible();
+  const invitation = page.getByRole('heading', { name: /more accurate figure/i });
+
+  // Below the figure in the document, which is what puts it in the reader's way.
+  const order = await page.evaluate(() => {
+    const figure = document.querySelector('h2#maximum-heading');
+    const offer = document.querySelector('h2#more-questions-heading');
+    if (!figure || !offer) return 'missing';
+    return figure.compareDocumentPosition(offer) & Node.DOCUMENT_POSITION_FOLLOWING
+      ? 'after'
+      : 'before';
+  });
+  expect(order, 'the offer must come after the figure').toBe('after');
+
+  // And it comes BEFORE the warnings, so the reader meets it early on the way
+  // down rather than after nine of them. On a phone the figure and the caveat
+  // fill the screen, so it is just below the fold: that is fine, because it is
+  // now forward in the direction the reader is already scrolling. The bug was
+  // that it sat behind them, above the whole form.
+  const beforeWarnings = await page.evaluate(() => {
+    const offer = document.querySelector('h2#more-questions-heading');
+    const warnings = document.querySelector('h2#flags-heading');
+    if (!offer || !warnings) return 'missing';
+    return offer.compareDocumentPosition(warnings) & Node.DOCUMENT_POSITION_FOLLOWING
+      ? 'before'
+      : 'after';
+  });
+  expect(beforeWarnings, 'the offer must come before the warnings').toBe('before');
+
+  // Within one screen of the figure, not buried at the bottom of the result.
+  const gap = await page.evaluate(() => {
+    const figure = document.querySelector('h2#maximum-heading')!.getBoundingClientRect();
+    const offer = document.querySelector('h2#more-questions-heading')!.getBoundingClientRect();
+    return (offer.top - figure.top) / window.innerHeight;
+  });
+  expect(gap, 'the offer is more than a screen below the figure').toBeLessThan(2);
+
+  await expect(page.getByRole('button', { name: 'Answer a few more questions' })).toBeVisible();
+});
+
 test('adding a child moves you to the new row and puts the cursor in it', async ({ page }) => {
   await toChildren(page);
   await page.getByLabel('How old are they?').nth(0).fill('12');

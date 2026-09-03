@@ -74,6 +74,14 @@ test('a letter can be copied without a clipboard permission prompt failing the p
   await expect(page.locator('.letter__body').first()).toBeVisible();
 });
 
+test('the offer to answer more questions is not printed either', async ({ page }) => {
+  // The printed page is what a carer hands to a social worker. A button they
+  // cannot press is noise on it.
+  await toResult(page);
+  await page.emulateMedia({ media: 'print' });
+  await expect(page.getByRole('heading', { name: /more accurate figure/i })).toBeHidden();
+});
+
 test('the letters are not printed with the result', async ({ page }) => {
   // The printed page is what a carer hands to a social worker. Nine letters
   // asking the council questions do not belong in it.
