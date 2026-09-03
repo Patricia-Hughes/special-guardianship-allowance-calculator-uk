@@ -107,18 +107,18 @@
   },
   "dfe-nma-2025-26": {
     "label": "DfE National Minimum Allowance for foster carers, 2025 to 2026",
-    "url": "",
+    "url": "https://web.archive.org/web/20251130000000/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
     "kind": "dataset",
-    "retrieved": "2026-08-29",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "retrieved": "2026-09-03",
+    "archivedFrom": "https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
+    "note": "National Archives capture of 30 November 2025, headed \"Weekly allowances for the tax year from 6 April 2025 to 5 April 2026\". Matches the figures already held, exactly."
   },
   "wg-nma-2026-27": {
     "label": "Welsh Government National Minimum Allowance, 2026 to 2027",
-    "url": "",
+    "url": "https://www.llyw.cymru/adroddiadau-ar-benderfyniadau-2026",
     "kind": "dataset",
-    "retrieved": "2026-08-29",
-    "note": "The publication route is now known: Welsh rates are issued as bilingual Care Inspectorate Wales bulletins on behalf of the Welsh Government (see ciw-nma-bulletin-2023-24, the confirmed 2023/24 example). The 2026/27 bulletin itself has not been located, so these figures remain corroborated rather than primary: Fostering news of 15 September 2025 records the same band inversion in 2025/26, and applying the announced 2.2% uplift reproduces our table to the pound. The inversion is confirmed genuine across two independent years and must be reproduced as printed, never \"corrected\".",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2"
+    "retrieved": "2026-09-03",
+    "note": "The letter itself has not been located. This is the Welsh Government decision-reports page for 2026, which records in Welsh that the Minister for Children and Social Care approved the National Minimum Allowances for Foster Carers for 2026 to 2027. It establishes that the allowance was approved. It does NOT carry the rate table, so it is not the source of the figures, and the search for the letter continues."
   },
   "hsc-fostering-2026-27": {
     "label": "HSC (Northern Ireland) fostering allowances, 2026 to 2027",
@@ -382,5 +382,40 @@
     "kind": "regulation",
     "retrieved": "2026-09-03",
     "holding": "Conditions. Reg 10(1)(b) requires the special guardian to agree to supply an annual statement of their circumstances. That statement is what triggers the review duty in reg 18(2)(a)."
+  },
+  "ni-model-scheme-2025-26": {
+    "label": "Department of Health (Northern Ireland), Model Scheme 2025-26, Section 1, Foster Care Allowances",
+    "url": "https://www.health-ni.gov.uk/sites/default/files/2026-05/Foster%20care%20allowances%202025-26.pdf",
+    "kind": "guidance",
+    "retrieved": "2026-09-03",
+    "holding": "SCALE RATES from 1 April 2025: 155.00, 173.00, 194.00 and 228.00 a week.",
+    "note": "The same PDF prints a REDUCED RATES table for enhanced allowances and short breaks. That is not the allowance. The scale rate is the one pinned by test."
+  },
+  "sra-2025-26": {
+    "label": "Scottish Government, Scottish Recommended Allowance: information for carers and professionals, page updated 27 June 2025",
+    "url": "https://web.archive.org/web/20251015000000/https://www.gov.scot/publications/scottish-recommended-allowance-for-foster-and-kinship-carers-information-for-carers-and-professionals/",
+    "kind": "guidance",
+    "retrieved": "2026-09-03",
+    "archivedFrom": "https://www.gov.scot/publications/scottish-recommended-allowance-for-foster-and-kinship-carers-information-for-carers-and-professionals/",
+    "holding": "2025-26 weekly allowances, backdated to 1 April 2025: 0 to 4 at 171.17, 5 to 10 at 199.14, 11 to 15 at 199.14, 16 and over at 272.97. The same page states that no family should be worse off, that the allowance is the higher of what is currently paid or the SRA, and that the SRA does not apply to continuing care.",
+    "note": "Archived capture of 15 October 2025. The live page now shows 2026/27, so this is the only route to the 2025/26 figures. It also settles a conflict: a council reproduction showing 207.60 at 11-15 was reprinting 2023/24 rates."
+  },
+  "dfe-nma-2024-25-second-capture": {
+    "label": "GOV.UK, Help with the cost of fostering, capture of 2 March 2025",
+    "url": "https://web.archive.org/web/20250302000000/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
+    "kind": "guidance",
+    "retrieved": "2026-09-03",
+    "archivedFrom": "https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
+    "holding": "Weekly allowances for the tax year from 6 April 2024 to 5 April 2025: London 191/195/217/248/289, South East 183/189/208/238/278, Rest of England 165/170/187/213/249.",
+    "note": "A SECOND capture, at a different date, of the table already recovered from the 6 September 2024 snapshot. Two independent captures, same figures. Kept because a transcription confirmed twice from separate captures is the strongest evidence this project has for a historic rate table."
+  },
+  "dfe-no-minimum-after-18": {
+    "label": "GOV.UK, Help with the cost of fostering, on allowances after a child is old enough to leave foster care",
+    "url": "https://web.archive.org/web/20251130000000/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
+    "kind": "guidance",
+    "retrieved": "2026-09-03",
+    "archivedFrom": "https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
+    "holding": "States in terms: \"There is no minimum allowance when your child is old enough to leave foster care.\"",
+    "note": "Located by the research of 2 September 2026 while capturing the 2025/26 table. The turning-18 page had no source at all for the post-18 position."
   }
 }

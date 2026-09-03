@@ -481,6 +481,36 @@ summary {
   color: var(--ink-muted);
 }
 
+/* ── Letters ─────────────────────────────────────────────────────────── */
+
+.letters { list-style: none; padding: 0; margin: 0; }
+.letters > li { margin: 0 0 var(--s5); }
+
+.letter {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--brand);
+  border-radius: 6px;
+  padding: var(--s4);
+  background: var(--surface);
+}
+.letter__title { margin: 0 0 var(--s1); font-size: var(--text-base); }
+.letter__why { margin: 0 0 var(--s3); font-size: var(--text-sm); }
+
+/* The letter itself. Monospace would read as code; this is a letter someone
+   is about to send, so it keeps the body face and just holds its line breaks. */
+.letter__body {
+  margin: var(--s3) 0;
+  padding: var(--s4);
+  max-height: 26rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  font: inherit;
+  background: var(--surface-sunk);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.letter__body:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
 /* Paragraphs inside a warning body. The last one sits flush so the card does
    not end with a gap; :last-child does that, rather than the component
    working out which paragraph it is on. */

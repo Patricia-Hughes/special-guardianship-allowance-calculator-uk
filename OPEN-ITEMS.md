@@ -15,12 +15,22 @@ it does not go in the product. Flag it, open an issue, ship without it.
 
 | # | Item | Blocks | Where it is tracked in the code | Owner |
 |---|---|---|---|---|
-| 1b | Source **2025/26 for Wales, Scotland and Northern Ireland**. The only gap. The 2 September review located the Northern Irish PDF (new path, needs opening by hand), established that Scotland did uplift by 1.7% but found two conflicting figure sets, and left Wales open with one untried route. All three briefed in `data/watchlist.json`. | Backdating excludes 2025/26 for those three nations | `data/rates.2025-26.json`; `data/watchlist.json` | Research |
-| 3 | **The letters are not reachable by a carer.** All nine exist, are tested, and were reviewed on 1 September, but no page of the site imports `@sgo/letters` and nothing reads `LETTER_GENERATOR`. The screen that would show a carer their letters has not been built. This is a build, not a switch. | The whole letters feature | `packages/letters/`; `FLAGS.LETTER_GENERATOR` | Owner |
+| 1b | **Wales 2025/26 only, and accepted as a gap on 3 September 2026** after three exhaustive searches. Northern Ireland and Scotland are now sourced, so backdating covers all four nations for 2024/25 and 2026/27, and three of four for 2025/26. Two routes remain for Wales and neither is a search: a guessable file path, and emailing the two addresses printed on the 2024/25 letter. | One year of Welsh backdating, which the site already names as excluded | `data/watchlist.json` `ciw-nma-bulletins` | Research |
+| 3 | ~~The letters are not reachable by a carer.~~ **Built and switched on, 3 September 2026.** The screen lists the letters matching the warnings that fired, fills each with the carer's own council, area and figure, and offers copy and download. It sends nothing and saves nothing. The formal complaint stays behind its gate, and the gate lifts near the Ombudsman's twelve-month limit. Covered by 12 e2e tests. | Nothing | `components/results/LettersPanel.tsx` | |
 | 4 | ~~Confirm the DfE taper method.~~ **Answered 2 September 2026: there is no national taper.** Checked against the 2005 Regulations, the 2017 statutory guidance, the DfE means test model and the 2024 kinship guidance. The model fixes the 20% disregard and the 125% living costs and then stops. The absence is a feature of the scheme, so the warning now asks councils where their own taper comes from. | Nothing | `TAPER_METHOD_ASSUMED` | |
 | 5 | Wait for Leeds's final revised support offer. | How much we can say about Leeds | `data/la-overrides.json` `leeds.policyUnderReview` | |
 | 7 | Legal review of the rewritten copy, if a rewrite happens. The review of 1 September was of the current wording, on the basis that no rewrite is planned. Its findings are about strength of claim rather than style, so they survive a rewrite, but they would need re-checking against the new sentences. | A rewrite, if one happens | `FOR-YOUR-TEAM.md` | |
 | 10 | ~~Analytics.~~ **Answered 31 August 2026: no.** Nothing measures visitors, the privacy notice says so, and `check:content` fails the build on any tracker. | Nothing | `scripts/check-content.ts` | |
+
+## Closed on 3 September 2026
+
+| # | Item | How it closed |
+|---|---|---|
+| 1b (Northern Ireland) | 2025/26 rates | SCALE RATES from the Department of Health model scheme, 155.00 / 173.00 / 194.00 / 228.00 a week from 1 April 2025. The per-4-weeks column multiplies exactly on all four rows. Uplift of 4.0 to 4.2 per cent, consistent with the announced 4 per cent backdated to 1 April. The REDUCED RATES table beneath it, 28 per cent lower, was correctly identified and left alone; a test now pins the scale rate for this year as well as 2024/25. |
+| 1b (Scotland) | 2025/26 rates | 171.17 / 199.14 / 272.97 from an archived gov.scot capture of the page updated 27 June 2025. A 1.7 per cent uplift announced in May 2025 and backdated to 1 April. **The conflict is settled**: 5-10 and 11-15 are identical, exactly as the three-band design predicts, and the East Renfrewshire table showing 207.60 was reprinting 2023/24 rates. A test now fails if anyone re-splits the 5-15 band. |
+| 3 | The letters screen | Built. See the row above. |
+| Sources | Five unlinked citations | The DfE 2025/26 capture, a second independent capture confirming 2024/25, the gov.scot page, the Welsh decision report recording ministerial approval of the 2026/27 allowance, and a GOV.UK statement that there is no minimum allowance after a child is old enough to leave foster care, which the `turning-18` page had no source for at all. |
+| The April correction | Reported as outstanding | **Already applied.** Every "1 April" claim in the shipped copy already carries the tax-year counterpart; the April-boundary work closed it on 31 August. The research was against an older exported pack. |
 
 ## Closed on 2 September 2026, from the second legal review
 

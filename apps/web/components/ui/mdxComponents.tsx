@@ -20,8 +20,9 @@ export function LetterCTA({ template }: { template: string }) {
   return (
     <div className="callout">
       <p className="flush">
-        <strong>There is a template letter for this.</strong> It is written and checked but not
-        switched on yet, so for now the wording you need is in the guidance above.
+        <strong>There is a template letter for this.</strong>{' '}
+        <a href="/">Work out your figure</a> and it appears at the end of your result, already
+        filled in with your council, your area and your own numbers.
         <span className="sr-only"> Template: {template}</span>
       </p>
     </div>

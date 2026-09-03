@@ -34,7 +34,13 @@ export interface FeatureFlags {
    * verify: true and carry anomalyConfirmed with an on-screen explanation.
    */
   WALES_ROUTE_ENABLED: boolean;
-  /** Phase 2. */
+  /**
+   * Unblocked 3 September 2026. The letters existed, tested and legally
+   * reviewed, but nothing rendered them, so no carer could reach one. The
+   * screen is built: it lists the letters that match the warnings that fired,
+   * fills each with the carer's own figures, and offers copy and download. It
+   * sends nothing and saves nothing.
+   */
   LETTER_GENERATOR: boolean;
   POSTCODE_LOOKUP: boolean;
   KINSHIP_ZONE_PATH: boolean;
@@ -48,7 +54,7 @@ export const FLAGS: FeatureFlags = {
   MEANS_TEST_ENABLED: true,
   BACKDATING_ENABLED: true,
   WALES_ROUTE_ENABLED: true,
-  LETTER_GENERATOR: false,
+  LETTER_GENERATOR: true,
   POSTCODE_LOOKUP: true,
   KINSHIP_ZONE_PATH: true,
   WELSH_LANGUAGE: false,

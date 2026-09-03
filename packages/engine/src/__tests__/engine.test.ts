@@ -713,6 +713,38 @@ describe('backdating', () => {
     expect(r.blockedYears).not.toContain('2024-25');
   });
 
+  it('uses the Northern Irish scale rates for 2025/26 too', () => {
+    const r = calculateBackdating({
+      base: input({
+        carer: carer({ nation: 'northern-ireland', englandRegion: undefined }),
+        children: [child({ ageYears: 8, dateOfBirth: d('2018-06-01') })],
+      }),
+      fromDate: d('2025-06-01'),
+      toDate: d('2026-01-01'),
+      actuallyPaidWeekly: p(0),
+    });
+    const seg = r.segments.find((x) => x.financialYear === '2025-26');
+    expect(seg, '2025/26 should no longer be blocked for Northern Ireland').toBeDefined();
+    // Scale rate for 5-10 from 1 April 2025. The reduced rate on the same page
+    // is 12500, so a 12500 here means the wrong table was read.
+    expect(seg!.maximumWeekly).toBe(17300);
+    expect(r.blockedYears).not.toContain('2025-26');
+  });
+
+  it('keeps the Scottish 5-15 band single, as the SRA defines it', () => {
+    // The SRA is three bands presented across four categories, and 5-10 and
+    // 11-15 are paid the SAME. A council reproduction showing them differing was
+    // reprinting an older year. Splitting this band would invent a distinction
+    // the Scottish Government does not make.
+    for (const table of RATE_TABLES) {
+      const scotland = table.scotland;
+      if (!scotland?.rates) continue;
+      expect(scotland.rates['5-10']).toBeUndefined();
+      expect(scotland.rates['11-15']).toBeUndefined();
+      expect(scotland.rates['5-15']).toBeGreaterThan(0);
+    }
+  });
+
   // Open item 11. Councils uplift on 1 April; the DfE states the same rates on a
   // tax year beginning 6 April. The tool pays out on the council convention,
   // because that is what decides what a carer was actually paid, but the five

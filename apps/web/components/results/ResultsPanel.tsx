@@ -8,6 +8,7 @@ import { EstimateCard } from './EstimateCard';
 import { PerChildTable } from './PerChildTable';
 import { ArithmeticPanel } from './ArithmeticPanel';
 import { BackdatingPanel } from './BackdatingPanel';
+import { LettersPanel } from './LettersPanel';
 import { NextSteps } from './NextSteps';
 import { PrintButton } from './PrintButton';
 import { FlagList } from '../flags/FlagList';
@@ -58,6 +59,10 @@ export function ResultsPanel({
       {FLAGS.BACKDATING_ENABLED && <BackdatingPanel input={input} />}
 
       <NextSteps result={result} />
+
+      {FLAGS.LETTER_GENERATOR && (
+        <LettersPanel result={result} input={input} {...(councilName ? { councilName } : {})} />
+      )}
       <CitationsList citations={citations} />
 
       <PrintButton />
