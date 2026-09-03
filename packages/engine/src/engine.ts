@@ -22,7 +22,7 @@ import { scotlandPath } from './regimes/scotland.js';
 import { sgoPath } from './regimes/sgo.js';
 import { ageOf, monthsSinceOrder } from './resolve.js';
 import { parseCalculatorInput } from './schema.js';
-import type { CalculatorInput, CalculatorResult } from './types.js';
+import type { BenefitTable, CalculatorInput, CalculatorResult } from './types.js';
 
 export function calculate(
   rawInput: CalculatorInput,
@@ -33,11 +33,17 @@ export function calculate(
   const asAt = input.asAtDate ?? todayUtc();
 
   const rates = selectRateTable(deps.rateTables, asAt);
-  const benefits = selectBenefitTable(deps.benefitTables, asAt);
+
+  // The benefit table is looked up only where something reads it, which is the
+  // means test and the Child Benefit deduction. It used to be selected here,
+  // before the routing, so a date with no benefit table refused every path
+  // including the ones that never touch one: a Scottish carer asking about an
+  // earlier year was turned away over a table their result does not use.
+  const benefitsFor = (): BenefitTable => selectBenefitTable(deps.benefitTables, asAt);
 
   if (input.carer.nation === 'scotland') return scotlandPath(input, rates, asAt, deps);
   if (isKinshipZoneEligible(input, deps)) return kinshipZonePath(input, rates, asAt, deps);
-  return sgoPath(input, rates, benefits, asAt, deps);
+  return sgoPath(input, rates, benefitsFor, asAt, deps);
 }
 
 export { defaultDeps, type EngineDeps };

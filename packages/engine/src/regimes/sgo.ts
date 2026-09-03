@@ -69,7 +69,8 @@ interface ChildMeasure {
 export function sgoPath(
   input: CalculatorInput,
   rates: RateTable,
-  benefits: BenefitTable,
+  /** Looked up on demand: only a means-tested result ever reads it. */
+  benefitsFor: () => BenefitTable,
   asAt: IsoDate,
   deps: EngineDeps,
 ): CalculatorResult {
@@ -83,7 +84,7 @@ export function sgoPath(
   ];
 
   return input.finances
-    ? meansTested(input, measured.children, flags, rates, benefits, asAt, la)
+    ? meansTested(input, measured.children, flags, rates, benefitsFor, asAt, la)
     : maximumOnly(input, measured.children, flags, rates, asAt);
 }
 
@@ -185,12 +186,16 @@ function meansTested(
   children: ChildMeasure[],
   flags: Flag[],
   rates: RateTable,
-  benefits: BenefitTable,
+  benefitsFor: () => BenefitTable,
   asAt: IsoDate,
   la: LaOverride | undefined,
 ): CalculatorResult {
   const finances = input.finances;
   if (!finances) throw new DataError('meansTested called without finances');
+
+  // Resolved here rather than by the caller: this is the only branch that needs
+  // a benefit table, and asking for one earlier refused results that do not.
+  const benefits = benefitsFor();
 
   if (!meansTestAvailable(benefits)) {
     // Blocked on PENDING_SOURCE data. runMeansTest would throw; surface the
