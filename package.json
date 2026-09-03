@@ -26,7 +26,8 @@
     "verify": "pnpm typecheck && pnpm test:unit && pnpm validate:data && pnpm check:staleness && pnpm check:content && pnpm check:headers",
     "export:writer": "tsx scripts/export-writer-pack.mts",
     "export:facts": "tsx scripts/export-facts-pack.mts",
-    "export:content-bundle": "tsx scripts/export-content-bundle.mts"
+    "export:content-bundle": "tsx scripts/export-content-bundle.mts",
+    "export:brief": "tsx scripts/export-master-brief.mts"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
