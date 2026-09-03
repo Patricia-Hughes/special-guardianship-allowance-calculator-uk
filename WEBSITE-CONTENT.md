@@ -2882,9 +2882,7 @@ _Template `challenge-child-benefit-deduction`_
 ```
 Dear [COUNCIL] Children's Services,
 
-I am the special guardian for [CHILD'S NAME]. I currently receive £200 a week.
-
-I understand that Child Benefit is being taken into account when my special guardianship allowance is worked out. I would be grateful if you could confirm in writing:
+I am the special guardian for [CHILD'S NAME]. I understand that Child Benefit is being taken into account when my special guardianship allowance is worked out. I would be grateful if you could confirm in writing:
 
 1. whether Child Benefit is deducted from my allowance, and if so how much;
 2. whether your policy deducts Child Benefit from carers who receive means-tested benefits; and
@@ -2913,9 +2911,7 @@ _Template `challenge-fixed-percentage`_
 ```
 Dear [COUNCIL] Children's Services,
 
-I am the special guardian for [CHILD'S NAME]. I currently receive £200 a week.
-
-My understanding is that the national minimum fostering allowance published by the Department for Education for a child in the 11-15 age band in the South East is £255 a week, and that the statutory guidance treats the core fostering allowance as the starting point for a special guardianship allowance.
+I am the special guardian for [CHILD'S NAME]. My understanding is that the national minimum fostering allowance published by the Department for Education for a child in the 11-15 age band in the South East is £255 a week, and that the statutory guidance treats the core fostering allowance as the starting point for a special guardianship allowance.
 
 Please could you tell me:
 
@@ -2944,9 +2940,7 @@ _Template `ask-which-element-reduced`_
 ```
 Dear [COUNCIL] Children's Services,
 
-I am the special guardian for [CHILD'S NAME], and I was [CHILD'S NAME]'s foster carer before the special guardianship order was made on [DATE]. I currently receive £200 a week.
-
-My payments are being reduced, and I would like to understand exactly what is being reduced and why. Please could you confirm:
+I am the special guardian for [CHILD'S NAME], and I was [CHILD'S NAME]'s foster carer before the special guardianship order was made on [DATE]. My payments are being reduced, and I would like to understand exactly what is being reduced and why. Please could you confirm:
 
 1. which element of my allowance is being reduced, and by how much;
 2. the basis on which that reduction is being made; and
@@ -2973,9 +2967,7 @@ _Template `request-reg7-extension`_
 ```
 Dear [COUNCIL] Children's Services,
 
-I am the special guardian for [CHILD'S NAME], and I was [CHILD'S NAME]'s foster carer before the special guardianship order was made on [DATE]. I currently receive £200 a week.
-
-I understand that your council can continue paying the reward element of my former fostering allowance for two years after the order, and beyond that where it considers continuation necessary because of the exceptional needs of the child or other exceptional circumstances.
+I am the special guardian for [CHILD'S NAME], and I was [CHILD'S NAME]'s foster carer before the special guardianship order was made on [DATE]. I understand that your council can continue paying the reward element of my former fostering allowance for two years after the order, and beyond that where it considers continuation necessary because of the exceptional needs of the child or other exceptional circumstances.
 
 I would be grateful if you could confirm:
 
@@ -3005,9 +2997,7 @@ _Template `request-enhancement-disability`_
 ```
 Dear [COUNCIL] Children's Services,
 
-I am the special guardian for [CHILD'S NAME]. I currently receive £200 a week.
-
-The regulations allow financial support to take account of a child's disability or additional needs, including the consequences of any abuse or neglect they experienced before the order.
+I am the special guardian for [CHILD'S NAME]. The regulations allow financial support to take account of a child's disability or additional needs, including the consequences of any abuse or neglect they experienced before the order.
 
 [CHILD'S NAME] has additional needs which mean extra costs for our household. In particular:
 
@@ -3066,9 +3056,7 @@ _Template `request-calculation-breakdown`_
 ```
 Dear [COUNCIL] Children's Services,
 
-I am the special guardian for [CHILD'S NAME]. I currently receive £200 a week.
-
-I would be grateful for a written breakdown of how that figure was calculated, showing:
+I am the special guardian for [CHILD'S NAME]. I would be grateful for a written breakdown of how my allowance was calculated, showing:
 
 1. the starting figure and where it came from;
 2. what income was taken into account, and what was disregarded;
@@ -3096,9 +3084,7 @@ _Template `request-annual-review`_
 ```
 Dear [COUNCIL] Children's Services,
 
-I am the special guardian for [CHILD'S NAME]. I currently receive £200 a week.
-
-I understand that my financial support should be reviewed when you receive my annual statement of circumstances, and that the national minimum allowance rates changed in April.
+I am the special guardian for [CHILD'S NAME]. I understand that my financial support should be reviewed when you receive my annual statement of circumstances, and that the national minimum allowance rates changed in April.
 
 Please could you confirm:
 
@@ -3125,9 +3111,7 @@ _Template `formal-complaint-stage-1`_
 ```
 Dear [COUNCIL] Children's Services,
 
-I would like to make a stage 1 complaint about the way my special guardianship allowance for [CHILD'S NAME] has been handled. I currently receive £200 a week.
-
-What happened:
+I would like to make a stage 1 complaint about the way my special guardianship allowance for [CHILD'S NAME] has been handled. What happened:
 
   • [what you asked for, and when]
   • [what the council did or did not do]
