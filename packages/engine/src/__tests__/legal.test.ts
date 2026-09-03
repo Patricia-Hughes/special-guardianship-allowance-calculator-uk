@@ -190,6 +190,49 @@ describe('SGO engine — legal correctness', () => {
     expect(better.perChild.every((c) => c.floorApplied === null)).toBe(true);
   });
 
+  it('T7d [R4] a former foster carer must say WHEN, or the floor is silently lost', () => {
+    // Regression, and the mirror image of T7c. "Months since the order" was made
+    // optional so that a blank box stopped meaning "the order was made today".
+    // Nothing then required the timing at all, and without it the reg 7 window
+    // cannot be resolved, so the floor never applied: a carer who entered a 500
+    // pound allowance and left both date boxes empty was shown the standard
+    // rate instead. No error, no warning, and a figure they had typed in was
+    // quietly discarded. Refused now.
+    const withoutTiming = {
+      carer: carer({
+        wasFosterCarerForThisChild: true,
+        previousWeeklyFosteringAllowance: p(50000),
+        monthsSinceOrderMade: undefined,
+        orderDate: undefined,
+      }),
+      children: [child({ ageYears: 12 })],
+    };
+    expect(() => calculate(input(withoutTiming))).toThrow(ValidationError);
+    try {
+      calculate(input(withoutTiming));
+    } catch (e) {
+      expect((e as ValidationError).issues[0]!.path).toBe('carer.monthsSinceOrderMade');
+    }
+
+    // Either answer is enough on its own.
+    const byMonths = calculate(
+      input({
+        ...withoutTiming,
+        carer: carer({ ...withoutTiming.carer, monthsSinceOrderMade: 6 }),
+      }),
+    );
+    expect(byMonths.totalWeekly).toBe(50000);
+
+    const byDate = calculate(
+      input({
+        ...withoutTiming,
+        carer: carer({ ...withoutTiming.carer, orderDate: d('2026-06-01') }),
+        asAtDate: d('2026-09-03'),
+      }),
+    );
+    expect(byDate.totalWeekly).toBe(50000);
+  });
+
   it('T8  [R4] the floor does not apply after 24 months', () => {
     const r = calculate(
       input({

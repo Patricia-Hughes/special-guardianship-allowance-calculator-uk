@@ -10,7 +10,7 @@ import { councilNameFor } from '../councilPolicy.js';
 import type { EngineDeps } from '../deps.js';
 import { makeFlag } from '../flags.js';
 import { pence } from '../money.js';
-import { lookupRate, resolveAgeBand } from '../rates.js';
+import { citeRateSource, lookupRate, resolveAgeBand } from '../rates.js';
 import { cite } from '../referenceData.js';
 import { ageOf } from '../resolve.js';
 import { finalise } from '../result.js';
@@ -46,7 +46,14 @@ export function kinshipZonePath(
       childBenefitDeductionWeekly: pence(0),
       estimatedAllowanceWeekly: rate,
       floorApplied: 'kinship-zone-nma',
-      citations: [cite('kinship-zones-2026'), cite('dfe-guidance-2017-para65')],
+      citations: [
+        // The rate table first: the pilot pays the full NMA, so the figure comes
+        // from the fostering table and that is what a carer needs to be able to
+        // check.
+        citeRateSource(rates, input.carer.nation),
+        cite('kinship-zones-2026'),
+        cite('dfe-guidance-2017-para65'),
+      ],
     };
   });
 

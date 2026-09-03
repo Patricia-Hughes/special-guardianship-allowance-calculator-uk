@@ -44,8 +44,8 @@
   --s7: 3rem;
   --s8: 4rem;
 
-  --ink: #1a1a1a;           /* 12.6:1 on white */
-  --ink-muted: #4a4a4a;     /* 8.9:1 on white */
+  --ink: #1a1a1a;           /* 17.4:1 on white */
+  --ink-muted: #4a4a4a;     /* 8.9:1 on white, 8.0:1 on --surface-sunk */
   --ink-inverse: #ffffff;
 
   --brand: #0b3d2c;         /* the masthead and the hero figure */
@@ -331,9 +331,18 @@ legend { font-weight: 600; padding: 0; margin-bottom: var(--s2); }
   cursor: pointer;
 }
 .choice:hover { background: var(--surface-sunk); }
+/* The chosen answer.
+   .choice--on is set by the component and works everywhere. :has() is kept
+   alongside it so the styling still holds if the markup is ever used without
+   the class, but it is no longer what the state depends on: on Safari below
+   15.4, which this audience does use, :has() does nothing at all.
+   The emphasis is an inset shadow rather than a thicker border, because
+   growing the border from 2px to 3px moved the row by a pixel every time
+   someone picked an answer. */
+.choice--on,
 .choice:has(input:checked) {
   border-color: var(--brand-bright);
-  border-width: 3px;
+  box-shadow: inset 0 0 0 1px var(--brand-bright);
   background: var(--surface-tint);
 }
 

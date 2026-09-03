@@ -18,7 +18,7 @@ export type { FlagContext, FlagSpec } from './flagTypes.js';
  * Ordering within a severity follows this array, which is roughly descending by
  * financial impact (spec §17).
  */
-const FLAG_ORDER: FlagCode[] = [
+export const FLAG_ORDER: FlagCode[] = [
   'UNLAWFUL_CB_DEDUCTION_RISK',
   'FIXED_PERCENTAGE_POLICY',
   'BELOW_NMA',
@@ -50,6 +50,14 @@ const FLAG_ORDER: FlagCode[] = [
   'THREE_YEAR_RESPONSIBILITY',
   'BENEFIT_CAP_RISK',
   'TWO_CHILD_LIMIT_ABOLISHED',
+  // Both are notes about how a rate table is printed rather than about the
+  // carer's own position, so they sit at the quiet end. They were missing from
+  // this list entirely, and indexOf returns -1 for a code that is not here,
+  // which sorted them AHEAD of everything else in their severity band: a
+  // Welsh carer met a remark about band ordering before anything about their
+  // rights. checkFlagOrderIsComplete keeps the two lists in step.
+  'APRIL_RATE_BOUNDARY',
+  'WALES_BAND_ORDER_ANOMALY',
   'GUARDIANS_ALLOWANCE_CHECK',
 ];
 
@@ -70,9 +78,18 @@ export function makeFlag(code: FlagCode, ctx: FlagContext = {}): Flag {
 
 /** Sort critical, then important, then info, and within each by the order above. */
 export function sortFlags(flags: Flag[]): Flag[] {
+  // A code missing from FLAG_ORDER sorts LAST rather than first. indexOf gives
+  // -1, which put an unlisted warning at the top of its severity band, and the
+  // failure was silent: nothing looked wrong, the ordering was just quietly
+  // decided by an oversight. The test keeps the lists in step; this makes the
+  // consequence harmless if one ever slips through again.
+  const rank = (code: Flag['code']): number => {
+    const i = FLAG_ORDER.indexOf(code);
+    return i === -1 ? FLAG_ORDER.length : i;
+  };
   return [...flags].sort((a, b) => {
     const bySeverity = SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity];
-    return bySeverity !== 0 ? bySeverity : FLAG_ORDER.indexOf(a.code) - FLAG_ORDER.indexOf(b.code);
+    return bySeverity !== 0 ? bySeverity : rank(a.code) - rank(b.code);
   });
 }
 

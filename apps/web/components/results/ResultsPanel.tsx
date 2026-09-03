@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { FLAGS, type CalculatorInput, type CalculatorResult, type Citation } from '@sgo/engine';
 import { MaximumHero } from './MaximumHero';
 import { PrintedInputs } from './PrintedInputs';
@@ -15,6 +15,7 @@ import { FlagList } from '../flags/FlagList';
 import { CitationsList } from '../ui/SourceLink';
 import { Disclaimer } from '../ui/Disclaimer';
 import { AdviceLines } from '../ui/AdviceLines';
+import { useCopyToClipboard } from '../ui/useCopyToClipboard';
 import { SHARE_EXPLANATION } from '../../lib/urlState';
 
 /**
@@ -110,25 +111,18 @@ function PrintHeader({ result }: { result: CalculatorResult }) {
 }
 
 function ShareControl({ url }: { url: string }) {
-  const [copied, setCopied] = useState(false);
+  const { state, copy } = useCopyToClipboard();
   return (
     <div className="print-hide share">
       <h2 className="big">Share this result</h2>
       <p>{SHARE_EXPLANATION}</p>
-      <button
-        type="button"
-        className="btn btn--secondary"
-        onClick={() => {
-          void navigator.clipboard?.writeText(url).then(
-            () => setCopied(true),
-            () => setCopied(false),
-          );
-        }}
-      >
+      <button type="button" className="btn btn--secondary" onClick={() => copy(url)}>
         Copy the link
       </button>
       <p aria-live="polite" className="share__status">
-        {copied ? 'Link copied.' : ''}
+        {state === 'done' && 'Link copied.'}
+        {state === 'failed' &&
+          'Your browser would not let us copy it. Select the address in the bar at the top and copy it yourself.'}
       </p>
     </div>
   );

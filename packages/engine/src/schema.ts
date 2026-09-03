@@ -128,6 +128,24 @@ export const carerInputSchema = z
         'Enter the weekly amount you received as a foster carer.',
       );
     }
+    // And without the timing it cannot be applied either, for the same reason.
+    // The reg 7 window is the 24 months after the order, so an amount with no
+    // date attached is an amount the engine has to ignore. It used to ignore it
+    // in silence: a carer who gave a 500 pound allowance and left both date
+    // boxes empty was shown the standard rate instead, with no error and
+    // nothing to say a figure they had entered had been discarded.
+    if (
+      carer.wasFosterCarerForThisChild &&
+      carer.orderDate === undefined &&
+      carer.monthsSinceOrderMade === undefined
+    ) {
+      problem(
+        ctx,
+        ['monthsSinceOrderMade'],
+        'Tell us when the order was made, either the date or roughly how many months ago. ' +
+          'Your old fostering rate only counts for the first two years.',
+      );
+    }
   });
 
 // ─── Finances ──────────────────────────────────────────────────────────────
@@ -168,11 +186,24 @@ export const financesInputSchema = z.object({
   claimantUnder25: z.boolean().optional(),
 });
 
-export const taperConfigSchema = z.object({
-  method: z.enum(['pound-for-pound', 'percentage', 'threshold']),
-  percentage: z.number().min(0).max(1).optional(),
-  thresholdMonthly: penceSchema.optional(),
-});
+export const taperConfigSchema = z
+  .object({
+    method: z.enum(['pound-for-pound', 'percentage', 'threshold']),
+    percentage: z.number().min(0).max(1).optional(),
+    thresholdMonthly: penceSchema.optional(),
+  })
+  // A method with no figure behind it used to fall back to pound-for-pound,
+  // the harshest option, in silence. applyTaper now refuses it, so the
+  // configuration has to be caught here rather than blowing up mid-calculation
+  // and showing a carer "we cannot estimate this".
+  .superRefine((taper, ctx) => {
+    if (taper.method === 'percentage' && taper.percentage === undefined) {
+      problem(ctx, ['percentage'], 'A percentage taper needs a percentage.');
+    }
+    if (taper.method === 'threshold' && taper.thresholdMonthly === undefined) {
+      problem(ctx, ['thresholdMonthly'], 'A threshold taper needs a threshold.');
+    }
+  });
 
 // ─── The whole input ───────────────────────────────────────────────────────
 

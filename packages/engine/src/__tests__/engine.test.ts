@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { calculate, defaultDeps, isKinshipZoneEligible, regimeFor, resolveEnglandRegion } from '../engine.js';
 import { calculateBackdating, segmentBoundaries } from '../backdating.js';
 import { DataError, ValidationError } from '../errors.js';
-import { dedupeFlags, makeFlag, sortFlags } from '../flags.js';
+import { FLAG_CATALOGUE, FLAG_ORDER, dedupeFlags, makeFlag, sortFlags } from '../flags.js';
 import {
   LA_OVERRIDES_ALL,
   LA_REGION_MAP,
@@ -20,6 +20,7 @@ import {
   publishableLaOverride,
 } from '../referenceData.js';
 import { FLAGS } from '../featureFlags.js';
+import type { FlagCode } from '../types.js';
 import { carer, child, d, depsWithMeansTest, finances, input, p, publishableLa } from './fixtures.js';
 
 describe('engine — routing and regimes', () => {
@@ -457,6 +458,27 @@ describe('flags module', () => {
       'REG7_FLOOR_APPLIED',
       'ANNUAL_REVIEW_DUE',
     ]);
+  });
+
+  it('orders every warning in the catalogue, with none left out', () => {
+    // APRIL_RATE_BOUNDARY and WALES_BAND_ORDER_ANOMALY were in the catalogue and
+    // not in FLAG_ORDER. indexOf returns -1 for a missing code, so both sorted
+    // ahead of everything else in their severity band and a Welsh carer met a
+    // remark about how the rate table is printed before anything about their
+    // rights. Nothing failed; the ordering was just quietly wrong.
+    const catalogue = Object.keys(FLAG_CATALOGUE) as FlagCode[];
+    expect([...FLAG_ORDER].sort()).toEqual([...catalogue].sort());
+  });
+
+  it('sorts an unlisted warning last rather than first', () => {
+    // Belt and braces for the test above: if a code ever does slip through,
+    // it should end up at the quiet end, not at the top of the page.
+    const sorted = sortFlags([
+      { ...makeFlag('ANNUAL_REVIEW_DUE'), code: 'NOT_IN_THE_ORDER' as FlagCode },
+      makeFlag('ANNUAL_REVIEW_DUE'),
+    ]);
+    expect(sorted[0]!.code).toBe('ANNUAL_REVIEW_DUE');
+    expect(sorted[1]!.code).toBe('NOT_IN_THE_ORDER');
   });
 
   it('dedupes warnings that say the same thing', () => {

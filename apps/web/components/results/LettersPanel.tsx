@@ -14,7 +14,7 @@
  * the reply reaches them.
  */
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   type CalculatorInput,
   type CalculatorResult,
@@ -30,6 +30,7 @@ import {
   type LetterContext,
   type LetterTemplate,
 } from '@sgo/letters';
+import { useCopyToClipboard } from '../ui/useCopyToClipboard';
 
 /** Why this letter is being offered, in one line, from the warning that fired. */
 const REASON: Partial<Record<LetterTemplate, string>> = {
@@ -123,7 +124,7 @@ function Letter({
   nearTimeLimit: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const [copied, setCopied] = useState<'idle' | 'done' | 'failed'>('idle');
+  const { state: copied, copy } = useCopyToClipboard();
 
   const spec = LETTER_TEMPLATES[template];
   const letter = generateLetter(template, ctx);
@@ -135,33 +136,6 @@ function Letter({
   const gated = prerequisites.length > 0;
   const lifted = gated && Boolean(spec.gateExceptionNearTimeLimit) && nearTimeLimit;
 
-  /**
-   * Copy, and say what happened either way.
-   *
-   * A refused clipboard used to set `copied` back to false, which left the
-   * status line empty: the button appeared to do nothing at all. On a page
-   * whose whole purpose is handing the carer a letter to send, "nothing
-   * happened" is the worst possible answer.
-   */
-  const copy = (): void => {
-    const writer = navigator.clipboard?.writeText(text);
-    if (!writer) {
-      setCopied('failed');
-      return;
-    }
-    void writer.then(
-      () => setCopied('done'),
-      () => setCopied('failed'),
-    );
-  };
-
-  // Clear the confirmation after a while, so it belongs to the press that
-  // caused it rather than sitting there for the rest of the session.
-  useEffect(() => {
-    if (copied === 'idle') return;
-    const t = setTimeout(() => setCopied('idle'), 8000);
-    return () => clearTimeout(t);
-  }, [copied]);
 
   return (
     <div className="letter">
@@ -205,7 +179,7 @@ function Letter({
             {text}
           </pre>
           <div className="row gap-lg">
-            <button type="button" className="btn" onClick={copy}>
+            <button type="button" className="btn" onClick={() => copy(text)}>
               Copy the whole letter
             </button>
             <DownloadLink template={template} text={text} />

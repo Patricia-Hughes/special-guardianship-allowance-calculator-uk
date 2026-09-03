@@ -9,11 +9,12 @@
 import { defaultDeps, type EngineDeps } from './deps.js';
 import { DataError } from './errors.js';
 import { pence, type Pence } from './money.js';
-import { LA_REGION_MAP, publishableLaOverrideIn } from './referenceData.js';
+import { LA_REGION_MAP, cite, publishableLaOverrideIn } from './referenceData.js';
 import { ageOf } from './resolve.js';
 import type {
   AgeBand,
   CarerInput,
+  Citation,
   ChildInput,
   EnglandRegion,
   FlatNationRates,
@@ -47,6 +48,17 @@ function nationRates(rates: RateTable, nation: Nation): RegionalRates | FlatNati
   return table;
 }
 
+/**
+ * The band covering a child's age.
+ *
+ * Only minAge and maxAge decide this. Some bands also carry `openEnded: true`,
+ * which the Welsh top band does because the circular prints it as "16+": that
+ * flag is a note to whoever next reads the data explaining why maxAge is 17
+ * when the source names no upper limit. It is documentation, not behaviour, and
+ * nothing here reads it. Bands must tile 0 to 17 exactly, because the product is
+ * for children under 18, so an open band and a band closed at 17 are the same
+ * band as far as this function is concerned.
+ */
 export function resolveAgeBand(
   rates: RateTable,
   nation: Nation,
@@ -86,6 +98,25 @@ export function resolveEnglandRegion(
   if (mapped) return mapped;
 
   throw new DataError('An England region is required. Choose a region or a council.');
+}
+
+/**
+ * The citation for the table a figure actually came from.
+ *
+ * [R3] Every numeric output carries the citation it derives from. The result
+ * page used to list only the LAW: the statutory guidance saying the fostering
+ * allowance is the starting point, and the regulations behind it. None of them
+ * states the figure. A carer printing the page and handing it to a social
+ * worker was asked where their number came from and the document answered with
+ * statutes, while the GOV.UK table that actually prints it was nowhere on the
+ * page.
+ *
+ * Read off the table in use, never hardcoded. The Scottish path used to name
+ * the 2026/27 source whatever year it had priced, which is the same fault as
+ * attributing a Welsh figure to a page that does not contain it.
+ */
+export function citeRateSource(rates: RateTable, nation: Nation): Citation {
+  return cite(nationRates(rates, nation).sourceId);
 }
 
 /** The national minimum weekly rate for this carer's area and this age band. */

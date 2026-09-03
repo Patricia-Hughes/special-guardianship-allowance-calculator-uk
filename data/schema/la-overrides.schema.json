@@ -1,310 +1,347 @@
 {
- "$schema": "http://json-schema.org/draft-07/schema#",
- "$id": "https://sgo-calculator.example/schema/la-overrides.schema.json",
- "type": "object",
- "required": [
-  "authorities"
- ],
- "properties": {
-  "schemaNote": {
-   "type": "string"
-  },
-  "publishableNote": {
-   "type": "string"
-  },
-  "lawfulnessNote": {
-   "type": "string"
-  },
-  "authorities": {
-   "type": "array",
-   "items": {
-    "type": "object",
-    "required": [
-     "slug",
-     "name",
-     "nation",
-     "region",
-     "publishable",
-     "corePolicy",
-     "verifiedOn",
-     "policySourceUrl"
-    ],
-    "properties": {
-     "slug": {
-      "type": "string",
-      "pattern": "^[a-z0-9-]+$"
-     },
-     "name": {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://sgo-calculator.example/schema/la-overrides.schema.json",
+  "type": "object",
+  "required": [
+    "authorities"
+  ],
+  "properties": {
+    "schemaNote": {
       "type": "string"
-     },
-     "nation": {
-      "type": "string",
-      "enum": [
-       "england",
-       "wales",
-       "scotland",
-       "northern-ireland"
-      ]
-     },
-     "region": {
-      "type": "string",
-      "enum": [
-       "london",
-       "south-east",
-       "rest-of-england"
-      ]
-     },
-     "publishable": {
-      "type": "boolean"
-     },
-     "pendingSourceIssue": {
-      "type": "string",
-      "format": "uri"
-     },
-     "corePolicy": {
+    },
+    "publishableNote": {
       "type": "string"
-     },
-     "flatCoreRateWeeklyPence": {
-      "type": "integer",
-      "minimum": 0
-     },
-     "enhancementWeeklyPence": {
-      "type": "integer",
-      "minimum": 0
-     },
-     "deductsChildBenefit": {
-      "type": "boolean"
-     },
-     "deductsChildBenefitFromMeansTestedClaimants": {
-      "type": "boolean"
-     },
-     "taper": {
-      "oneOf": [
-       {
-        "type": "null"
-       },
-       {
+    },
+    "lawfulnessNote": {
+      "type": "string"
+    },
+    "authorities": {
+      "type": "array",
+      "items": {
         "type": "object",
         "required": [
-         "method"
+          "slug",
+          "name",
+          "nation",
+          "region",
+          "publishable",
+          "corePolicy",
+          "verifiedOn",
+          "policySourceUrl"
         ],
         "properties": {
-         "method": {
-          "type": "string",
-          "enum": [
-           "pound-for-pound",
-           "percentage",
-           "threshold"
-          ]
-         },
-         "percentage": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 1
-         },
-         "thresholdMonthly": {
-          "type": "integer",
-          "minimum": 0
-         }
-        }
-       }
-      ]
-     },
-     "capital": {
-      "oneOf": [
-       {
-        "type": "null"
-       },
-       {
-        "type": "object",
-        "required": [
-         "thresholdPence",
-         "tariffPerBlockPence",
-         "blockSizePence",
-         "period",
-         "enabled"
-        ],
-        "properties": {
-         "thresholdPence": {
-          "type": "integer",
-          "minimum": 0
-         },
-         "tariffPerBlockPence": {
-          "type": "integer",
-          "minimum": 0
-         },
-         "blockSizePence": {
-          "type": "integer",
-          "minimum": 1
-         },
-         "period": {
-          "type": "string",
-          "enum": [
-           "weekly",
-           "monthly"
-          ]
-         },
-         "enabled": {
-          "type": "boolean"
-         }
-        }
-       }
-      ]
-     },
-     "lawfulnessFlag": {
-      "oneOf": [
-       {
-        "type": "null"
-       },
-       {
-        "type": "object",
-        "required": [
-         "code",
-         "summary",
-         "sourceUrl",
-         "decisionDate"
-        ],
-        "properties": {
-         "code": {
-          "type": "string"
-         },
-         "summary": {
-          "type": "string"
-         },
-         "sourceUrl": {
-          "type": "string"
-         },
-         "decisionDate": {
-          "type": "string"
-         },
-         "concernsFormerPolicy": {
-          "type": "boolean"
-         },
-         "policyChangedOn": {
-          "type": "string"
-         },
-         "supersededBy": {
-          "type": "object",
-          "required": [
-           "summary",
-           "sourceUrl",
-           "decisionDate"
-          ],
-          "properties": {
-           "summary": {
-            "type": "string"
-           },
-           "sourceUrl": {
+          "slug": {
             "type": "string",
-            "minLength": 1
-           },
-           "decisionDate": {
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "name": {
             "type": "string"
-           }
+          },
+          "nation": {
+            "type": "string",
+            "enum": [
+              "england",
+              "wales",
+              "scotland",
+              "northern-ireland"
+            ]
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "london",
+              "south-east",
+              "rest-of-england"
+            ]
+          },
+          "publishable": {
+            "type": "boolean"
+          },
+          "pendingSourceIssue": {
+            "type": "string",
+            "format": "uri"
+          },
+          "corePolicy": {
+            "type": "string"
+          },
+          "flatCoreRateWeeklyPence": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "enhancementWeeklyPence": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "deductsChildBenefit": {
+            "type": "boolean"
+          },
+          "deductsChildBenefitFromMeansTestedClaimants": {
+            "type": "boolean"
+          },
+          "taper": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "method"
+                ],
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "pound-for-pound",
+                      "percentage",
+                      "threshold"
+                    ]
+                  },
+                  "percentage": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "thresholdMonthly": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "method": {
+                          "const": "percentage"
+                        }
+                      },
+                      "required": [
+                        "method"
+                      ]
+                    },
+                    "then": {
+                      "required": [
+                        "percentage"
+                      ]
+                    }
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "method": {
+                          "const": "threshold"
+                        }
+                      },
+                      "required": [
+                        "method"
+                      ]
+                    },
+                    "then": {
+                      "required": [
+                        "thresholdMonthly"
+                      ]
+                    }
+                  }
+                ],
+                "description": "A method with no figure behind it is not a usable taper. applyTaper refuses it rather than silently falling back to pound-for-pound, the harshest option, so the data must not be able to express it."
+              }
+            ]
+          },
+          "capital": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "thresholdPence",
+                  "tariffPerBlockPence",
+                  "blockSizePence",
+                  "period",
+                  "enabled"
+                ],
+                "properties": {
+                  "thresholdPence": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "tariffPerBlockPence": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "blockSizePence": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "period": {
+                    "type": "string",
+                    "enum": [
+                      "weekly",
+                      "monthly"
+                    ]
+                  },
+                  "enabled": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            ]
+          },
+          "lawfulnessFlag": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "code",
+                  "summary",
+                  "sourceUrl",
+                  "decisionDate"
+                ],
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  },
+                  "sourceUrl": {
+                    "type": "string"
+                  },
+                  "decisionDate": {
+                    "type": "string"
+                  },
+                  "concernsFormerPolicy": {
+                    "type": "boolean"
+                  },
+                  "policyChangedOn": {
+                    "type": "string"
+                  },
+                  "supersededBy": {
+                    "type": "object",
+                    "required": [
+                      "summary",
+                      "sourceUrl",
+                      "decisionDate"
+                    ],
+                    "properties": {
+                      "summary": {
+                        "type": "string"
+                      },
+                      "sourceUrl": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "decisionDate": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "pendingLawfulnessFlag": {
+            "type": "object",
+            "required": [
+              "code",
+              "summary",
+              "sourceUrl",
+              "decisionDate"
+            ],
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "summary": {
+                "type": "string"
+              },
+              "sourceUrl": {
+                "type": "string"
+              },
+              "decisionDate": {
+                "type": "string"
+              },
+              "pendingSourceIssue": {
+                "type": "string",
+                "format": "uri"
+              },
+              "note": {
+                "type": "string"
+              },
+              "concernsFormerPolicy": {
+                "type": "boolean"
+              },
+              "policyChangedOn": {
+                "type": "string"
+              },
+              "supersededBy": {
+                "type": "object",
+                "required": [
+                  "summary",
+                  "sourceUrl",
+                  "decisionDate"
+                ],
+                "properties": {
+                  "summary": {
+                    "type": "string"
+                  },
+                  "sourceUrl": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "decisionDate": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "councilApplicationDate": {
+            "type": "string"
+          },
+          "policySourceUrl": {
+            "type": "string"
+          },
+          "policySourceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "verifiedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "fixedPercentageOfFosteringRate": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 2
+              }
+            ]
+          },
+          "livingCostsMultiplierPercent": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 300
+          },
+          "policyUnderReview": {
+            "type": "boolean"
+          },
+          "policyUnderReviewNote": {
+            "type": "string"
           }
-         },
-         "note": {
-          "type": "string"
-         }
         }
-       }
-      ]
-     },
-     "pendingLawfulnessFlag": {
-      "type": "object",
-      "required": [
-       "code",
-       "summary",
-       "sourceUrl",
-       "decisionDate"
-      ],
-      "properties": {
-       "code": {
-        "type": "string"
-       },
-       "summary": {
-        "type": "string"
-       },
-       "sourceUrl": {
-        "type": "string"
-       },
-       "decisionDate": {
-        "type": "string"
-       },
-       "pendingSourceIssue": {
-        "type": "string",
-        "format": "uri"
-       },
-       "note": {
-        "type": "string"
-       },
-       "concernsFormerPolicy": {
-        "type": "boolean"
-       },
-       "policyChangedOn": {
-        "type": "string"
-       },
-       "supersededBy": {
-        "type": "object",
-        "required": [
-         "summary",
-         "sourceUrl",
-         "decisionDate"
-        ],
-        "properties": {
-         "summary": {
-          "type": "string"
-         },
-         "sourceUrl": {
-          "type": "string",
-          "minLength": 1
-         },
-         "decisionDate": {
-          "type": "string"
-         }
-        }
-       }
       }
-     },
-     "councilApplicationDate": {
-      "type": "string"
-     },
-     "policySourceUrl": {
-      "type": "string"
-     },
-     "policySourceDate": {
-      "type": "string",
-      "format": "date"
-     },
-     "verifiedOn": {
-      "type": "string",
-      "format": "date"
-     },
-     "fixedPercentageOfFosteringRate": {
-      "oneOf": [
-       {
-        "type": "null"
-       },
-       {
-        "type": "number",
-        "exclusiveMinimum": 0,
-        "maximum": 2
-       }
-      ]
-     },
-     "livingCostsMultiplierPercent": {
-      "type": "number",
-      "exclusiveMinimum": 0,
-      "maximum": 300
-     },
-     "policyUnderReview": {
-      "type": "boolean"
-     },
-     "policyUnderReviewNote": {
-      "type": "string"
-     }
     }
-   }
   }
- }
 }

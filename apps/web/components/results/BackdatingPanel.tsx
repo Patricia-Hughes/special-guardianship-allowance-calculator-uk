@@ -25,6 +25,31 @@ import { ScrollableTable } from '../ui/ScrollableTable';
  * Where a year has no verified rates, it is left out and said so. A total built
  * partly on a guess is worse than a smaller total that holds up.
  */
+/**
+ * Turn an engine error into a sentence a carer can act on.
+ *
+ * The engine refuses rather than guessing, which is right, and its refusals name
+ * the reason precisely for whoever has to fix the data. Those are two different
+ * audiences. This maps the cases this panel can actually cause and keeps one
+ * plain fallback for everything else.
+ */
+function carerFacing(e: unknown): string {
+  const raw = e instanceof Error ? e.message : '';
+  if (/not yet sourced|PENDING_SOURCE|No rate table effective/i.test(raw)) {
+    return (
+      'We do not hold checked figures for part of that period, so we will not guess at them. ' +
+      'Try a later start date, or ask your council for its own figures for those years.'
+    );
+  }
+  if (/one child at a time|needs a child/i.test(raw)) {
+    return 'We can only work this out for one child at a time.';
+  }
+  if (/before its start|before the start/i.test(raw)) {
+    return 'The end date is before the start date.';
+  }
+  return 'We could not work that period out. Check the dates and try again.';
+}
+
 export function BackdatingPanel({ input }: { input: CalculatorInput }) {
   const fromId = useId();
   const toId = useId();
@@ -38,7 +63,32 @@ export function BackdatingPanel({ input }: { input: CalculatorInput }) {
 
   // Backdating segments one child's history. Apportioning across several, each
   // with its own birthdays, is not specified, so the engine refuses it.
-  if (input.children.length !== 1) return null;
+  //
+  // It used to render nothing at all here, so a carer with two children never
+  // saw that the question existed, let alone why it was missing. Saying so is
+  // better than a silent absence: they can still ask their council, and they
+  // now know there is something to ask about.
+  if (input.children.length !== 1) {
+    return (
+      <details className="avoid-break gap-lg print-hide">
+        <summary>Were you underpaid in the past?</summary>
+        <p>
+          If your council has been paying you less than it should have been, you can ask it to make
+          up the difference, and the Ombudsman has told councils to do exactly that.
+        </p>
+        <p>
+          <strong>We can only work this out for one child at a time.</strong> You have told us about{' '}
+          {input.children.length} children, and each of them has their own birthdays and their own
+          age bands, so a single total across all of them would be a figure your council could pick
+          apart. Rather than give you one we cannot stand behind, we would rather say so.
+        </p>
+        <p className="flush-bot">
+          You can still ask. The letter asking for a written breakdown, further down this page,
+          covers it, and your council has to explain how it reached each child&apos;s figure.
+        </p>
+      </details>
+    );
+  }
 
   const run = (): void => {
     setError(null);
@@ -65,11 +115,11 @@ export function BackdatingPanel({ input }: { input: CalculatorInput }) {
         }),
       );
     } catch (e) {
-      setError(
-        e instanceof Error
-          ? e.message
-          : 'We could not work that period out. Check the dates and try again.',
-      );
+      // Never the raw message. Engine errors are written for maintainers and
+      // say things like "No rate table effective on 2019-04-01", sometimes with
+      // a spec section number attached. That is not something to put in front
+      // of a grandparent who has just typed in two dates.
+      setError(carerFacing(e));
     }
   };
 

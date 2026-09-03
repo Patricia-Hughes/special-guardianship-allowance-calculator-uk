@@ -21,7 +21,7 @@ import {
   runMeansTest,
 } from '../meansTest.js';
 import { add, apportion, clampMin0, pence, sub, type Pence } from '../money.js';
-import { lookupRate, regimeFor, resolveAgeBand } from '../rates.js';
+import { citeRateSource, lookupRate, regimeFor, resolveAgeBand } from '../rates.js';
 import { cite, publishableLaOverrideIn } from '../referenceData.js';
 import { ageOf, monthsSinceOrder, withinReg7Window } from '../resolve.js';
 import { finalise } from '../result.js';
@@ -37,12 +37,25 @@ import type {
   FloorReason,
   IsoDate,
   LaOverride,
+  Nation,
   PerChildResult,
   RateTable,
 } from '../types.js';
 
-/** The two sources behind every SGO figure, fresh each time so nothing shares an array. */
-const sgoCitations = (): Citation[] => [cite('dfe-guidance-2017-para65'), cite('sg-regs-2005-reg6')];
+/**
+ * The sources behind every SGO figure, fresh each time so nothing shares an array.
+ *
+ * The rate table comes first because it is the one that answers "where does
+ * this number come from". The other two are the law that says the fostering
+ * allowance is the starting point, which is a different question. For a while
+ * only the law was listed, so the page cited statutes at a figure none of them
+ * prints.
+ */
+const sgoCitations = (rates: RateTable, nation: Nation): Citation[] => [
+  citeRateSource(rates, nation),
+  cite('dfe-guidance-2017-para65'),
+  cite('sg-regs-2005-reg6'),
+];
 
 /** One child, priced but not yet means tested. */
 interface ChildMeasure {
@@ -152,7 +165,9 @@ function maximumOnly(
     childBenefitDeductionWeekly: pence(0),
     estimatedAllowanceWeekly: floor.values[i] ?? c.maximum,
     floorApplied: floor.reason,
-    citations: floor.reason ? flooredCitations() : sgoCitations(),
+    citations: floor.reason
+      ? flooredCitations(rates, input.carer.nation)
+      : sgoCitations(rates, input.carer.nation),
   }));
 
   return finalise(input, perChild, {
@@ -238,7 +253,9 @@ function meansTested(
     childBenefitDeductionWeekly: childBenefits[i] ?? pence(0),
     estimatedAllowanceWeekly: floor.values[i] ?? pence(0),
     floorApplied: floor.reason,
-    citations: floor.reason ? flooredCitations() : [...sgoCitations(), cite('merton-2012')],
+    citations: floor.reason
+      ? flooredCitations(rates, input.carer.nation)
+      : [...sgoCitations(rates, input.carer.nation), cite('merton-2012')],
   }));
 
   return finalise(input, perChild, {
@@ -263,8 +280,8 @@ function baseResult(c: ChildMeasure, asAt: IsoDate) {
   };
 }
 
-const flooredCitations = (): Citation[] => [
-  ...sgoCitations(),
+const flooredCitations = (rates: RateTable, nation: Nation): Citation[] => [
+  ...sgoCitations(rates, nation),
   cite('sg-regs-2005-reg7'),
   cite('tower-hamlets-2013'),
 ];

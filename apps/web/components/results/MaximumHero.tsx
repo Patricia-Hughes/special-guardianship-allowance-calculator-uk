@@ -47,12 +47,18 @@ function FloorNotice({ result }: { result: CalculatorResult }) {
         <span className="hero__unit"> a week</span>
       </p>
       <p className="flush">
-        You fostered this child before the order, and it was made less than two years ago. For that
-        period your council can carry on paying the reward part of your fostering allowance, and it
-        can carry on for longer if it thinks that right. We have assumed it does, which is why this
-        figure is higher than the standard rate for your area. That is our assumption, not something
-        your council has agreed.
+        You fostered {result.perChild.length > 1 ? 'these children' : 'this child'} before the
+        order, and it was made less than two years ago. For that period your council can carry on
+        paying the reward part of your fostering allowance, and it can carry on for longer if it
+        thinks that right. We have assumed it does, which is why this figure is higher than the
+        standard rate for your area. That is our assumption, not something your council has agreed.
       </p>
+      {result.perChild.length > 1 && (
+        <p className="flush-bot">
+          This is the total for all {result.perChild.length} children, because the amount you told
+          us you were paid as a foster carer was a total too.
+        </p>
+      )}
     </div>
   );
 }

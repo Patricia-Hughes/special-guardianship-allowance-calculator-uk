@@ -88,32 +88,39 @@ ErrorDocument 404 /404.html
   # Everything under _next/static carries a content hash in its filename, so a
   # changed file is always a changed URL. Safe to cache for a year.
   #
-  # Scoped to that directory, which is what the sentence above always claimed
-  # and the rule did not do: a bare FilesMatch on the extensions caught every
-  # .js, .css and .woff2 on the site. Nothing outside _next/static is unhashed
-  # today, so this changed no behaviour, but the day someone adds a plain
-  # script at the root it would have been frozen in caches for a year with no
-  # way to publish a correction.
-  <Directory "*/_next/static">
-    <FilesMatch "\.(js|css|woff2)$">
-      ExpiresDefault "access plus 1 year"
-      Header set Cache-Control "public, max-age=31536000, immutable"
-    </FilesMatch>
-  </Directory>
-
-  # Shared hosts often refuse <Directory> in .htaccess. This says the same
-  # thing with mod_rewrite, which they do allow, and the two together mean the
-  # rule lands whichever the host permits.
+  # <Directory> is NOT legal in a .htaccess file. Apache allows it only in the
+  # server config or a virtual host, and finding one here is a fatal parse
+  # error: the server answers every request under this directory with a 500.
+  # A previous version of this file wrapped the rule below in one, which would
+  # have taken the whole site down on Hostinger, cPanel and any other Apache or
+  # LiteSpeed host, which is exactly what this file exists for. Only <Files>,
+  # <FilesMatch>, <If> and <IfModule> may be used in here.
+  #
+  # So the scoping is done with mod_rewrite instead, which IS allowed, by
+  # setting an environment variable on the paths that qualify. FilesMatch alone
+  # cannot express "only under _next/static", and that is the whole point:
+  # everything under there is content-hashed, so a changed file is a changed
+  # URL, while an unhashed script at the site root frozen for a year would be
+  # unfixable.
   <IfModule mod_rewrite.c>
     RewriteCond %{REQUEST_URI} ^/_next/static/.*\.(js|css|woff2)$
     RewriteRule .* - [E=LONGCACHE:1]
   </IfModule>
-  Header set Cache-Control "public, max-age=31536000, immutable" env=LONGCACHE
 
   # HTML must revalidate, or an April rate change would sit stale in caches
   # while carers read last year's figures (§9 staleness).
   <FilesMatch "\.html$">
     ExpiresDefault "access plus 0 seconds"
+  </FilesMatch>
+</IfModule>
+
+# Cache-Control belongs to mod_headers, so it lives in its own guard. Sitting
+# inside the mod_expires block above, as it used to, meant a host with
+# mod_expires but not mod_headers hit an unknown directive, which is another
+# 500 for the whole site.
+<IfModule mod_headers.c>
+  Header set Cache-Control "public, max-age=31536000, immutable" env=LONGCACHE
+  <FilesMatch "\.html$">
     Header set Cache-Control "public, max-age=0, must-revalidate"
   </FilesMatch>
 </IfModule>

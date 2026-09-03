@@ -99,6 +99,60 @@ if (problems.length > 0) {
   process.exit(1);
 }
 
+/**
+ * Directives Apache refuses to parse inside a .htaccess file.
+ *
+ * This is not a style rule. Apache allows these only in the server config or a
+ * virtual host; finding one in .htaccess is a fatal parse error and the server
+ * answers EVERY request under that directory with a 500. The whole site, not
+ * one page, and it looks fine in every test because nothing here runs Apache.
+ *
+ * A <Directory> block shipped in this file once. It was written to scope a
+ * caching rule, it read as reasonable, and it would have taken the site down on
+ * Hostinger and every other shared cPanel host the moment it was uploaded. The
+ * headers check already reads this file, so it is the natural place to also
+ * read it as what it is: Apache configuration.
+ *
+ * Legal container directives in .htaccess are <Files>, <FilesMatch>, <If>,
+ * <IfModule>, <IfDefine>, <IfVersion>, <Limit>, <LimitExcept> and <RequireAll>
+ * and friends. Everything below is not.
+ */
+const FORBIDDEN_IN_HTACCESS = [
+  'Directory',
+  'DirectoryMatch',
+  'VirtualHost',
+  'Location',
+  'LocationMatch',
+  'Proxy',
+  'ProxyMatch',
+];
+
+{
+  const htaccess = readFileSync(join(publicDir, '.htaccess'), 'utf8');
+  const offences: string[] = [];
+  htaccess.split('\n').forEach((line, i) => {
+    if (/^\s*#/.test(line)) return;
+    const m = /^\s*<\/?([A-Za-z]+)/.exec(line);
+    if (m && FORBIDDEN_IN_HTACCESS.includes(m[1]!)) {
+      offences.push(`line ${i + 1}: <${m[1]}> — ${line.trim()}`);
+    }
+  });
+  if (offences.length > 0) {
+    console.error(
+      'check-security-headers: public/.htaccess contains a directive Apache does not\n' +
+        '  allow in a .htaccess file. This is not cosmetic: Apache treats it as a fatal\n' +
+        '  parse error and returns 500 for every page on the site.\n',
+    );
+    for (const o of offences) console.error(`  ✗ ${o}`);
+    console.error(
+      '\n  Only <Files>, <FilesMatch>, <If> and <IfModule> may be used here. To scope a\n' +
+        '  rule to a path, set an environment variable with mod_rewrite and key the\n' +
+        '  directive off it, which is what the caching block does.',
+    );
+    process.exit(1);
+  }
+}
+
 // connect-src must not have quietly grown a new host, in either file.
 const allowedHosts = new Set(["'self'", 'https://api.postcodes.io']);
 for (const { label, headers } of parsed) {
@@ -117,5 +171,6 @@ for (const { label, headers } of parsed) {
 
 console.log(
   `check-security-headers: all ${REQUIRED.length} required headers present and identical ` +
-    `across ${parsed.map((p) => p.label).join(' and ')}; connect-src unchanged.`,
+    `across ${parsed.map((p) => p.label).join(' and ')}; connect-src unchanged; ` +
+    '.htaccess uses no directive Apache forbids there.',
 );

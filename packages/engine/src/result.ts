@@ -6,7 +6,8 @@
  */
 
 import { dedupeFlags, sortFlags } from './flags.js';
-import { assertGuardrails } from './guardrails.js';
+import { GuardrailViolation, assertGuardrails } from './guardrails.js';
+import { citeRateSource } from './rates.js';
 import { add, weeklyToAnnual } from './money.js';
 import { ENGINE_VERSION } from './referenceData.js';
 import type {
@@ -51,6 +52,32 @@ export function finalise(
   };
   if (opts.meansTestBreakdown) result.meansTestBreakdown = opts.meansTestBreakdown;
 
+  assertRateSourceIsCited(input, result, opts.rates);
   assertGuardrails(input, result);
   return result;
+}
+
+/**
+ * [R3] Every figure names the table it came from.
+ *
+ * assertGuardrails only checks that a child HAS citations, so a result citing
+ * four documents, none of which prints the figure, passed it. That is what the
+ * page did: statutes and regulations, and no link to the rate table. The check
+ * lives here rather than in guardrails.ts because this is the only place that
+ * still knows which table was used.
+ */
+function assertRateSourceIsCited(
+  input: CalculatorInput,
+  result: CalculatorResult,
+  rates: RateTable,
+): void {
+  const expected = citeRateSource(rates, input.carer.nation).id;
+  for (const child of result.perChild) {
+    if (!child.citations.some((c) => c.id === expected)) {
+      throw new GuardrailViolation(
+        'R3',
+        `Child ${child.childId} shows a figure from "${expected}" without citing it`,
+      );
+    }
+  }
 }

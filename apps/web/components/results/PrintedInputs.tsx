@@ -80,7 +80,7 @@ export function PrintedInputs({
           {input.carer.wasFosterCarerForThisChild && (
             <>
               <tr>
-                <th scope="row">Previous weekly fostering allowance</th>
+                <th scope="row">Previous weekly fostering allowance, all children</th>
                 <td>{money(input.carer.previousWeeklyFosteringAllowance)}</td>
               </tr>
               <tr>

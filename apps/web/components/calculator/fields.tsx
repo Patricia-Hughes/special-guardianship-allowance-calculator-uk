@@ -106,7 +106,12 @@ export function Choice({
   describedBy?: string;
 }) {
   return (
-    <label className="choice">
+    // The selected state carries a class rather than relying on CSS :has().
+    // :has() is unsupported on Safari below 15.4 and older Firefox, which is
+    // exactly the older tablet this site is built for, and there the border and
+    // tint marking the chosen answer silently vanished, leaving only the small
+    // radio dot. React already knows what is checked, so it can just say so.
+    <label className={checked ? 'choice choice--on' : 'choice'}>
       <input
         type={type}
         {...(name ? { name } : {})}

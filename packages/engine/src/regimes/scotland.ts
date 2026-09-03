@@ -13,8 +13,7 @@
 import type { EngineDeps } from '../deps.js';
 import { makeFlag } from '../flags.js';
 import { pence } from '../money.js';
-import { lookupRate, resolveAgeBand } from '../rates.js';
-import { cite } from '../referenceData.js';
+import { citeRateSource, lookupRate, resolveAgeBand } from '../rates.js';
 import { ageOf } from '../resolve.js';
 import { finalise } from '../result.js';
 import type { CalculatorInput, CalculatorResult, Flag, IsoDate, PerChildResult, RateTable } from '../types.js';
@@ -48,7 +47,10 @@ export function scotlandPath(
       childBenefitDeductionWeekly: pence(0),
       estimatedAllowanceWeekly: rate,
       floorApplied: 'scottish-recommended-allowance',
-      citations: [cite('sra-2026-27')],
+      // The table actually used, not a hardcoded year. This named the 2026/27
+      // source whatever year it had priced, so a figure from an earlier table
+      // linked a page that does not contain it.
+      citations: [citeRateSource(rates, 'scotland')],
     };
   });
 
