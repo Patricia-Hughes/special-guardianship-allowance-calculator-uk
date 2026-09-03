@@ -25,6 +25,7 @@ import {
   FLAGS,
   ValidationError,
   calculate,
+  formatMoney,
   type CalculatorInput,
   type CalculatorResult,
 } from '@sgo/engine';
@@ -133,6 +134,9 @@ export function CalculatorShell() {
         ageYears: String(age),
         hasDisabilityOrAdditionalNeeds: disability.has(i),
       }));
+      // Left untouched, so it tracks the children in the link. Setting it here
+      // and calling it the carer's own answer would freeze it against a child
+      // they add afterwards.
       restored.householdChildren = String(shared.ages.length);
     }
     setForm(restored);
@@ -207,8 +211,24 @@ export function CalculatorShell() {
         {step === 'council' && <CouncilStep {...stepProps} wantsMeansTest={wantsMeansTest} />}
       </div>
 
+      {/*
+        The announcement, kept apart from the result itself.
+
+        aria-live used to wrap the whole ResultsPanel, and the wrapper only
+        appeared at the same moment its content did. A live region created
+        together with its content is not reliably announced at all, and when it
+        was, it read out the figure, every warning and all nine letters. This
+        element is always in the page, so the region exists before anything
+        changes inside it, and it says one sentence.
+      */}
+      <p aria-live="polite" className="sr-only">
+        {result
+          ? `Your estimate is ready. ${formatMoney(result.totalWeekly)} a week. The full result follows.`
+          : ''}
+      </p>
+
       {result && resultInput && !engineError && (
-        <div aria-live="polite" ref={resultsRef}>
+        <div ref={resultsRef}>
           <ResultsPanel
             result={result}
             input={resultInput}
@@ -226,8 +246,10 @@ export function CalculatorShell() {
 
       {maxStepReached !== 'where' && (
         <p className="print-hide muted">
-          Nothing you have typed has been sent anywhere, and nothing has been saved. If you refresh
-          this page, you will start again.
+          Nothing has been saved, and the only thing this page ever sends anywhere is the first
+          part of your postcode, and only if you press &ldquo;find my council&rdquo;. If you leave
+          this page or refresh it, you will start again, so finish here first or open other pages
+          in a new tab.
         </p>
       )}
     </div>

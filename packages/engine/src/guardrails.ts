@@ -70,12 +70,17 @@ export function assertGuardrails(input: CalculatorInput, result: CalculatorResul
     assertNotAFixedFraction(child, result.meansTestApplied);
     assertCited(child);
     assertSane(child);
+  }
 
-    // [R4] A former foster carer must never be shown a figure below their
-    // previous fostering allowance within 24 months of the order.
-    if (insideReg7Window && previous !== undefined && child.estimatedAllowanceWeekly < previous) {
-      throw new GuardrailViolation('R4', 'Below the reg 7 former foster carer floor');
-    }
+  // [R4] A former foster carer must never be shown a HOUSEHOLD TOTAL below their
+  // previous fostering allowance within 24 months of the order.
+  //
+  // The total, because the carer gives that figure once for the whole household.
+  // Asserting it per child was the same mistake the engine was making, so this
+  // rule agreed with the fault instead of catching it: a carer with two children
+  // was shown twice what they used to be paid and nothing objected.
+  if (insideReg7Window && previous !== undefined && result.totalWeekly < previous) {
+    throw new GuardrailViolation('R4', 'Below the reg 7 former foster carer floor');
   }
 
   assertChildBenefitDeductionIsLoud(input, result);

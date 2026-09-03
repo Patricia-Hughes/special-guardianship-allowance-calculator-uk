@@ -64,7 +64,7 @@ test.describe('journeys', () => {
     await page.getByRole('button', { name: 'Answer a few more questions' }).click();
 
     await page.getByRole('checkbox', { name: /was this child's foster carer/i }).check();
-    await page.getByLabel(/What were you paid as a foster carer/).fill('300');
+    await page.getByLabel(/What were you paid in total as a foster carer/).fill('300');
     await page.getByLabel(/how many months ago was the order made/i).fill('14');
     await page.getByRole('button', { name: 'Continue' }).click();
 
@@ -217,8 +217,10 @@ test.describe('journeys', () => {
     await setAge(page, '8');
     await page.getByRole('button', { name: 'Show me the figure' }).click();
 
-    // The Scottish Recommended Allowance for the 5-15 band.
-    await expect(page.getByText('£206.71')).toBeVisible();
+    // The Scottish Recommended Allowance for the 5-15 band. Scoped to the
+    // headline figure: the screen-reader announcement carries the same amount,
+    // so a bare text match now finds two elements.
+    await expect(page.locator('.hero__figure')).toContainText('£206.71');
 
     // [HARD R5] No English law may appear on a Scottish result.
     const body = (await page.locator('body').textContent()) ?? '';

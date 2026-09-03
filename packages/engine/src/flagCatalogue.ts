@@ -185,7 +185,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     body: (c) =>
       'Your council is in the Kinship Zones pilot, but the pilot excludes carers already receiving regulation 6 financial support, so we have used the normal rules for your estimate.\n\n' +
       (c.kinshipZoneWeekly !== undefined
-        ? `For comparison, the pilot rate for your child's age band would be ${money(c.kinshipZoneWeekly)} a week with no means test.\n\n`
+        ? `For comparison, the pilot rate for ${c.ageBand ? `the ${c.ageBand} age band` : "your child's age band"} would be ${money(c.kinshipZoneWeekly)} a week with no means test.\n\n`
         : '') +
       'That comparison is worth raising with your council if your current support is lower.',
     citationId: 'kinship-zones-2026',

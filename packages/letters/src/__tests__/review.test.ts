@@ -23,7 +23,7 @@ const ctx = (over: Partial<LetterContext> = {}): LetterContext => ({
   childAgeBand: '5-10',
   region: 'rest-of-england',
   nmaWeekly: pence(18700),
-  currentlyPaidWeekly: pence(12000),
+  previousFosteringWeekly: pence(12000),
   onMeansTestedBenefits: true,
   wasFosterCarer: true,
   orderDate: '2025-03-01',
@@ -61,7 +61,7 @@ describe('finding 1: a complaint is never promoted by someone else’s case', ()
 describe('finding 2: the site never asserts what it cannot know', () => {
   it('the complaint does not claim the carer raised this before', () => {
     for (const paid of [pence(12000), undefined]) {
-      const body = generateLetter('formal-complaint-stage-1', ctx({ currentlyPaidWeekly: paid })).body;
+      const body = generateLetter('formal-complaint-stage-1', ctx({ previousFosteringWeekly: paid })).body;
       expect(body).not.toMatch(/I have raised this before/);
       expect(body).toMatch(/delete this sentence/);
     }
@@ -102,14 +102,31 @@ describe('finding 4: regulation 13 is stated before the challenge', () => {
 
 describe('the defects', () => {
   it('the breakdown letter never refers to a figure it has not given', () => {
-    const withAmount = generateLetter('request-calculation-breakdown', ctx()).body;
-    expect(withAmount).toMatch(/how that figure was calculated/);
-    const without = generateLetter(
-      'request-calculation-breakdown',
-      ctx({ currentlyPaidWeekly: undefined }),
-    ).body;
-    expect(without).toMatch(/how my allowance was calculated/);
-    expect(without).not.toMatch(/that figure/);
+    // It used to say "how that figure was calculated" whenever the carer had
+    // given an amount. The only amount it can quote is the OLD fostering
+    // allowance, and the breakdown being asked for is of the CURRENT one, so
+    // the demonstrative pointed at the wrong number. Now it names neither.
+    for (const paid of [pence(12000), undefined]) {
+      const body = generateLetter(
+        'request-calculation-breakdown',
+        ctx({ previousFosteringWeekly: paid }),
+      ).body;
+      expect(body).toMatch(/how my allowance was calculated/);
+      expect(body).not.toMatch(/that figure/);
+    }
+  });
+
+  it('no letter claims the carer currently receives their old fostering rate', () => {
+    // The figure is what they were paid as a foster carer BEFORE the order. A
+    // former foster carer may now be receiving nothing, so "I currently
+    // receive X" was a false sentence the council could correct on the spot.
+    for (const t of ALL) {
+      const body = generateLetter(t, ctx({ previousFosteringWeekly: pence(12000) })).body;
+      expect(body, t).not.toMatch(/I currently receive/);
+      if (body.includes('£120')) {
+        expect(body, t).toMatch(/Before the order was made I was paid/);
+      }
+    }
   });
 
   it('no letter refers to a conditional sentence that may be absent', () => {
@@ -118,7 +135,7 @@ describe('the defects', () => {
     for (const t of ALL) {
       const sparse = generateLetter(
         t,
-        ctx({ currentlyPaidWeekly: undefined, councilName: undefined, onMeansTestedBenefits: false }),
+        ctx({ previousFosteringWeekly: undefined, councilName: undefined, onMeansTestedBenefits: false }),
       ).body;
       expect(sparse, `${t} refers to a figure it never gave`).not.toMatch(/that figure|that amount/);
     }

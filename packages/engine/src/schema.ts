@@ -101,7 +101,7 @@ export const carerInputSchema = z
       .optional(),
     wasFosterCarerForThisChild: z.boolean(),
     orderDate: isoDateSchema.optional(),
-    monthsSinceOrderMade: z.number().int().min(0).max(MAX_MONTHS_SINCE_ORDER),
+    monthsSinceOrderMade: z.number().int().min(0).max(MAX_MONTHS_SINCE_ORDER).optional(),
     previousWeeklyFosteringAllowance: penceSchema
       .max(
         MAX_FOSTERING_ALLOWANCE_PENCE,

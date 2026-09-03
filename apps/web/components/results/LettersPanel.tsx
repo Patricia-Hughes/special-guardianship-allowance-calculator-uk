@@ -14,7 +14,7 @@
  * the reply reaches them.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   type CalculatorInput,
   type CalculatorResult,
@@ -69,7 +69,7 @@ export function LettersPanel({
     region: (input.carer.englandRegion ?? 'rest-of-england') as EnglandRegion,
     nmaWeekly: (result.perChild[0]?.maximumWeekly ?? 0) as Pence,
     ...(input.carer.previousWeeklyFosteringAllowance !== undefined
-      ? { currentlyPaidWeekly: input.carer.previousWeeklyFosteringAllowance }
+      ? { previousFosteringWeekly: input.carer.previousWeeklyFosteringAllowance }
       : {}),
     onMeansTestedBenefits: input.carer.onMeansTestedBenefits,
     wasFosterCarer: input.carer.wasFosterCarerForThisChild,
@@ -79,7 +79,11 @@ export function LettersPanel({
 
   // Long-running problems are the one case where holding a carer back can cost
   // them the complaint altogether.
-  const nearTimeLimit = input.carer.monthsSinceOrderMade >= OMBUDSMAN_MONTHS;
+  // Only when we actually know. Lifting the gate on an unknown would push a
+  // carer straight to a formal complaint with nothing attached to it.
+  const nearTimeLimit =
+    input.carer.monthsSinceOrderMade !== undefined &&
+    input.carer.monthsSinceOrderMade >= OMBUDSMAN_MONTHS;
   const templates = suggestLetters(ctx.flagsRaised);
 
   return (
@@ -119,7 +123,7 @@ function Letter({
   nearTimeLimit: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<'idle' | 'done' | 'failed'>('idle');
 
   const spec = LETTER_TEMPLATES[template];
   const letter = generateLetter(template, ctx);
@@ -131,12 +135,33 @@ function Letter({
   const gated = prerequisites.length > 0;
   const lifted = gated && Boolean(spec.gateExceptionNearTimeLimit) && nearTimeLimit;
 
+  /**
+   * Copy, and say what happened either way.
+   *
+   * A refused clipboard used to set `copied` back to false, which left the
+   * status line empty: the button appeared to do nothing at all. On a page
+   * whose whole purpose is handing the carer a letter to send, "nothing
+   * happened" is the worst possible answer.
+   */
   const copy = (): void => {
-    void navigator.clipboard?.writeText(text).then(
-      () => setCopied(true),
-      () => setCopied(false),
+    const writer = navigator.clipboard?.writeText(text);
+    if (!writer) {
+      setCopied('failed');
+      return;
+    }
+    void writer.then(
+      () => setCopied('done'),
+      () => setCopied('failed'),
     );
   };
+
+  // Clear the confirmation after a while, so it belongs to the press that
+  // caused it rather than sitting there for the rest of the session.
+  useEffect(() => {
+    if (copied === 'idle') return;
+    const t = setTimeout(() => setCopied('idle'), 8000);
+    return () => clearTimeout(t);
+  }, [copied]);
 
   return (
     <div className="letter">
@@ -186,7 +211,9 @@ function Letter({
             <DownloadLink template={template} text={text} />
           </div>
           <p aria-live="polite" className="share__status">
-            {copied ? 'Letter copied. Paste it into an email.' : ''}
+            {copied === 'done' && 'Letter copied. Paste it into an email.'}
+            {copied === 'failed' &&
+              'Your browser would not let us copy it. Select the letter above and copy it yourself, or use Download as a file.'}
           </p>
         </>
       )}
@@ -211,8 +238,15 @@ function DownloadLink({ template, text }: { template: LetterTemplate; text: stri
         const a = document.createElement('a');
         a.href = url;
         a.download = `${template}.txt`;
+        // Attached before the click, and the URL revoked on a later tick.
+        // Revoking on the very next line cancelled the download before it
+        // started in Safari and older Firefox, and a detached anchor is
+        // ignored outright by some browsers. Nothing visible happened, which
+        // this suite could not catch because it only ran Chromium.
+        document.body.appendChild(a);
         a.click();
-        URL.revokeObjectURL(url);
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60_000);
       }}
     >
       Download as a file

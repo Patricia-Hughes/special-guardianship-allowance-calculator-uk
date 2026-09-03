@@ -99,6 +99,8 @@ export interface CalculatorForm {
   money: Record<MoneyFieldName, MoneyValue>;
   adults: string;
   householdChildren: string;
+  /** Whether the carer has typed in the household-children box themselves. */
+  householdChildrenTouched: boolean;
 
   applyChildBenefitDeduction: boolean;
   childWouldOtherwiseBeInCare: boolean;
@@ -125,6 +127,7 @@ export function emptyForm(): CalculatorForm {
     >,
     adults: '1',
     householdChildren: '1',
+    householdChildrenTouched: false,
     applyChildBenefitDeduction: false,
     childWouldOtherwiseBeInCare: false,
     alreadyOnReg6: false,
@@ -194,7 +197,12 @@ export function buildInput(form: CalculatorForm, withFinances: boolean): Calcula
         maintenancePaid: money('maintenancePaid'),
         pensionContributions: money('pensionContributions'),
         adultsInHousehold: wholeNumber(form.adults, 1),
-        dependentChildrenInHousehold: wholeNumber(form.householdChildren, form.children.length),
+        // Falls back to the children actually entered, both when the box is
+        // blank and when the carer has never touched it. The default used to
+        // be a literal 1 that no number of added children ever changed.
+        dependentChildrenInHousehold: form.householdChildrenTouched
+          ? wholeNumber(form.householdChildren, form.children.length)
+          : form.children.length,
       } as FinancesInput)
     : undefined;
 
@@ -205,7 +213,11 @@ export function buildInput(form: CalculatorForm, withFinances: boolean): Calcula
       ...(form.la ? { localAuthoritySlug: form.la } : {}),
       wasFosterCarerForThisChild: form.wasFosterCarer,
       ...(form.orderDate ? { orderDate: form.orderDate as CalculatorInput['asAtDate'] } : {}),
-      monthsSinceOrderMade: wholeNumber(form.monthsSinceOrder, 0),
+      // Left out entirely when the box is blank. It used to default to 0,
+      // which the engine read as "the order was made today".
+      ...(form.monthsSinceOrder.trim() === ''
+        ? {}
+        : { monthsSinceOrderMade: wholeNumber(form.monthsSinceOrder, 0) }),
       ...(form.wasFosterCarer && form.previousAllowance.pence !== null
         ? { previousWeeklyFosteringAllowance: form.previousAllowance.pence as Pence }
         : {}),
@@ -231,8 +243,14 @@ export function buildInput(form: CalculatorForm, withFinances: boolean): Calcula
 
 /** The shareable, non-sensitive part of the answers. Never any finances (§22). */
 export function shareableState(form: CalculatorForm) {
-  const ages = form.children.map((c) => Number.parseInt(c.ageYears, 10)).filter(Number.isInteger);
-  const disability = form.children
+  // Both lists are built from the SAME filtered set of children, or their
+  // indexes drift apart. `ages` drops a child whose age box is blank; if
+  // `disability` kept the original positions, a blank first child shifted the
+  // flag onto whoever came next, and a shared link arrived with the wrong child
+  // marked as disabled. That changes which warnings the reader is shown.
+  const entered = form.children.filter((c) => Number.isInteger(Number.parseInt(c.ageYears, 10)));
+  const ages = entered.map((c) => Number.parseInt(c.ageYears, 10));
+  const disability = entered
     .map((c, i) => (c.hasDisabilityOrAdditionalNeeds ? i : -1))
     .filter((i) => i >= 0);
   return {

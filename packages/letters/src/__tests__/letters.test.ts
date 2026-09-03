@@ -84,7 +84,7 @@ describe('letters', () => {
   });
 
   it('pre-fills the carer\'s own figures', () => {
-    const letter = generateLetter('challenge-fixed-percentage', ctx({ currentlyPaidWeekly: pence(15000) }));
+    const letter = generateLetter('challenge-fixed-percentage', ctx({ previousFosteringWeekly: pence(15000) }));
     expect(letter.body).toContain('£255');
     expect(letter.body).toContain('£150');
     expect(letter.body).toContain('the South East');

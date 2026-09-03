@@ -18,8 +18,8 @@ export function HistoryStep({ form, set, errorFor, headingRef, goTo, run }: Step
       {form.wasFosterCarer && (
         <>
           <MoneyInput
-            label="What were you paid as a foster carer, per week?"
-            hint="Including the reward or fee element. Your council can keep paying that part for two years after the order."
+            label="What were you paid in total as a foster carer, per week?"
+            hint="Including the reward or fee element. If you were fostering more than one of these children, give the total for all of them, not the amount for each. Your council can keep paying that part for two years after the order."
             name="previousWeeklyFosteringAllowance"
             required
             value={form.previousAllowance.raw}

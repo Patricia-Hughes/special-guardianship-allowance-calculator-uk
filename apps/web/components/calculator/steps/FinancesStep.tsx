@@ -19,6 +19,12 @@ export function FinancesStep({
   run,
   onWantsMeansTest,
 }: FinancesStepProps) {
+  // The carer's own answer wins once they have given one, even if they later
+  // add a child: they know their household and we do not.
+  const householdChildren = form.householdChildrenTouched
+    ? form.householdChildren
+    : String(form.children.length);
+
   return (
     <StepPanel heading="Your finances" headingRef={headingRef} stepNumber={5}>
       <div className="callout" role="note" aria-label="Note">
@@ -54,11 +60,15 @@ export function FinancesStep({
       <TextField
         id="household-children"
         label="How many dependent children live in your household?"
-        hint="Include the children you have already told us about."
+        hint="Include the children you have already told us about, plus any others."
         numeric
-        value={form.householdChildren}
+        // Starts at the number of children already entered, not at 1. It used
+        // to sit at 1 however many children the carer had added, so anyone
+        // with two or more was stopped by a validation error on a box they had
+        // never touched, carrying a number we had put there.
+        value={householdChildren}
         error={errorFor('finances.dependentChildrenInHousehold')}
-        onChange={(householdChildren) => set((f) => ({ ...f, householdChildren }))}
+        onChange={(next) => set((f) => ({ ...f, householdChildren: next, householdChildrenTouched: true }))}
       />
 
       <StepNav

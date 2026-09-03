@@ -115,7 +115,12 @@ function measureChildren(
     if (child.hasDisabilityOrAdditionalNeeds) flags.push(makeFlag('ENHANCEMENT_AVAILABLE'));
 
     if (excludedFromPilot) {
-      flags.push(makeFlag('KINSHIP_ZONE_EXCLUDED_REG6', { kinshipZoneWeekly: national }));
+      // The band goes in because the pilot rate differs by age, and dedupeFlags
+      // now keeps one message per distinct text: without it, two children in
+      // different bands would collapse to a single figure naming neither.
+      flags.push(
+        makeFlag('KINSHIP_ZONE_EXCLUDED_REG6', { kinshipZoneWeekly: national, ageBand: band.id }),
+      );
     }
 
     return { child, band, core, enhancement, maximum: add(core, enhancement) };
@@ -133,22 +138,22 @@ function maximumOnly(
   rates: RateTable,
   asAt: IsoDate,
 ): CalculatorResult {
-  const perChild = children.map((c) => {
-    // [R4] The regulation 7 floor is not a means-test step. A former foster
-    // carer inside the two years must never be shown a figure below their
-    // previous fostering allowance, including on this path, which is the whole
-    // of what most people see.
-    const floor = applyReg7Floor(input, c.maximum, asAt);
-    flags.push(...floor.flags);
-    return {
-      ...baseResult(c, asAt),
-      assessedContributionWeekly: pence(0),
-      childBenefitDeductionWeekly: pence(0),
-      estimatedAllowanceWeekly: floor.value,
-      floorApplied: floor.reason,
-      citations: floor.reason ? flooredCitations() : sgoCitations(),
-    };
-  });
+  // [R4] The regulation 7 floor is not a means-test step. A former foster carer
+  // inside the two years must never be shown a household total below their
+  // previous fostering allowance, including on this path, which is the whole of
+  // what most people see.
+  const maximums = children.map((c) => c.maximum);
+  const floor = applyReg7Floor(input, maximums, maximums, asAt);
+  flags.push(...floor.flags);
+
+  const perChild = children.map((c, i) => ({
+    ...baseResult(c, asAt),
+    assessedContributionWeekly: pence(0),
+    childBenefitDeductionWeekly: pence(0),
+    estimatedAllowanceWeekly: floor.values[i] ?? c.maximum,
+    floorApplied: floor.reason,
+    citations: floor.reason ? flooredCitations() : sgoCitations(),
+  }));
 
   return finalise(input, perChild, {
     regime: regimeFor(input.carer.nation),
@@ -218,22 +223,23 @@ function meansTested(
     children.map((c) => c.maximum),
   );
 
-  const perChild: PerChildResult[] = children.map((c, i) => {
-    const childBenefit = childBenefitDeduction(input, c.child, benefits, flags);
-    const share = shares[i] ?? pence(0);
-    const netted = clampMin0(sub(sub(c.maximum, share), childBenefit));
-    const floor = applyReg7Floor(input, netted, asAt);
-    flags.push(...floor.flags);
+  // Priced child by child first, then floored across the household, because the
+  // floor is a household figure. See applyReg7Floor.
+  const childBenefits = children.map((c) => childBenefitDeduction(input, c.child, benefits, flags));
+  const netted = children.map((c, i) =>
+    clampMin0(sub(sub(c.maximum, shares[i] ?? pence(0)), childBenefits[i] ?? pence(0))),
+  );
+  const floor = applyReg7Floor(input, netted, children.map((c) => c.maximum), asAt);
+  flags.push(...floor.flags);
 
-    return {
-      ...baseResult(c, asAt),
-      assessedContributionWeekly: share,
-      childBenefitDeductionWeekly: childBenefit,
-      estimatedAllowanceWeekly: floor.value,
-      floorApplied: floor.reason,
-      citations: floor.reason ? flooredCitations() : [...sgoCitations(), cite('merton-2012')],
-    };
-  });
+  const perChild: PerChildResult[] = children.map((c, i) => ({
+    ...baseResult(c, asAt),
+    assessedContributionWeekly: shares[i] ?? pence(0),
+    childBenefitDeductionWeekly: childBenefits[i] ?? pence(0),
+    estimatedAllowanceWeekly: floor.values[i] ?? pence(0),
+    floorApplied: floor.reason,
+    citations: floor.reason ? flooredCitations() : [...sgoCitations(), cite('merton-2012')],
+  }));
 
   return finalise(input, perChild, {
     regime: regimeFor(input.carer.nation),
@@ -264,20 +270,39 @@ const flooredCitations = (): Citation[] => [
 ];
 
 /**
- * [R4] Regulation 7: a former foster carer must never be shown a figure below
- * their previous fostering allowance within 24 months of the order.
+ * [R4] Regulation 7: a former foster carer must never be shown a HOUSEHOLD
+ * TOTAL below their previous fostering allowance within 24 months of the order.
+ *
+ * The total, not each child. The carer is asked once what they were paid as a
+ * foster carer, and the answer is what they actually received, for everyone
+ * they were fostering. Flooring each child at that figure paid a carer with two
+ * children twice what they used to get, and three children three times it, in
+ * the largest text on the page and in the letter they send their council.
+ *
+ * Where the total falls short, the previous allowance is shared back across the
+ * children by what each is worth. That is the same weighting the assessed
+ * contribution uses, so the two steps cannot disagree, and apportion guarantees
+ * the shares sum to the previous allowance exactly rather than a penny either
+ * side of it.
+ *
+ * A child can come out above its own maximum this way. That is the floor doing
+ * its job, and it is why floorApplied is set on every child rather than only on
+ * the ones that moved: assertSane allows an estimate above the ceiling only
+ * when a floor explains it.
  */
 function applyReg7Floor(
   input: CalculatorInput,
-  candidate: Pence,
+  candidates: Pence[],
+  weights: Pence[],
   asAt: IsoDate,
-): { value: Pence; reason: FloorReason | null; flags: Flag[] } {
+): { values: Pence[]; reason: FloorReason | null; flags: Flag[] } {
   const previous = input.carer.previousWeeklyFosteringAllowance;
-  if (!withinReg7Window(input.carer, asAt) || previous === undefined || candidate >= previous) {
-    return { value: candidate, reason: null, flags: [] };
+  const total = add(...candidates);
+  if (!withinReg7Window(input.carer, asAt) || previous === undefined || total >= previous) {
+    return { values: candidates, reason: null, flags: [] };
   }
   return {
-    value: previous,
+    values: apportion(previous, weights),
     reason: 'reg7-former-foster-carer',
     flags: [
       makeFlag('REG7_FLOOR_APPLIED', {

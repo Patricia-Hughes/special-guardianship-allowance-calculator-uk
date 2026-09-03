@@ -38,10 +38,18 @@ const to = (ctx: LetterContext): string =>
 const signOff = (): string =>
   `Thank you for your help.\n\nYours sincerely,\n\n${PLACEHOLDER_NAME}\nSpecial guardian for ${PLACEHOLDER_CHILD}\nReference: ${PLACEHOLDER_REF}`;
 
+/**
+ * What the carer was paid before the order, if they told us.
+ *
+ * Stated as the past fact it is. This figure is their FOSTERING allowance from
+ * before the order, so writing "I currently receive" put a false sentence in
+ * every letter: a former foster carer may be receiving nothing now, and the
+ * council knows what it pays them.
+ */
 const paidLine = (ctx: LetterContext): string =>
-  ctx.currentlyPaidWeekly === undefined
+  ctx.previousFosteringWeekly === undefined
     ? ''
-    : `I currently receive ${formatMoney(ctx.currentlyPaidWeekly)} a week.\n\n`;
+    : `Before the order was made I was paid ${formatMoney(ctx.previousFosteringWeekly)} a week in total as a foster carer.\n\n`;
 
 export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
   'challenge-child-benefit-deduction': {
@@ -177,10 +185,10 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
-      // "that figure" pointed at a sentence that only appears when the carer
-      // told us what they are paid. Without it the letter asked about a figure
-      // it had never mentioned.
-      `I would be grateful for a written breakdown of how ${ctx.currentlyPaidWeekly === undefined ? 'my allowance' : 'that figure'} was calculated, showing:\n\n` +
+      // Always "my allowance". The only figure the letter can quote is the old
+      // fostering allowance, and the breakdown being asked for is of the
+      // CURRENT allowance, so "that figure" pointed at the wrong number.
+      'I would be grateful for a written breakdown of how my allowance was calculated, showing:\n\n' +
       '1. the starting figure and where it came from;\n' +
       '2. what income was taken into account, and what was disregarded;\n' +
       '3. what outgoings were allowed; and\n' +

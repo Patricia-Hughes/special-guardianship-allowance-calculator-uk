@@ -459,8 +459,35 @@ describe('flags module', () => {
     ]);
   });
 
-  it('dedupes by code', () => {
+  it('dedupes warnings that say the same thing', () => {
     expect(dedupeFlags([makeFlag('BELOW_NMA'), makeFlag('BELOW_NMA')])).toHaveLength(1);
+  });
+
+  it('keeps one warning per child when the figures differ', () => {
+    // Regression. Dedupe used to key on the code alone, so a carer with a
+    // 3-year-old and a 16-year-old was shown ONE below-minimum warning, naming
+    // one age band, and the other child's shortfall vanished. Both are
+    // critical warnings about being underpaid.
+    const younger = makeFlag('BELOW_NMA', {
+      coreWeekly: p(18000),
+      nationalWeekly: p(20300),
+      ageBand: '3-4',
+    });
+    const older = makeFlag('BELOW_NMA', {
+      coreWeekly: p(18000),
+      nationalWeekly: p(26700),
+      ageBand: '16-17',
+    });
+    const kept = dedupeFlags([younger, older]);
+    expect(kept).toHaveLength(2);
+    expect(kept[0]!.body).toContain('3-4');
+    expect(kept[1]!.body).toContain('16-17');
+
+    // And the survivors of one code stay together, in child order, once sorted
+    // alongside everything else.
+    const sorted = sortFlags([makeFlag('ANNUAL_REVIEW_DUE'), ...kept]);
+    expect(sorted.map((f) => f.code)).toEqual(['BELOW_NMA', 'BELOW_NMA', 'ANNUAL_REVIEW_DUE']);
+    expect(sorted[0]!.body).toContain('3-4');
   });
 
   it('renders every catalogue entry without a context', () => {

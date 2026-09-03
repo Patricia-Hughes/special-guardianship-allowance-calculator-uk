@@ -89,12 +89,20 @@ function carerHistoryFlags(input: CalculatorInput, asAt: IsoDate): Flag[] {
   if (input.carer.wasFosterCarerForThisChild) {
     flags.push(makeFlag('REG7_EXTENSION_AVAILABLE'));
     flags.push(makeFlag('REG7_MISAPPLICATION_WARNING'));
-    if (months >= REG7_EXPIRING_FROM_MONTHS && months < REG7_WINDOW_MONTHS) {
+    if (
+      months !== undefined &&
+      months >= REG7_EXPIRING_FROM_MONTHS &&
+      months < REG7_WINDOW_MONTHS
+    ) {
       flags.push(makeFlag('REG7_EXPIRING', { monthsSinceOrder: months }));
     }
   }
 
-  if (months < CONTINUING_RESPONSIBILITY_MONTHS) {
+  // Silent when we were not told how long ago the order was made. This used to
+  // read a blank box as zero, so it told every carer who skipped the question
+  // that their council still had a three-year duty, including carers whose
+  // order was made a decade ago.
+  if (months !== undefined && months < CONTINUING_RESPONSIBILITY_MONTHS) {
     flags.push(makeFlag('THREE_YEAR_RESPONSIBILITY'));
   }
 

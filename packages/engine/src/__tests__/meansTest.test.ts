@@ -243,13 +243,21 @@ describe('means test', () => {
 
     it('supports a percentage of disposable income', () => {
       expect(applyTaper(pence(40000), { method: 'percentage', percentage: 0.5 })).toBe(20000);
-      expect(applyTaper(pence(40000), { method: 'percentage' })).toBe(40000);
     });
 
     it('supports a threshold below which nothing is deducted', () => {
       expect(applyTaper(pence(40000), { method: 'threshold', thresholdMonthly: pence(50000) })).toBe(0);
       expect(applyTaper(pence(40000), { method: 'threshold', thresholdMonthly: pence(10000) })).toBe(30000);
-      expect(applyTaper(pence(40000), { method: 'threshold' })).toBe(40000);
+    });
+
+    it('refuses a taper that names a method but gives no figure', () => {
+      // These used to fall back: a percentage taper with no percentage became
+      // 100 per cent and a threshold taper with no threshold became zero, both
+      // of which are pound-for-pound, the harshest option there is. A
+      // configuration mistake quietly produced the worst answer for the carer
+      // with nothing on the page to say so.
+      expect(() => applyTaper(pence(40000), { method: 'percentage' })).toThrow(DataError);
+      expect(() => applyTaper(pence(40000), { method: 'threshold' })).toThrow(DataError);
     });
   });
 

@@ -195,9 +195,23 @@ export function applyTaper(disposable: Pence, taper: TaperConfig): Pence {
     case 'pound-for-pound':
       return disposable;
     case 'percentage':
-      return mul(disposable, taper.percentage ?? 1);
+      // Throws rather than defaulting. `?? 1` meant a percentage taper with no
+      // percentage quietly became 100 per cent, which is pound-for-pound: the
+      // harshest option there is, produced by a configuration mistake, with
+      // nothing on the page to say it had happened.
+      if (taper.percentage === undefined) {
+        throw new DataError(
+          'A percentage taper was configured with no percentage. Set one, or use pound-for-pound.',
+        );
+      }
+      return mul(disposable, taper.percentage);
     case 'threshold':
-      return clampMin0(sub(disposable, taper.thresholdMonthly ?? pence(0)));
+      if (taper.thresholdMonthly === undefined) {
+        throw new DataError(
+          'A threshold taper was configured with no threshold. Set one, or use pound-for-pound.',
+        );
+      }
+      return clampMin0(sub(disposable, taper.thresholdMonthly));
   }
 }
 
@@ -240,7 +254,9 @@ export function runMeansTest(
   const disposable = clampMin0(sub(afterDisregard, expenditure));
   breakdown.add('Income left over', 'result', disposable, disposable);
 
-  const capitalTariff = capital.enabled ? tariffIncome(f.savingsCapital, capital) : pence(0);
+  // tariffIncome already returns zero when the rule is off, so the ternary that
+  // used to guard this call did nothing.
+  const capitalTariff = tariffIncome(f.savingsCapital, capital);
   if (capital.enabled) {
     breakdown.add(
       'Assumed income from savings',

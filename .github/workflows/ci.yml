@@ -84,8 +84,10 @@ jobs:
       - name: Performance budget (§31)
         run: pnpm check:bundle
 
+      # WebKit as well as Chromium. The audience is heavily iPad, and testing
+      # only Chromium hid a real defect in the letter download.
       - name: Install Playwright browsers
-        run: pnpm --filter @sgo/web exec playwright install --with-deps chromium
+        run: pnpm --filter @sgo/web exec playwright install --with-deps chromium webkit
 
       - name: End-to-end journeys (§34)
         run: pnpm test:e2e

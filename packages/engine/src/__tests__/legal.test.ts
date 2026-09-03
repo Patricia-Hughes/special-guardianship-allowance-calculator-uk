@@ -148,6 +148,48 @@ describe('SGO engine — legal correctness', () => {
     expect(r.perChild[0]!.citations.map((c) => c.id)).toContain('sg-regs-2005-reg7');
   });
 
+  it('T7c [R4] the floor is a household total, not a floor per child', () => {
+    // Regression, and the worst bug this calculator has had. The carer is asked
+    // ONCE what they were paid as a foster carer, and the answer is what they
+    // received for everyone they were fostering. The floor used to be applied to
+    // each child separately, so a carer paid 300 a week for two children was
+    // shown 600, in the largest text on the page and in the letter to their
+    // council. Every reg 7 test above uses one child, which is why nothing
+    // caught it, and the R4 guardrail asserted the same wrong reading.
+    const twoChildren = {
+      carer: carer({
+        wasFosterCarerForThisChild: true,
+        previousWeeklyFosteringAllowance: p(50000),
+        monthsSinceOrderMade: 12,
+      }),
+      // South East maximums: 20300p and 25500p, so 45800p together, short of the
+      // 50000p the carer used to be paid.
+      children: [
+        child({ id: 'a', ageYears: 4, isEldestInHousehold: false }),
+        child({ id: 'b', ageYears: 12, isEldestInHousehold: true }),
+      ],
+    };
+    const r = calculate(input(twoChildren));
+
+    expect(r.totalWeekly).toBe(50000);
+    expect(r.perChild.every((c) => c.floorApplied === 'reg7-former-foster-carer')).toBe(true);
+    // Shared by what each child is worth, summing to the previous allowance
+    // exactly. Not 50000 each, which is what the old code produced.
+    expect(r.perChild.map((c) => c.estimatedAllowanceWeekly)).toEqual([22162, 27838]);
+
+    // And a household already better off than before is left alone: 45800
+    // together beats 30000, so nothing is lifted even though EACH child is
+    // individually below it.
+    const better = calculate(
+      input({
+        ...twoChildren,
+        carer: carer({ ...twoChildren.carer, previousWeeklyFosteringAllowance: p(30000) }),
+      }),
+    );
+    expect(better.totalWeekly).toBe(45800);
+    expect(better.perChild.every((c) => c.floorApplied === null)).toBe(true);
+  });
+
   it('T8  [R4] the floor does not apply after 24 months', () => {
     const r = calculate(
       input({

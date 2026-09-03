@@ -34,7 +34,15 @@ export const ZERO: Pence = 0 as Pence;
 
 /** Anything a person might type around a number, and the shape of what is left. */
 const DECORATION = /[£,\s]/g;
-const AMOUNT = /^\d+(\.\d{1,2})?$/;
+/**
+ * Up to nine digits before the point, which is 9,999,999.99 and more money
+ * than any figure on this site. Unbounded `\d+` accepted a twenty-digit entry,
+ * which multiplied out past Number.MAX_SAFE_INTEGER and still satisfied
+ * Number.isInteger, because a large enough double is integral even when it can
+ * no longer represent every integer near it. The arithmetic then lost precision
+ * silently, with nothing to say so.
+ */
+const AMOUNT = /^\d{1,9}(\.\d{1,2})?$/;
 
 /**
  * Parse a user string into pence. Handles "1,234.5", "£12", " 12 ".
@@ -65,12 +73,20 @@ export const min = (a: Pence, b: Pence): Pence => (a <= b ? a : b);
  * Math.round is half-up for positive values, which is what councils use when
  * presenting figures. Money here is never negative, because clampMin0 guards
  * the subtraction sites, so the half-down-for-negatives behaviour of
- * Math.round is not reachable. The epsilon nudges values such as 2.675 that are
- * stored fractionally below their decimal representation.
+ * Math.round is not reachable.
+ *
+ * This used to add Number.EPSILON "to nudge values stored fractionally below
+ * their decimal representation". It did nothing. Number.EPSILON is the gap
+ * between 1 and the next double, about 2.2e-16; the gap at a pence-sized value
+ * like 15975 is about 1.8e-12, roughly ten thousand times larger. Adding the
+ * smaller number to the bigger one is absorbed entirely, so `x + EPSILON === x`
+ * for every value this function ever sees and the result was identical without
+ * it. It was a comment describing a protection that was not there, which is
+ * worse than no protection at all.
  */
 export function mul(a: Pence, rate: number): Pence {
   if (!Number.isFinite(rate)) throw new MoneyError(`Non-finite rate: ${rate}`);
-  return pence(Math.round(a * rate + Number.EPSILON));
+  return pence(Math.round(a * rate));
 }
 
 // ─── Periods ───────────────────────────────────────────────────────────────

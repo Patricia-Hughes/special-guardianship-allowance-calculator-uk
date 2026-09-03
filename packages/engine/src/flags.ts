@@ -77,13 +77,27 @@ export function sortFlags(flags: Flag[]): Flag[] {
 }
 
 /**
- * Drop duplicates by code, keeping the first.
+ * Drop duplicates by what the warning SAYS, not just by its code.
  *
- * The first is the one that matters: a warning raised per child carries that
- * child's figures, and the first child's are the ones the ordering was built
- * around.
+ * Keying on the code alone lost information. BELOW_NMA and
+ * KINSHIP_ZONE_EXCLUDED_REG6 are raised once per child and carry that child's
+ * age band and rates, so a carer with a 3-year-old and a 16-year-old had one of
+ * the two messages silently thrown away, and the survivor named an age band
+ * without saying which child it belonged to. On a critical warning about being
+ * underpaid, that is a shortfall the reader never learns about.
+ *
+ * Two flags with the same code and the same text are the same message and
+ * collapse, which is what handles the warnings raised per child that carry no
+ * per-child detail. Two with different text are different messages and both
+ * stay. sortFlags is a stable sort and ranks by code, so the survivors of one
+ * code stay together, in the order the children were entered.
  */
 export function dedupeFlags(flags: Flag[]): Flag[] {
-  const seen = new Set<FlagCode>();
-  return flags.filter((f) => (seen.has(f.code) ? false : (seen.add(f.code), true)));
+  const seen = new Set<string>();
+  return flags.filter((f) => {
+    // A NUL separator, because a flag body contains spaces and newlines and
+    // must not be able to collide with the code in front of it.
+    const key = `${f.code}\u0000${f.body}`;
+    return seen.has(key) ? false : (seen.add(key), true);
+  });
 }

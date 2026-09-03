@@ -21,8 +21,14 @@ export function ageOf(child: ChildInput, asAt: IsoDate): number {
   return child.dateOfBirth ? ageAt(child.dateOfBirth, asAt) : child.ageYears;
 }
 
-/** Months since the order: from the order date where given, else the stated count. */
-export function monthsSinceOrder(carer: CarerInput, asAt: IsoDate): number {
+/**
+ * Months since the order, or undefined when the carer has not told us.
+ *
+ * The date wins where it was given. Undefined is not zero: everything that
+ * depends on how long ago the order was made has to decide for itself what to
+ * do when it does not know, rather than being handed a number that says today.
+ */
+export function monthsSinceOrder(carer: CarerInput, asAt: IsoDate): number | undefined {
   return carer.orderDate
     ? Math.max(0, monthsBetween(carer.orderDate, asAt))
     : carer.monthsSinceOrderMade;
@@ -39,5 +45,11 @@ export function monthsSinceOrder(carer: CarerInput, asAt: IsoDate): number {
 export const REG7_WINDOW_MONTHS = 24;
 
 export function withinReg7Window(carer: CarerInput, asAt: IsoDate): boolean {
-  return carer.wasFosterCarerForThisChild && monthsSinceOrder(carer, asAt) < REG7_WINDOW_MONTHS;
+  const months = monthsSinceOrder(carer, asAt);
+  // Not knowing is not the same as being inside it. Claiming the window when
+  // nobody said when the order was made would floor the figure on a power the
+  // council may no longer have, and the number a carer takes to their council
+  // has to be one we can stand behind.
+  if (months === undefined) return false;
+  return carer.wasFosterCarerForThisChild && months < REG7_WINDOW_MONTHS;
 }

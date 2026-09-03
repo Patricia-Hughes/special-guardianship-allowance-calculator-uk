@@ -292,6 +292,14 @@ function ageBandsFor(deps: EngineDeps, nation: Nation): AgeBand[] {
 /**
  * [R4] Within the reg 7 window a former foster carer's previous allowance is
  * the floor, so a segment inside the window is priced at whichever is higher.
+ *
+ * The previous allowance is a HOUSEHOLD figure: the carer is asked once what
+ * they were paid, for everyone they were fostering. Comparing it against one
+ * child's maximum is only correct here because calculateBackdating refuses more
+ * than one child, so the household and the child are the same thing. Lift that
+ * restriction and this becomes the bug sgo.ts had, where a carer with two
+ * children was shown twice what they used to be paid: floor the summed total
+ * and share it back, the way applyReg7Floor in regimes/sgo.ts does.
  */
 function applyReg7Floor(base: CalculatorInput, at: IsoDate, maximumWeekly: Pence): Pence {
   const previous = base.carer.previousWeeklyFosteringAllowance;
@@ -300,6 +308,8 @@ function applyReg7Floor(base: CalculatorInput, at: IsoDate, maximumWeekly: Pence
   const months = base.carer.orderDate
     ? monthsBetween(base.carer.orderDate, at)
     : base.carer.monthsSinceOrderMade;
+  // Unknown is not inside the window. See withinReg7Window in resolve.ts.
+  if (months === undefined) return maximumWeekly;
   return months < REG7_WINDOW_MONTHS && previous > maximumWeekly ? previous : maximumWeekly;
 }
 

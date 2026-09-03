@@ -25,7 +25,14 @@ export interface LetterContext {
   childAgeBand: string;
   region: EnglandRegion;
   nmaWeekly: Pence;
-  currentlyPaidWeekly?: Pence;
+  /**
+   * What the carer was paid as a foster carer BEFORE the order, per week, for
+   * every child they were fostering. Not what they receive now: a former foster
+   * carer may be receiving nothing. The letters used to render this as "I
+   * currently receive X a week", which told the council something untrue and
+   * handed them an easy correction.
+   */
+  previousFosteringWeekly?: Pence;
   onMeansTestedBenefits: boolean;
   wasFosterCarer: boolean;
   orderDate?: IsoDate;

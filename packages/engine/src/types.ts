@@ -50,7 +50,15 @@ export interface CarerInput {
   wasFosterCarerForThisChild: boolean;
   /** Preferred over monthsSinceOrderMade. */
   orderDate?: IsoDate;
-  monthsSinceOrderMade: number;
+  /**
+   * Optional, because "we were not told" is a real answer and used to be
+   * recorded as 0. Zero months means the order was made TODAY, which put every
+   * carer who skipped the question inside the reg 7 window and inside the
+   * three-year continuing-responsibility window. Someone whose order was made a
+   * decade ago was shown warnings about duties that expired years earlier.
+   * Undefined now means unknown, and the time-dependent warnings stay quiet.
+   */
+  monthsSinceOrderMade?: number;
   previousWeeklyFosteringAllowance?: Pence;
   /** UC / IS / JSA(IB) / ESA(IR) / Pension Credit. */
   onMeansTestedBenefits: boolean;

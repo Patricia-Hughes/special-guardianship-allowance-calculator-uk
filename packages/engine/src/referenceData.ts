@@ -5,17 +5,24 @@
  * JSON under /data with an effective date, copied into this package at build
  * time by scripts/sync-engine-data.ts, which also strips the maintainer-only
  * fields so they are not shipped to a browser.
+ *
+ * The `with { type: 'json' }` on each import is required, not decorative. Node
+ * refuses a JSON import in an ES module without it, so the built package threw
+ * ERR_IMPORT_ATTRIBUTE_MISSING the moment anything loaded it outside a bundler,
+ * despite package.json advertising `exports` and `main`. Next and vitest both
+ * accept the attribute, so it costs nothing and makes the published shape
+ * honest. Do not strip them.
  */
 
-import benefits202526 from './data/benefits.2025-26.json';
-import benefits202627 from './data/benefits.2026-27.json';
-import citationsJson from './data/citations.json';
-import kinshipZonesJson from './data/kinship-zones.json';
-import laOverridesJson from './data/la-overrides.json';
-import laRegionMapJson from './data/la-region-map.json';
-import rates202425 from './data/rates.2024-25.json';
-import rates202526 from './data/rates.2025-26.json';
-import rates202627 from './data/rates.2026-27.json';
+import benefits202526 from './data/benefits.2025-26.json' with { type: 'json' };
+import benefits202627 from './data/benefits.2026-27.json' with { type: 'json' };
+import citationsJson from './data/citations.json' with { type: 'json' };
+import kinshipZonesJson from './data/kinship-zones.json' with { type: 'json' };
+import laOverridesJson from './data/la-overrides.json' with { type: 'json' };
+import laRegionMapJson from './data/la-region-map.json' with { type: 'json' };
+import rates202425 from './data/rates.2024-25.json' with { type: 'json' };
+import rates202526 from './data/rates.2025-26.json' with { type: 'json' };
+import rates202627 from './data/rates.2026-27.json' with { type: 'json' };
 
 import { DataError } from './errors.js';
 import type {

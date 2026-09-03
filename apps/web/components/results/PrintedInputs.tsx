@@ -88,7 +88,9 @@ export function PrintedInputs({
                 <td>
                   {input.carer.orderDate
                     ? input.carer.orderDate
-                    : `About ${input.carer.monthsSinceOrderMade} months ago`}
+                    : input.carer.monthsSinceOrderMade === undefined
+                      ? 'Not given'
+                      : `About ${input.carer.monthsSinceOrderMade} months ago`}
                 </td>
               </tr>
             </>
