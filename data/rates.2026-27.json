@@ -73,9 +73,9 @@
     "anomalyCorroboration": [
       {
         "source": "Welsh Government circular of 26 February 2024, signed Alistair Davey",
-        "url": "https://www.gov.wales/",
+        "url": "https://www.thefosteringnetwork.org.uk/media/rzzgloqq/nma-letter-2024-25-english-e-_0.pdf",
         "date": "2024-02-26",
-        "finding": "Primary source. Prints 218 pounds for ages 0 to 4 against 199 pounds for 5 to 15, so the inversion is how the Welsh Government publishes the rates and not an error in a secondary report."
+        "finding": "Primary source. Prints 218 pounds for ages 0 to 4 against 199 pounds for 5 to 15, so the inversion is how the Welsh Government publishes the rates and not an error in a secondary report. The letter itself is linked rather than the Welsh Government home page, matching the 2024/25 entry."
       },
       {
         "source": "Fostering news, '2025 Allowance Uplifts Across the UK'",
@@ -104,7 +104,8 @@
       {
         "id": "16-17",
         "minAge": 16,
-        "maxAge": 17
+        "maxAge": 17,
+        "openEnded": true
       }
     ],
     "rates": {
@@ -112,7 +113,9 @@
       "5-15": 20800,
       "16-17": 26000
     },
-    "bandNote": "The Welsh letter prints the top band as \"16+\", not 16-17. It is stored closed here because this calculator is for children under 18 and the bands must tile 0 to 17 exactly, so the two are equivalent for this product. Not a transcription error. The letter also states the rates apply from 1 April, so Wales follows the council convention rather than the DfE tax year."
+    "bandNote": "The Welsh letter prints the top band as \"16+\", so it is marked openEnded here. The maxAge of 17 is this calculator's own cap, because the product is for children under 18 and the bands must tile 0 to 17 exactly. Not a transcription error, and not a closed band in the source. The letter also states the rates apply from 1 April, so Wales follows the council convention rather than the DfE tax year.",
+    "note": "The figures come from The Fostering Network's reproduced table, which is secondary, and verify stays true because of it. The Welsh Government letter carrying the 2026/27 rates has not been located after three searches. wg-nma-2026-27-approval is a separate primary record that the Minister approved the allowance; it carries no rate table, so it confirms the allowance exists and is not the source of these numbers. The two were previously conflated in one citation, which attributed the figures to a page that does not state them.",
+    "approvalSourceId": "wg-nma-2026-27-approval"
   },
   "northern-ireland": {
     "sourceId": "hsc-fostering-2026-27",

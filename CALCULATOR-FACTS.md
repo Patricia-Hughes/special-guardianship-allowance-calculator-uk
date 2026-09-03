@@ -59,7 +59,7 @@ Two dates, deliberately: councils apply from **2024-04-01**, the DfE states the 
 
 #### england
 
-Source: [DfE National Minimum Allowance for foster carers, 2024 to 2025 (National Archives snapshot)](https://webarchive.nationalarchives.gov.uk/ukgwa/*/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering), read 2026-08-30
+Source: [DfE National Minimum Allowance for foster carers, 2024 to 2025 (National Archives snapshot)](https://web.archive.org/web/20250302000000/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering), read 2026-08-30
 
 Uplift on the previous year: 6.88%
 
@@ -85,7 +85,7 @@ Uplift on the previous year: 3%
 
 > **Note:** Transcribed as printed from the Welsh Government circular of 26 February 2024, on Welsh Government letterhead, signed Alistair Davey. This is the primary source the site had been missing: it confirms the band inversion directly rather than through secondary reports. Rates apply from 1 April, the council convention. The top band is printed '16+', so it is marked openEnded and the maxAge of 17 is this calculator's own cap.
 
-> **On the bands:** The Welsh letter prints the top band as "16+", not 16-17. It is stored closed here because this calculator is for children under 18 and the bands must tile 0 to 17 exactly, so the two are equivalent for this product. Not a transcription error. The letter also states the rates apply from 1 April, so Wales follows the council convention rather than the DfE tax year.
+> **On the bands:** The Welsh letter prints the top band as "16+", so it is marked openEnded here. The maxAge of 17 is this calculator's own cap, because the product is for children under 18 and the bands must tile 0 to 17 exactly. Not a transcription error, and not a closed band in the source. The letter also states the rates apply from 1 April, so Wales follows the council convention rather than the DfE tax year.
 
 > **anomalyConfirmed: true.** This looks wrong and is not. Corroborated by:
 > - Welsh Government circular of 26 February 2024, signed Alistair Davey (https://www.thefosteringnetwork.org.uk/media/rzzgloqq/nma-letter-2024-25-english-e-_0.pdf): Primary source, on Welsh Government letterhead. Prints 218 pounds for ages 0 to 4 against 199 pounds for 5 to 15. The inversion is how the Welsh Government publishes the rates, not an error in a report of them. The letter itself is now linked rather than the Welsh Government home page.
@@ -199,7 +199,7 @@ Uplift on the previous year: 3.35%
 
 #### wales
 
-Source: [Welsh Government National Minimum Allowance, 2026 to 2027](https://www.llyw.cymru/adroddiadau-ar-benderfyniadau-2026), read 2026-09-03
+Source: [The Fostering Network, national minimum allowances table, reproducing the Welsh 2026 to 2027 rates](https://www.thefosteringnetwork.org.uk/policy-and-campaigns/empowering-children-and-young-people/allowances/), read 2026-09-03
 
 Uplift on the previous year: 2.2%
 
@@ -209,12 +209,14 @@ Uplift on the previous year: 2.2%
 | 5-15 | £208.00 |
 | 16-17 | £260.00 |
 
-> **On the bands:** The Welsh letter prints the top band as "16+", not 16-17. It is stored closed here because this calculator is for children under 18 and the bands must tile 0 to 17 exactly, so the two are equivalent for this product. Not a transcription error. The letter also states the rates apply from 1 April, so Wales follows the council convention rather than the DfE tax year.
+> **Note:** The figures come from The Fostering Network's reproduced table, which is secondary, and verify stays true because of it. The Welsh Government letter carrying the 2026/27 rates has not been located after three searches. wg-nma-2026-27-approval is a separate primary record that the Minister approved the allowance; it carries no rate table, so it confirms the allowance exists and is not the source of these numbers. The two were previously conflated in one citation, which attributed the figures to a page that does not state them.
+
+> **On the bands:** The Welsh letter prints the top band as "16+", so it is marked openEnded here. The maxAge of 17 is this calculator's own cap, because the product is for children under 18 and the bands must tile 0 to 17 exactly. Not a transcription error, and not a closed band in the source. The letter also states the rates apply from 1 April, so Wales follows the council convention rather than the DfE tax year.
 
 > **verify: true.** We doubt this figure and it is held, not trusted.
 
 > **anomalyConfirmed: true.** This looks wrong and is not. Corroborated by:
-> - Welsh Government circular of 26 February 2024, signed Alistair Davey (https://www.gov.wales/): Primary source. Prints 218 pounds for ages 0 to 4 against 199 pounds for 5 to 15, so the inversion is how the Welsh Government publishes the rates and not an error in a secondary report.
+> - Welsh Government circular of 26 February 2024, signed Alistair Davey (https://www.thefosteringnetwork.org.uk/media/rzzgloqq/nma-letter-2024-25-english-e-_0.pdf): Primary source. Prints 218 pounds for ages 0 to 4 against 199 pounds for 5 to 15, so the inversion is how the Welsh Government publishes the rates and not an error in a secondary report. The letter itself is linked rather than the Welsh Government home page, matching the 2024/25 entry.
 > - Fostering news, '2025 Allowance Uplifts Across the UK' (https://fosteringnews.co.uk/fostering/2025-allowance-uplifts-across-the-uk-england-wales-scotland-ni/): Records the 2025/26 Welsh NMA as £224 (0-4), £204 (5-10 and 11-15), £255 (16-17), the same inversion, in an independent year.
 > - The Fostering Network, Foster Care Allowances (https://www.thefosteringnetwork.org.uk/policy-and-campaigns/empowering-children-and-young-people/allowances/): Confirms the Welsh Government announced a 2.2% uplift for 2026/27. Applying 2.2% to the 2025/26 figures reproduces this table to the pound: 224 -> 228.9 (£229), 204 -> 208.5 (£208), 255 -> 260.6 (£260).
 
@@ -263,16 +265,14 @@ independent lookups and neither is derived from the other.
 
 Effective from 2025-04-07.
 
-**PENDING_SOURCE.** Not usable. Tracked at https://github.com/fantasy-324/new-test-tool/issues/2.
-
 **Child Benefit**, source [Child Benefit and Guardian's Allowance Up-rating Order 2025](https://www.legislation.gov.uk/uksi/2025/292/made), read 2026-09-03
 
 | | Weekly |
 |---|---|
-| Eldest child | _not sourced_ |
-| Each other child | _not sourced_ |
+| Eldest child | £26.05 |
+| Each other child | £17.25 |
 
-**Guardian's Allowance:** _not sourced_, source _no source recorded_
+**Guardian's Allowance:** £22.10, source [Child Benefit and Guardian's Allowance Up-rating Order 2025](https://www.legislation.gov.uk/uksi/2025/292/made), read 2026-09-03
 
 **Income Support applicable amounts**, source [DWP, Benefit and pension rates 2026 to 2027](https://www.gov.uk/government/publications/benefit-and-pension-rates-2026-to-2027/proposed-benefit-and-pension-rates-2026-to-2027), read 2026-08-29
 
@@ -298,7 +298,7 @@ Effective from 2026-04-06.
 | Eldest child | £27.05 |
 | Each other child | £17.90 |
 
-**Guardian's Allowance:** _not sourced_, source _no source recorded_
+**Guardian's Allowance:** £22.95, source [Child Benefit and Guardian's Allowance Up-rating Order 2026](https://www.legislation.gov.uk/uksi/2026/232/made), read 2026-09-03
 
 **Income Support applicable amounts**, source [DWP, Benefit and pension rates 2026 to 2027](https://www.gov.uk/government/publications/benefit-and-pension-rates-2026-to-2027/proposed-benefit-and-pension-rates-2026-to-2027), read 2026-08-29
 
@@ -422,7 +422,6 @@ national minimums and says we do not hold that council's policy.
 - Policy as we read it: Allowance aligned to the basic fostering allowance rate, with the standardised means-test model. Devon's procedures state that paying a fixed percentage of the fostering allowance would not be lawful. The living costs disregard is set at 100% of the Income Support applicable amount rather than the model's 125%, with tiered housing disregards.
 - Fixed fraction of the fostering rate: **none (checked, and the answer is none)**
 - Basic living costs: **100%** of the Income Support amount, against the model's 125%
-- Flat core rate: £213.01
 - Ombudsman finding (LGSCO_UPHELD), decided 2024-01-25: In January 2024 the Ombudsman found Devon at fault for deducting Child Benefit from all special guardians on Universal Credit as a blanket rule, without looking at individual circumstances. Recalculation and refunds were ordered.
   - Source: https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/23-000-973
   - **Concerns a FORMER policy.** The site says so with the finding.
@@ -443,7 +442,7 @@ national minimums and says we do not hold that council's policy.
 - Policy as we read it: Equivalence to the maximum fostering allowance, uplifted annually in line with the National Minimum Allowance, means tested. The council abolished its earlier percentage model in 2018.
 - Fixed fraction of the fostering rate: **none (checked, and the answer is none)**
 - Ombudsman finding (LGSCO_UPHELD), decided 2018-02-27: In February 2018 the Ombudsman found North Tyneside at fault for calculating special guardianship allowances as a percentage of its fostering allowance. The council identified 171 families who may not have received the right support, and payments were backdated to November 2013. North Tyneside abolished the percentage model that year.
-  - Source: https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf
+  - Source: https://web.archive.org/web/20231216202817/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf
   - **Concerns a FORMER policy.** The site says so with the finding.
 - Source: https://northtyneside.gov.uk/sites/default/files/web-page-related-files/20250321%20-%20Decision%20Record%20-%20Fostering%20Allowance.pdf, verified 2026-08-29
 
@@ -493,14 +492,14 @@ care gets the full fostering national minimum allowance with **no means test**.
 
 Councils: bexley, bolton, newcastle-upon-tyne, north-east-lincolnshire, medway, thurrock, wiltshire
 
-Last verified 2026-08-29. Source: _no source recorded_
+Last verified 2026-08-29. Source: [Kinship Zones - kinship allowance pilot (2026-2029)](https://www.communitycare.co.uk/content/news/councils-to-test-paying-kinship-carers-to-look-after-children-who-would-otherwise-go-into-care), read 2026-08-29
 
 
 ---
 
 ## 10. Every source
 
-56 in total. **0 still without a URL**, listed first.
+57 in total. **0 still without a URL**, listed first.
 
 
 ### All sources
@@ -516,7 +515,7 @@ Last verified 2026-08-29. Source: _no source recorded_
 | Derby City Council, Special Guardianship Orders and Derby Support Scheme | guidance | 2026-08-29 | [link](https://derbycsc.trixonline.co.uk/chapter/special-guardianship-orders-and-derby-support-scheme) |
 | Devon County Council, Applications for Special Guardianship Orders (procedures manual), last updated 24 October 2024 | guidance | 2026-08-31 | [link](https://devoncs.trixonline.co.uk/chapter/applications-for-special-guardianship-orders) |
 | DfE Special Guardianship Guidance (Jan 2017), para 65 | guidance | 2026-08-29 | [link](https://www.gov.uk/government/publications/special-guardianship-guidance) |
-| DfE National Minimum Allowance for foster carers, 2024 to 2025 (National Archives snapshot) | dataset | 2026-08-30 | [link](https://webarchive.nationalarchives.gov.uk/ukgwa/*/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering) |
+| DfE National Minimum Allowance for foster carers, 2024 to 2025 (National Archives snapshot) | dataset | 2026-08-30 | [link](https://web.archive.org/web/20250302000000/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering) |
 | GOV.UK, Help with the cost of fostering, capture of 2 March 2025 | guidance | 2026-09-03 | [link](https://web.archive.org/web/20250302000000/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering) |
 | DfE National Minimum Allowance for foster carers, 2025 to 2026 | dataset | 2026-09-03 | [link](https://web.archive.org/web/20251130000000/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering) |
 | DfE National Minimum Allowance for foster carers, 2026 to 2027 | dataset | 2026-08-29 | [link](https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering) |
@@ -535,8 +534,8 @@ Last verified 2026-08-29. Source: _no source recorded_
 | LGSCO decision, friends and family carers (22 018 116) | ombudsman | 2026-08-31 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/22-018-116) |
 | LGSCO decision, Devon County Council (23 000 973, 25 January 2024) | ombudsman | 2026-08-31 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/23-000-973) |
 | LGSCO decision, Devon County Council (24 003 172), not upheld | ombudsman | 2026-08-31 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/24-003-172) |
-| LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018) | ombudsman | 2026-09-01 | [link](https://web.archive.org/web/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf) |
-| LGSCO decision, Rochdale MBC (17 010 167, May 2019), upheld on judicial review | ombudsman | 2026-09-01 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/17-010-167) |
+| LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018) | ombudsman | 2026-09-01 | [link](https://web.archive.org/web/20231216202817/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf) |
+| LGSCO decision, Rochdale MBC (17 010 167, May 2019), council's judicial review challenge dismissed | ombudsman | 2026-09-01 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/17-010-167) |
 | LGSCO decision, Southend-on-Sea (19 003 363, 5 October 2020) | ombudsman | 2026-08-31 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/19-003-363) |
 | Lincolnshire County Council, Special Guardianship Allowance Assessment Framework | guidance | 2026-08-29 | [link](https://www.lincolnshire.gov.uk/directory-record/82363/special-guardianship-allowance-assessment-framework) |
 | R (TT) v Merton LBC [2012] EWHC 2055 (Admin) | case | 2026-09-03 | [link](https://caselaw.nationalarchives.gov.uk/ewhc/admin/2012/2055) |
@@ -562,7 +561,8 @@ Last verified 2026-08-29. Source: _no source recorded_
 | Universal Credit (Removal of Two Child Limit) Act 2026 c.13 | statute | 2026-09-03 | [link](https://www.legislation.gov.uk/ukpga/2026/13) |
 | Welsh Government, consultation on changes to two codes of practice: Part 6 and Special Guardianship Orders, 12 February to 7 April 2026 | guidance | 2026-08-31 | [link](https://www.gov.wales/written-statement-launch-consultation-revisions-part-6-and-special-guardianship-codes-practice) |
 | Welsh Government, National Minimum Allowances for foster carers 2024 to 2025, circular of 26 February 2024 | dataset | 2026-09-03 | [link](https://www.thefosteringnetwork.org.uk/media/rzzgloqq/nma-letter-2024-25-english-e-_0.pdf) |
-| Welsh Government National Minimum Allowance, 2026 to 2027 | dataset | 2026-09-03 | [link](https://www.llyw.cymru/adroddiadau-ar-benderfyniadau-2026) |
+| The Fostering Network, national minimum allowances table, reproducing the Welsh 2026 to 2027 rates | dataset | 2026-09-03 | [link](https://www.thefosteringnetwork.org.uk/policy-and-campaigns/empowering-children-and-young-people/allowances/) |
+| Welsh Government, decision reports 2026, recording ministerial approval of the National Minimum Allowances for 2026 to 2027 | guidance | 2026-09-03 | [link](https://www.llyw.cymru/adroddiadau-ar-benderfyniadau-2026) |
 
 ---
 
@@ -570,24 +570,6 @@ Last verified 2026-08-29. Source: _no source recorded_
 
 Every one of these is a deliberate, visible gap. None is filled with an estimate.
 
-
-### ni-model-scheme-2025-26
-
-**Waiting for:** Open the Department of Health (Northern Ireland) foster care allowances PDF for 2025-26 and read the SCALE RATES table out of it. Located by the review of 2 September at a NEW path: the 2024-25 pattern /publications/health/model-scheme-... no longer applies, so guessing a filename from the old URL will fail.
-
-**Why it matters:** 2024/25 is sourced, so Northern Irish backdating works for that year and blocks 2025/26. A 4% uplift for 2025/26 backdated to 1 April 2025 is confirmed, after two years of no uplift, but the figures themselves have not been read from the document. Secondary sources suggest about 155/173/194/228 a week: DO NOT USE THEM, they are rounded and from a summary. The trap stands: each scheme prints a second REDUCED RATES table for enhanced allowances and short breaks, about 28 per cent lower, which is not the allowance. Give both the Per Week and Per 4 Weeks columns so the arithmetic cross-checks as it did for 2024/25.
-
-**Where to look:** https://www.health-ni.gov.uk/sites/default/files/2026-05/Foster%20care%20allowances%202025-26.pdf
-
-_Next check due after 2026-09-30._
-
-### scotland-2025-26
-
-**Waiting for:** Resolve the Scottish Recommended Allowance for 2025/26 from an archived gov.scot snapshot taken after 27 June 2025. The live page now shows 2026/27, so the archive is the only route: web.archive.org/web/2025*/https://www.gov.scot/publications/scottish-recommended-allowance-for-foster-and-kinship-carers-information-for-carers-and-professionals/
-
-**Why it matters:** There WAS an uplift: 1.7 per cent, announced May 2025, backdated to 1 April 2025, so this is not another frozen year. But two published figure sets conflict. One reports 171.17 / 199.14 / 199.14 / 272.97; East Renfrewshire HSCP publishes 168.31 / 195.81 / 207.60 / 268.41, which repeats the 2023/24 figures for three of four bands and shows a 207.60 that appears in no year at all. Neither is safe. Remember the band structure: the SRA is three bands (0-4, 5-15, 16-17) presented as four, so any source showing different values for 5-10 and 11-15 has reintroduced a distinction the SRA does not make, which is itself a signal it is wrong.
-
-_Next check due after 2026-10-31._
 
 ### ciw-nma-bulletins
 

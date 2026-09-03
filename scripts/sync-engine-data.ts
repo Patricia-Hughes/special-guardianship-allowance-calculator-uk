@@ -98,9 +98,13 @@ function referencedCitationIds(): Set<string> {
   };
   for (const r of roots) scan(r);
   // sourceId in the data itself, which is how rate tables name their source.
+  // approvalSourceId is the same kind of reference: a second citation naming what
+  // approved a figure without carrying it. Missing it here strips that holding.
   for (const f of readdirSync(src).filter((f) => f.endsWith('.json'))) {
     const raw = readFileSync(join(src, f), 'utf8');
-    for (const m of raw.matchAll(/"(?:sourceId|citationIds?)":\s*"([^"]+)"/g)) out.add(m[1]!);
+    for (const m of raw.matchAll(/"(?:approvalSourceId|sourceId|citationIds?)":\s*"([^"]+)"/g)) {
+      out.add(m[1]!);
+    }
     for (const m of raw.matchAll(/"citationIds":\s*\[([^\]]*)\]/g)) {
       for (const id of m[1]!.split(',')) out.add(id.trim().replace(/^"|"$/g, ''));
     }

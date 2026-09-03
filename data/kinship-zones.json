@@ -7,15 +7,24 @@
   "allowanceBasis": "non-means-tested, equal to the fostering National Minimum Allowance",
   "evaluator": "Foundations / Alma Economics",
   "localAuthorities": [
-    "bexley", "bolton", "newcastle-upon-tyne", "north-east-lincolnshire",
-    "medway", "thurrock", "wiltshire"
+    "bexley",
+    "bolton",
+    "newcastle-upon-tyne",
+    "north-east-lincolnshire",
+    "medway",
+    "thurrock",
+    "wiltshire"
   ],
   "eligibility": {
-    "orderTypes": ["special-guardianship-order", "lives-with-child-arrangements-order"],
+    "orderTypes": [
+      "special-guardianship-order",
+      "lives-with-child-arrangements-order"
+    ],
     "childWouldOtherwiseBeInCare": true,
     "excludesThoseAlreadyOnReg6Support": true
   },
   "lastVerified": "2026-08-29",
   "reviewEvery": "P3M",
-  "warning": "PILOT ONLY. Does not change the law in other authorities. Councils already paying NMA-equivalent were ineligible to apply."
+  "warning": "PILOT ONLY. Does not change the law in other authorities. Councils already paying NMA-equivalent were ineligible to apply.",
+  "sourceId": "kinship-zones-2026"
 }

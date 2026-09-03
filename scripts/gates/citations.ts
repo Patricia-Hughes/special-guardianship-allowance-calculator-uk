@@ -65,10 +65,58 @@ export function checkDataSourceIds({ rateDocs, docs, citationIds, report }: Gate
   for (const [file, doc] of docs) {
     if (file === 'citations.json') continue;
     visit(doc, '', (obj, path) => {
-      const id = obj.sourceId;
-      if (typeof id === 'string' && !citationIds.has(id)) {
-        report.fail('13 sourceId', `${file}${path}.sourceId names source "${id}", which is not in citations.json`);
+      // approvalSourceId names the document that approved a figure without
+      // carrying it. It is a reference like any other and must resolve.
+      for (const key of ['sourceId', 'approvalSourceId'] as const) {
+        const id = obj[key];
+        if (typeof id === 'string' && !citationIds.has(id)) {
+          report.fail('13 sourceId', `${file}${path}.${key} names source "${id}", which is not in citations.json`);
+        }
       }
     });
+  }
+}
+
+/**
+ * Gate 19: a data block that produces a figure must NAME its source.
+ *
+ * Gates 7 and 13 check that every id which IS named resolves. Neither notices a
+ * block that names nothing at all, and two did: Kinship Zones, which outputs a
+ * full allowance with no means test, and Guardian's Allowance. Both were
+ * invisible to the source checks precisely because they were silent.
+ *
+ * R3 says every numeric output carries the citation it derives from. This is
+ * that rule applied to the data rather than to the result.
+ */
+const MUST_NAME_A_SOURCE: Array<{ file: string; path: string[]; why: string }> = [
+  { file: 'kinship-zones.json', path: [], why: 'the pilot path outputs a full allowance figure' },
+  { file: 'benefits.2025-26.json', path: ['childBenefit'], why: 'Child Benefit can be deducted' },
+  { file: 'benefits.2025-26.json', path: ['guardiansAllowance'], why: 'the amount is shown to carers' },
+  { file: 'benefits.2026-27.json', path: ['childBenefit'], why: 'Child Benefit can be deducted' },
+  { file: 'benefits.2026-27.json', path: ['guardiansAllowance'], why: 'the amount is shown to carers' },
+];
+
+export function checkFiguresNameASource({ docs, citationIds, report }: GateContext): void {
+  for (const { file, path, why } of MUST_NAME_A_SOURCE) {
+    const doc = docs.get(file);
+    if (!doc) {
+      report.fail('19 named sources', `${file} is listed as needing a source but does not exist`);
+      continue;
+    }
+    const block = path.reduce<unknown>((node, key) => (node as Record<string, unknown>)?.[key], doc);
+    const where = [file, ...path].join('.');
+    if (block === undefined || block === null) {
+      report.fail('19 named sources', `${where} is missing, and it is required to name a source`);
+      continue;
+    }
+    const id = (block as Record<string, unknown>).sourceId;
+    if (typeof id !== 'string' || id.length === 0) {
+      report.fail(
+        '19 named sources',
+        `${where} names no source, and ${why}. Add a sourceId, or take the figure out.`,
+      );
+    } else if (!citationIds.has(id)) {
+      report.fail('19 named sources', `${where} names source "${id}", which is not in citations.json`);
+    }
   }
 }

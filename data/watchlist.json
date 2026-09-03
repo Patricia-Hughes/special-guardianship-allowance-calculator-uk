@@ -2,21 +2,6 @@
   "note": "Documents we know exist, or expect to exist, and are waiting on. Each one is a short lookup rather than a piece of research. check-staleness warns once checkAfter has passed, so nothing here can quietly rot in a markdown file. Adding a row is cheap; leaving a known gap unrecorded is not.",
   "items": [
     {
-      "id": "ni-model-scheme-2025-26",
-      "what": "Open the Department of Health (Northern Ireland) foster care allowances PDF for 2025-26 and read the SCALE RATES table out of it. Located by the review of 2 September at a NEW path: the 2024-25 pattern /publications/health/model-scheme-... no longer applies, so guessing a filename from the old URL will fail.",
-      "why": "2024/25 is sourced, so Northern Irish backdating works for that year and blocks 2025/26. A 4% uplift for 2025/26 backdated to 1 April 2025 is confirmed, after two years of no uplift, but the figures themselves have not been read from the document. Secondary sources suggest about 155/173/194/228 a week: DO NOT USE THEM, they are rounded and from a summary. The trap stands: each scheme prints a second REDUCED RATES table for enhanced allowances and short breaks, about 28 per cent lower, which is not the allowance. Give both the Per Week and Per 4 Weeks columns so the arithmetic cross-checks as it did for 2024/25.",
-      "url": "https://www.health-ni.gov.uk/sites/default/files/2026-05/Foster%20care%20allowances%202025-26.pdf",
-      "checkAfter": "2026-09-30",
-      "openItem": "1b"
-    },
-    {
-      "id": "scotland-2025-26",
-      "what": "Resolve the Scottish Recommended Allowance for 2025/26 from an archived gov.scot snapshot taken after 27 June 2025. The live page now shows 2026/27, so the archive is the only route: web.archive.org/web/2025*/https://www.gov.scot/publications/scottish-recommended-allowance-for-foster-and-kinship-carers-information-for-carers-and-professionals/",
-      "why": "There WAS an uplift: 1.7 per cent, announced May 2025, backdated to 1 April 2025, so this is not another frozen year. But two published figure sets conflict. One reports 171.17 / 199.14 / 199.14 / 272.97; East Renfrewshire HSCP publishes 168.31 / 195.81 / 207.60 / 268.41, which repeats the 2023/24 figures for three of four bands and shows a 207.60 that appears in no year at all. Neither is safe. Remember the band structure: the SRA is three bands (0-4, 5-15, 16-17) presented as four, so any source showing different values for 5-10 and 11-15 has reintroduced a distinction the SRA does not make, which is itself a signal it is wrong.",
-      "checkAfter": "2026-10-31",
-      "openItem": "1b"
-    },
-    {
       "id": "ciw-nma-bulletins",
       "what": "The Welsh National Minimum Allowance letter for 2025/26. ACCEPTED GAP as at 3 September 2026 after three unsuccessful searches. Two routes remain, neither requiring more searching. First, a guessable path: the 2024/25 letter also exists at /sites/default/files/2024-05/NMA%20Letter%202024-25%20-%20English%20(E)_0.pdf on The Fostering Network, so try /sites/default/files/2025-04/, 2025-05/ and 2025-06/ with the year changed. Second, and more likely to work: ask. The letters go out by email, which is why they are not on the open web. The addresses are printed on the 2024/25 letter itself: plantsynderbyngofal@llyw.cymru, and Alistair Davey, Deputy Director Enabling People, Alistair.Davey@gov.wales. One email would likely close both this and the 2026/27 letter.",
       "why": "Searched to exhaustion: The Fostering Network media library, the govdelivery UKWALES_CSSIW_INT account, Care Inspectorate Wales archives in both languages, gov.wales and llyw.cymru written statements and decision reports, Foster Wales and twelve local authorities, council committee repositories, and National Archives snapshots from February and March 2025. The govdelivery bulletin IDs are non-sequential hex and cannot be derived. A 2.6 per cent uplift was announced in February 2025 and figures of 224 / 204 / 255 are reported, inversion intact, but only from a reproduced table and not from the Welsh Government letter. Secondary, so not usable. The cost of the gap is one year of Welsh backdating, which the site already handles by naming the excluded year. That is a far smaller problem than publishing a rate we cannot source.",

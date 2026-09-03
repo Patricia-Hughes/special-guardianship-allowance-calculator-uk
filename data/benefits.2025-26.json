@@ -2,20 +2,19 @@
   "financialYear": "2025-26",
   "effectiveFrom": "2025-04-07",
   "dataVersion": "2025-26.0",
-  "status": "PENDING_SOURCE",
-  "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2",
-  "note": "Exists so that benefit-table selection is genuinely INDEPENDENT of rate-table selection across the 1-6 April boundary (spec §11, test T22). Figures are NOT sourced yet and must never be estimated: source Child Benefit, Guardian's Allowance, Carer's Allowance and UC rates from the relevant HMRC/DWP uprating order. Any calculation that actually needs a figure from this table raises a DataError rather than guessing.",
+  "note": "Exists so that benefit-table selection is genuinely INDEPENDENT of rate-table selection across the 1 to 6 April boundary (spec §11, test T22). Sourced on 3 September 2026 from the Child Benefit and Guardian's Allowance Up-rating Order 2025, in force 7 April 2025. Before that the table existed with null figures and any calculation needing one raised a DataError rather than guessing, which meant a carer backdating into 2025/26 with the Child Benefit deduction ticked hit a dead end.",
   "childBenefit": {
-    "eldestWeeklyPence": null,
-    "additionalChildWeeklyPence": null,
+    "eldestWeeklyPence": 2605,
+    "additionalChildWeeklyPence": 1725,
     "sourceId": "cb-ga-uprating-order-2025"
   },
   "guardiansAllowance": {
-    "weeklyPerChildPence": null,
+    "weeklyPerChildPence": 2210,
     "taxFree": true,
     "disregardedForMeansTestedBenefits": true,
     "exemptFromBenefitCap": true,
-    "eligibilityNote": "Both parents dead, or one dead and the other untraceable / serving 2+ years / whereabouts unknown. Parental UK residence condition applies."
+    "eligibilityNote": "Both parents dead, or one dead and the other untraceable / serving 2+ years / whereabouts unknown. Parental UK residence condition applies.",
+    "sourceId": "cb-ga-uprating-order-2025"
   },
   "sgoAllowanceTaxTreatment": {
     "taxable": false,

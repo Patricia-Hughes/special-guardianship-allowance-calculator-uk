@@ -83,11 +83,11 @@
   },
   "lgsco-north-tyneside-17002928": {
     "label": "LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018)",
-    "url": "https://web.archive.org/web/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf",
+    "url": "https://web.archive.org/web/20231216202817/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf",
     "kind": "ombudsman",
     "retrieved": "2026-09-01",
     "holding": "Calculating a special guardianship allowance as a percentage of the fostering allowance was contrary to statutory guidance and case law. The council identified 171 families who may not have received the right support, and payments were backdated to November 2013.",
-    "note": "Served from the web archive because the Ombudsman's own asset server times out on this PDF. Original address, kept as provenance: https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf. A third copy sits in North Tyneside's own committee papers if both fail. The remedy was 200 pounds already paid plus a further 200 pounds each ordered, so 400 pounds each to two people. This is a February 2018 report, and it concerns the policy North Tyneside abolished that year.",
+    "note": "Served from the web archive because the Ombudsman's own asset server times out on this PDF. Original address, kept as provenance: https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf. A third copy sits in North Tyneside's own committee papers if both fail. The remedy was 200 pounds already paid plus a further 200 pounds each ordered, so 400 pounds each to two people. This is a February 2018 report, and it concerns the policy North Tyneside abolished that year. The archive URL previously carried no timestamp, so it was not a pinned capture. lgo.org.uk itself times out for this report, which is why the archive is used.",
     "archivedFrom": "https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf"
   },
   "corambaaf-pn75": {
@@ -114,11 +114,11 @@
     "note": "National Archives capture of 30 November 2025, headed \"Weekly allowances for the tax year from 6 April 2025 to 5 April 2026\". Matches the figures already held, exactly."
   },
   "wg-nma-2026-27": {
-    "label": "Welsh Government National Minimum Allowance, 2026 to 2027",
-    "url": "https://www.llyw.cymru/adroddiadau-ar-benderfyniadau-2026",
+    "label": "The Fostering Network, national minimum allowances table, reproducing the Welsh 2026 to 2027 rates",
+    "url": "https://www.thefosteringnetwork.org.uk/policy-and-campaigns/empowering-children-and-young-people/allowances/",
     "kind": "dataset",
     "retrieved": "2026-09-03",
-    "note": "The letter itself has not been located. This is the Welsh Government decision-reports page for 2026, which records in Welsh that the Minister for Children and Social Care approved the National Minimum Allowances for Foster Carers for 2026 to 2027. It establishes that the allowance was approved. It does NOT carry the rate table, so it is not the source of the figures, and the search for the letter continues."
+    "note": "SECONDARY, and labelled as such. The Welsh Government letter has not been located after three searches. This table reproduces the figures; it does not originate them, which is why the Welsh section keeps verify: true. The separate citation wg-nma-2026-27-approval is the primary record that the allowance was approved, and it carries no rate table. Attributing the numbers to that page, as this entry previously did, put figures in the reader's hands under the authority of a document that does not state them."
   },
   "hsc-fostering-2026-27": {
     "label": "HSC (Northern Ireland) fostering allowances, 2026 to 2027",
@@ -176,12 +176,12 @@
     "note": "Published 11 October 2024, replacing the 2010 Family and Friends Care guidance. A 2024 restatement of the para 65 principle, and so a fresher citation than the 2017 guidance for the single most important rule on this site."
   },
   "lgsco-rochdale-2019": {
-    "label": "LGSCO decision, Rochdale MBC (17 010 167, May 2019), upheld on judicial review",
+    "label": "LGSCO decision, Rochdale MBC (17 010 167, May 2019), council's judicial review challenge dismissed",
     "url": "https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/17-010-167",
     "kind": "ombudsman",
     "retrieved": "2026-09-01",
     "holding": "Grandparents were paid 119.18 pounds a week where the council's own fostering rate was 132 pounds, about 13 pounds a week short, under a policy departing from the statutory guidance without a rational explanation. Backdating to November 2013 was recommended.",
-    "note": "The council challenged the finding in the High Court in December 2019. Permission was refused, the challenge was dismissed and costs were awarded against it, which is what makes this decision safe to rely on. Ombudsman news item confirming that outcome: https://www.lgo.org.uk/information-centre/news/2019/dec/rochdale-council-s-legal-challenge-rejected-and-it-must-now-consider-ombudsman-s-recommendations. Reference corrected from an earlier entry that carried no decision number and linked to a Shropshire policy PDF."
+    "note": "The council challenged the finding in the High Court in December 2019. Permission was refused, the challenge was dismissed and costs were awarded against it, which is what makes this decision safe to rely on. Ombudsman news item confirming that outcome: https://www.lgo.org.uk/information-centre/news/2019/dec/rochdale-council-s-legal-challenge-rejected-and-it-must-now-consider-ombudsman-s-recommendations. Reference corrected from an earlier entry that carried no decision number and linked to a Shropshire policy PDF. Wording corrected on 3 September 2026. The Ombudsman's decision survived; the council's challenge to it was refused permission and dismissed with costs. \"Upheld on judicial review\" read as though a court had affirmed something on review, which is not what happened."
   },
   "sg-regs-2005-reg13": {
     "label": "Special Guardianship Regulations 2005, reg 13(2)",
@@ -247,11 +247,11 @@
   },
   "dfe-nma-2024-25": {
     "label": "DfE National Minimum Allowance for foster carers, 2024 to 2025 (National Archives snapshot)",
-    "url": "https://webarchive.nationalarchives.gov.uk/ukgwa/*/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
+    "url": "https://web.archive.org/web/20250302000000/https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
     "kind": "dataset",
     "retrieved": "2026-08-30",
     "holding": "Weekly allowances for the tax year from 6 April 2024 to 5 April 2025, by region and age band. This guidance applies to England.",
-    "note": "The live GOV.UK page now shows the current year, so this is the UK Government Web Archive copy captured on 6 September 2024, when the 2024/25 table was current. Open the URL and choose a snapshot from within the 2024/25 year to see it. Figures transcribed as printed, not derived from the 6.88% uplift."
+    "note": "The live GOV.UK page now shows the current year, so this is the UK Government Web Archive copy captured on 6 September 2024, when the 2024/25 table was current. Open the URL and choose a snapshot from within the 2024/25 year to see it. Figures transcribed as printed, not derived from the 6.88% uplift. Previously pointed at a National Archives wildcard search, which resolves to a list of captures rather than to the page that was read. Now the fixed capture of 2 March 2025."
   },
   "lgsco-devon-24-003-172": {
     "label": "LGSCO decision, Devon County Council (24 003 172), not upheld",
@@ -417,5 +417,12 @@
     "archivedFrom": "https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
     "holding": "States in terms: \"There is no minimum allowance when your child is old enough to leave foster care.\"",
     "note": "Located by the research of 2 September 2026 while capturing the 2025/26 table. The turning-18 page had no source at all for the post-18 position."
+  },
+  "wg-nma-2026-27-approval": {
+    "label": "Welsh Government, decision reports 2026, recording ministerial approval of the National Minimum Allowances for 2026 to 2027",
+    "url": "https://www.llyw.cymru/adroddiadau-ar-benderfyniadau-2026",
+    "kind": "guidance",
+    "retrieved": "2026-09-03",
+    "holding": "Records in Welsh that the Minister for Children and Social Care approved the National Minimum Allowances for Foster Carers for 2026 to 2027. Establishes that the allowance exists and was approved. Contains NO rate table."
   }
 }

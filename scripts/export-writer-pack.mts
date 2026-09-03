@@ -29,12 +29,46 @@ const BLOCK = 'address|article|aside|blockquote|details|div|dl|fieldset|figure|f
  * It only needs to handle what this site actually emits, and the site emits
  * plain semantic HTML. Anything cleverer would be a dependency for no gain.
  */
+/**
+ * Rate tables, as tables.
+ *
+ * Stripping the tags row by row produced a run of loose pipes with the caption
+ * welded to the header, which is unreadable in the one file a writer works
+ * from. This rebuilds each table as real markdown: caption above it in bold,
+ * then a header row, then the separator that makes it render.
+ */
+function tables(html: string): string {
+  return html.replace(/<table[^>]*>([\s\S]*?)<\/table>/g, (_all, inner: string) => {
+    const caption = /<caption[^>]*>([\s\S]*?)<\/caption>/.exec(inner)?.[1] ?? '';
+    const rows: string[][] = [];
+    for (const [, row] of inner.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)) {
+      const cells = [...row.matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/g)].map(([, cell]) =>
+        cell.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(),
+      );
+      if (cells.length > 0) rows.push(cells);
+    }
+    if (rows.length === 0) return '';
+
+    const width = Math.max(...rows.map((r) => r.length));
+    const pad = (r: string[]): string => `| ${[...r, ...Array(width - r.length).fill('')].join(' | ')} |`;
+    const [header, ...body] = rows as [string[], ...string[][]];
+    const lines = [pad(header), `|${' --- |'.repeat(width)}`, ...body.map(pad)];
+    const title = caption.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    return `\n\n${title ? `**${title}**\n\n` : ''}${lines.join('\n')}\n\n`;
+  });
+}
+
 function toMarkdown(html: string): string {
   let s = html;
 
   // The head. Its <title> is captured separately as metadata, and left in the
   // body it renders as a stray bullet at the top of every page.
   s = s.replace(/[\s\S]*?<body[^>]*>/, '');
+
+  // The calculator form itself: questions, labels, hints and buttons. It is UI
+  // rather than prose, it is out of scope for the rewrite, and on the home page
+  // it is long enough to bury the copy around it.
+  s = s.replace(/<div class="calculator-form"[\s\S]*?<\/div>\s*(?=<div|<section|<noscript|<p)/g, '');
 
   // The chrome. The masthead and footer are identical on all 26 pages, and
   // repeating them 26 times buries the page's own copy in navigation.
@@ -59,8 +93,7 @@ function toMarkdown(html: string): string {
   s = s.replace(/<(strong|b)[^>]*>([\s\S]*?)<\/\1>/g, '**$2**');
   s = s.replace(/<(em|i)[^>]*>([\s\S]*?)<\/\1>/g, '*$2*');
   s = s.replace(/<a [^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/g, '[$2]($1)');
-  s = s.replace(/<th[^>]*>([\s\S]*?)<\/th>/g, '| $1 ');
-  s = s.replace(/<td[^>]*>([\s\S]*?)<\/td>/g, '| $1 ');
+  s = tables(s);
   s = s.replace(new RegExp(`</(${BLOCK})>`, 'g'), '\n\n');
   s = s.replace(/<br\s*\/?>/g, '\n');
   s = s.replace(/<[^>]+>/g, '');
@@ -198,9 +231,12 @@ These come from the legal reviews and they hold whatever the new wording is.
 
 ## What is NOT in this file
 
-The nine template letters and the 34 warnings shown on a result. They are copy
-too, and they were reviewed on 1 and 2 September, so they are in the separate
-review pack rather than here. Ask if you want them in scope as well.
+Only the calculator form itself: the questions, field labels, hints and buttons.
+That is interface rather than prose, and it is out of scope for the rewrite.
+
+Everything else a reader can see IS here, including the 34 warnings and the nine
+letters, which live in code and appear on no page until a carer's own answers
+trigger them. They are at the end.
 
 ---
 `);
@@ -214,6 +250,88 @@ for (const page of pages) {
   if (page.description) parts.push(`**Search result description:** ${page.description}\n`);
   parts.push(`**Length:** about ${words(page.body).toLocaleString('en-GB')} words\n`);
   parts.push(`\n---\n\n${page.body}\n`);
+}
+
+// ─── The copy that lives in TypeScript ─────────────────────────────────────
+//
+// A warning only appears when its trigger fires, and a letter only when the
+// result offers it, so neither is on any built page in full. They are copy all
+// the same, and leaving them out is how the reg 7 wording survived two rewrites.
+
+const { FLAG_CATALOGUE, makeFlag } = await import('../packages/engine/src/index.js');
+const { LETTER_TEMPLATES, generateLetter } = await import('../packages/letters/src/index.js');
+
+const SEVERITY_ORDER = ['critical', 'important', 'info'] as const;
+const codes = Object.keys(FLAG_CATALOGUE) as Array<keyof typeof FLAG_CATALOGUE>;
+
+parts.push(`\n\n---\n\n# The warnings shown on a result\n
+${codes.length} of them. A carer sees only the ones their own answers trigger, usually
+three to eight. They are the reason people share this site: the warning is often
+worth more than the number.
+
+**These carry the most legal weight of anything here.** Every one was reviewed on
+1 and 2 September 2026, and several are worded the way they are to survive a
+council lawyer reading them. Rewrite for clarity, not for strength.
+
+The example text below is filled with placeholder values where a warning takes
+them, so you can see the shape of the sentence.
+`);
+
+for (const severity of SEVERITY_ORDER) {
+  const inGroup = codes.filter((c) => FLAG_CATALOGUE[c].severity === severity);
+  parts.push(`\n## ${severity} (${inGroup.length})\n`);
+  for (const code of inGroup) {
+    const flag = makeFlag(code, {
+      councilName: '[COUNCIL]',
+      coreWeekly: 20000 as never,
+      nationalWeekly: 22700 as never,
+      ageBand: '11-15',
+      previousWeekly: 30000 as never,
+      monthsSinceOrder: 18,
+      taperMethod: 'pound-for-pound',
+      savingsCapital: 700000 as never,
+      effectiveTo: '2027-03-31',
+      livingCostsPercent: 100,
+      modelLivingCostsPercent: 125,
+      policySummary: '[WHAT THE FINDING SAID]',
+      policySourceUrl: '[LINK]',
+      decisionDate: '[DATE]',
+      policyCheckedOn: '[DATE]',
+    });
+    parts.push(`\n### ${flag.title}\n`);
+    parts.push(`_Code \`${code}\`${flag.citation ? `, source: ${flag.citation.label}` : ''}_\n`);
+    parts.push(`${flag.body}\n`);
+  }
+}
+
+parts.push(`\n\n---\n\n# The nine letters\n
+Sent by a carer to their council, pre-filled with their own figures. They go to a
+social worker the carer will deal with for years, so they are polite, short and
+specific, and they always request rather than demand.
+
+**Reviewed by a solicitor on 1 and 2 September 2026.** Several sentences are
+precisely worded to avoid handing a council an easy correction. Flag anything you
+want to change rather than changing it.
+`);
+
+const letterCtx = {
+  councilName: '[COUNCIL]',
+  childAgeBand: '11-15',
+  region: 'south-east' as const,
+  nmaWeekly: 25500 as never,
+  currentlyPaidWeekly: 20000 as never,
+  onMeansTestedBenefits: true,
+  wasFosterCarer: true,
+  orderDate: '[DATE]' as never,
+  flagsRaised: [],
+};
+
+for (const template of Object.keys(LETTER_TEMPLATES) as Array<keyof typeof LETTER_TEMPLATES>) {
+  const letter = generateLetter(template, letterCtx);
+  parts.push(`\n## ${LETTER_TEMPLATES[template].title}\n`);
+  parts.push(`_Template \`${template}\`_\n`);
+  parts.push(`**Subject:** ${letter.subject}\n`);
+  parts.push('```\n' + letter.body + '\n```\n');
 }
 
 writeFileSync(outFile, parts.join('\n'));

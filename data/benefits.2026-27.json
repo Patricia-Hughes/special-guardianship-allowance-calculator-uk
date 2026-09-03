@@ -13,7 +13,8 @@
     "taxFree": true,
     "disregardedForMeansTestedBenefits": true,
     "exemptFromBenefitCap": true,
-    "eligibilityNote": "Both parents dead, or one dead and the other untraceable / serving 2+ years / whereabouts unknown. Parental UK residence condition applies."
+    "eligibilityNote": "Both parents dead, or one dead and the other untraceable / serving 2+ years / whereabouts unknown. Parental UK residence condition applies.",
+    "sourceId": "cb-ga-uprating-order-2026"
   },
   "universalCredit": {
     "childElementMonthlyPence": 30394,

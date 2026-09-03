@@ -731,6 +731,41 @@ describe('backdating', () => {
     expect(r.blockedYears).not.toContain('2025-26');
   });
 
+  it('only cuts a 6 April segment for England', () => {
+    // England is the only nation with a tax-year framing to disagree with the
+    // council convention. Wales, Northern Ireland and Scotland all publish
+    // "from 1 April", so a 6 April cut there produces a five-day segment with
+    // the same rate on both sides: noise in the list, nothing in the sum.
+    const spanning = (nation: 'england' | 'northern-ireland') =>
+      segmentBoundaries(
+        {
+          base: input({
+            carer: carer({
+              nation,
+              englandRegion: nation === 'england' ? 'rest-of-england' : undefined,
+            }),
+            children: [child({ ageYears: 8, dateOfBirth: d('2016-06-01') })],
+          }),
+          fromDate: d('2024-06-01'),
+          toDate: d('2026-08-01'),
+          actuallyPaidWeekly: p(0),
+        },
+        [
+          { minAge: 0, maxAge: 4 },
+          { minAge: 5, maxAge: 15 },
+          { minAge: 16, maxAge: 17 },
+        ],
+      );
+
+    const englandCuts = spanning('england').filter((b) => b.reason === 'april-tax-year-boundary');
+    expect(englandCuts.length).toBeGreaterThan(0);
+
+    const niCuts = spanning('northern-ireland').filter(
+      (b) => b.reason === 'april-tax-year-boundary',
+    );
+    expect(niCuts).toHaveLength(0);
+  });
+
   it('keeps the Scottish 5-15 band single, as the SRA defines it', () => {
     // The SRA is three bands presented across four categories, and 5-10 and
     // 11-15 are paid the SAME. A council reproduction showing them differing was

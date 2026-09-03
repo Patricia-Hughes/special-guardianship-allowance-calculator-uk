@@ -169,7 +169,7 @@ for (const file of benefitFiles) {
   }
   const ga = doc.guardiansAllowance;
   if (ga) {
-    p(`\n**Guardian's Allowance:** ${ga.weeklyPence == null ? '_not sourced_' : money(ga.weeklyPence)}, source ${cite(ga.sourceId)}`);
+    p(`\n**Guardian's Allowance:** ${ga.weeklyPerChildPence == null ? '_not sourced_' : money(ga.weeklyPerChildPence)}, source ${cite(ga.sourceId)}`);
   }
   const isa = doc.incomeSupportApplicableAmounts;
   if (isa) {

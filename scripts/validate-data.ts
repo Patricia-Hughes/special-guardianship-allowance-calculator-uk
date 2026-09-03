@@ -13,7 +13,7 @@
 
 import { loadContext } from './gates/context';
 import { checkClaimSources } from './gates/claims';
-import { checkCitedIds, checkDataSourceIds } from './gates/citations';
+import { checkCitedIds, checkDataSourceIds, checkFiguresNameASource } from './gates/citations';
 import {
   checkCouncilSources,
   checkFixedPercentage,
@@ -37,6 +37,7 @@ const GATES = [
   checkLivingCosts,
   checkCitedIds,
   checkDataSourceIds,
+  checkFiguresNameASource,
   checkPendingSources,
   checkIntegerPence,
   checkClaimSources,

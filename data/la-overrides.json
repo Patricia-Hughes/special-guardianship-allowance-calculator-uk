@@ -10,7 +10,6 @@
       "region": "rest-of-england",
       "publishable": true,
       "corePolicy": "Allowance aligned to the basic fostering allowance rate, with the standardised means-test model. Devon's procedures state that paying a fixed percentage of the fostering allowance would not be lawful. The living costs disregard is set at 100% of the Income Support applicable amount rather than the model's 125%, with tiered housing disregards.",
-      "flatCoreRateWeeklyPence": 21301,
       "deductsChildBenefit": false,
       "deductsChildBenefitFromMeansTestedClaimants": false,
       "taper": null,
@@ -32,7 +31,8 @@
       "verifiedOn": "2026-08-31",
       "fixedPercentageOfFosteringRate": null,
       "livingCostsMultiplierPercent": 100,
-      "policySourceDate": "2024-10-24"
+      "policySourceDate": "2024-10-24",
+      "flatRateSuppressedNote": "The flat core rate of £213.01, read on 24 October 2024, has been REMOVED rather than served. Against the 2026/27 rest-of-England minimums it sits below the 11-15 and 16-17 bands, so it would fire BELOW_NMA, a critical warning naming Devon, on a figure nobody has re-verified since Devon uprated. Devon's May 2025 cabinet decision reportedly set 16+ at £258 and other ages at £237.44, and £213.01 matches neither. Devon now falls back to the national minimums. Restore a flat rate only from Devon's current published schedule, with the date it was read."
     },
     {
       "slug": "leeds",
@@ -59,11 +59,12 @@
       "lawfulnessFlag": {
         "code": "LGSCO_UPHELD",
         "summary": "In February 2018 the Ombudsman found North Tyneside at fault for calculating special guardianship allowances as a percentage of its fostering allowance. The council identified 171 families who may not have received the right support, and payments were backdated to November 2013. North Tyneside abolished the percentage model that year.",
-        "sourceUrl": "https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf",
+        "sourceUrl": "https://web.archive.org/web/20231216202817/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf",
         "decisionDate": "2018-02-27",
         "concernsFormerPolicy": true,
         "policyChangedOn": "2018",
-        "note": "Held back until 31 August 2026 for want of a citable URL, which the research round of that date supplied. It is served with the policy-changed line because the finding concerns a policy North Tyneside no longer operates. The backdating to November 2013 is why it still matters to a carer with an older order."
+        "note": "Held back until 31 August 2026 for want of a citable URL, which the research round of that date supplied. It is served with the policy-changed line because the finding concerns a policy North Tyneside no longer operates. The backdating to November 2013 is why it still matters to a carer with an older order.",
+        "sourceNote": "Archived capture. The live lgo.org.uk address for this report times out."
       },
       "councilApplicationDate": "1 April",
       "policySourceUrl": "https://northtyneside.gov.uk/sites/default/files/web-page-related-files/20250321%20-%20Decision%20Record%20-%20Fostering%20Allowance.pdf",

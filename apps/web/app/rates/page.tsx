@@ -45,7 +45,7 @@ export default function RatesPage() {
       <Callout type="important">
         <p className="flush-bot">
           In Wales the rate for a child <strong>under 5 is higher</strong> than for a child aged 5
-          to 15. That is the opposite of every other table on this page, so it looks like a mistake
+          to 15. That is the opposite of every other table on this page, so it looks like a mistake.
           It is how the rates are published, though, and the same pattern appears in the previous
           year. What we have not been able to do is check it against the Welsh Government&apos;s own
           circular, only against reports of it, so we are telling you rather than quietly

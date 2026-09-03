@@ -107,7 +107,7 @@
         "finding": "Shows the same inversion two years later, and walking these 2024/25 figures forward through the announced uplifts of 2.6 per cent and 2.2 per cent reproduces all three of those cells exactly. The pattern is stable across years, not a one-off misprint."
       }
     ],
-    "bandNote": "The Welsh letter prints the top band as \"16+\", not 16-17. It is stored closed here because this calculator is for children under 18 and the bands must tile 0 to 17 exactly, so the two are equivalent for this product. Not a transcription error. The letter also states the rates apply from 1 April, so Wales follows the council convention rather than the DfE tax year."
+    "bandNote": "The Welsh letter prints the top band as \"16+\", so it is marked openEnded here. The maxAge of 17 is this calculator's own cap, because the product is for children under 18 and the bands must tile 0 to 17 exactly. Not a transcription error, and not a closed band in the source. The letter also states the rates apply from 1 April, so Wales follows the council convention rather than the DfE tax year."
   },
   "northern-ireland": {
     "sourceId": "ni-model-scheme-2024-25",

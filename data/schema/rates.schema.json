@@ -177,6 +177,10 @@
             "sourceId": {
               "type": "string"
             },
+            "approvalSourceId": {
+              "type": "string",
+              "description": "A second citation that confirms the allowance was approved but does NOT carry the rate table. Kept apart from sourceId so the figures are never attributed to a document that does not state them."
+            },
             "unit": {
               "const": "weekly-pence"
             },

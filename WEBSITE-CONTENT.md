@@ -3,7 +3,7 @@
 For the content rewrite. Generated 2026-09-03 from the built
 site, so this is what a visitor actually reads, not what the source files contain.
 
-**26 pages, about 18,178 words.**
+**26 pages, about 18,357 words.**
 
 ## How to use this
 
@@ -41,9 +41,12 @@ These come from the legal reviews and they hold whatever the new wording is.
 
 ## What is NOT in this file
 
-The nine template letters and the 34 warnings shown on a result. They are copy
-too, and they were reviewed on 1 and 2 September, so they are in the separate
-review pack rather than here. Ask if you want them in scope as well.
+Only the calculator form itself: the questions, field labels, hints and buttons.
+That is interface rather than prose, and it is out of scope for the rewrite.
+
+Everything else a reader can see IS here, including the 34 warnings and the nine
+letters, which live in code and appear on no page until a carer's own answers
+trigger them. They are at the end.
 
 ---
 
@@ -86,7 +89,7 @@ review pack rather than here. Ask if you want them in scope as well.
 
 **Search result description:** Work out the maximum special guardianship allowance your council should be starting from, in under a minute. Free, private, and with the law behind every figure.
 
-**Length:** about 425 words
+**Length:** about 430 words
 
 
 ---
@@ -101,31 +104,21 @@ Most special guardians are paid less than they should be, because councils apply
 
 **This is an estimate, not legal advice.** Financial support for special guardians is discretionary, there is no fixed amount you are entitled to. What this tool shows you is the figure your council should be starting from, and what the rules and published decisions say about how it must decide.
 
-Step 1
-
-## Where do you live?
-
-Which nation?EnglandWalesScotlandNorthern Ireland
-
-Continue
-
 **The calculator needs JavaScript**, which is switched off in your browser. The full rate tables are below, and every guide on this site works without it.
 
 ## The national minimum allowance, 2026/27
 
 These are the fostering national minimum allowances. The statutory guidance says the core fostering allowance is the starting point for a special guardianship allowance, that is why they matter to you.
 
-England: weekly minimum allowance, financial year 2026/27| Age of child | London | South East | Rest of England
+**England: weekly minimum allowance, financial year 2026/27**
 
-| 0–2 | £205 | £195 | £176
-
-| 3–4 | £208 | £203 | £182
-
-| 5–10 | £233 | £223 | £201
-
-| 11–15 | £266 | £255 | £227
-
-| 16–17 | £309 | £298 | £267
+| Age of child | London | South East | Rest of England |
+| --- | --- | --- | --- |
+| 0–2 | £205 | £195 | £176 |
+| 3–4 | £208 | £203 | £182 |
+| 5–10 | £233 | £223 | £201 |
+| 11–15 | £266 | £255 | £227 |
+| 16–17 | £309 | £298 | £267 |
 
 [See the rates for every nation, and previous years](/rates)
 
@@ -152,7 +145,7 @@ These organisations give free, independent advice on kinship care and special gu
 
 **Search result description:** The fostering national minimum allowance for England, Wales and Northern Ireland, and the Scottish Recommended Allowance, for 2026/27, with previous years.
 
-**Length:** about 450 words
+**Length:** about 529 words
 
 
 ---
@@ -165,85 +158,78 @@ Rates change on **1 April** every year. Benefit rates, meaning Child Benefit, Gu
 
 ## England
 
-England: weekly minimum allowance, financial year 2026/27| Age of child | London | South East | Rest of England
+**England: weekly minimum allowance, financial year 2026/27**
 
-| 0–2 | £205 | £195 | £176
-
-| 3–4 | £208 | £203 | £182
-
-| 5–10 | £233 | £223 | £201
-
-| 11–15 | £266 | £255 | £227
-
-| 16–17 | £309 | £298 | £267
+| Age of child | London | South East | Rest of England |
+| --- | --- | --- | --- |
+| 0–2 | £205 | £195 | £176 |
+| 3–4 | £208 | £203 | £182 |
+| 5–10 | £233 | £223 | £201 |
+| 11–15 | £266 | £255 | £227 |
+| 16–17 | £309 | £298 | £267 |
 
 ## Scotland
 
 Scotland does not have special guardianship orders. Kinship carers are covered by the Scottish Recommended Allowance, which is a **minimum** and applies equally to foster and kinship carers.
 
-Scotland: weekly minimum allowance, financial year 2026/27| Age of child | Weekly rate
+**Scotland: weekly minimum allowance, financial year 2026/27**
 
-| 0–4 | £177.68
-
-| 5–15 | £206.71
-
-| 16–17 | £283.35
+| Age of child | Weekly rate |
+| --- | --- |
+| 0–4 | £177.68 |
+| 5–15 | £206.71 |
+| 16–17 | £283.35 |
 
 ## Northern Ireland
 
-Northern Ireland: weekly minimum allowance, financial year 2026/27| Age of child | Weekly rate
+**Northern Ireland: weekly minimum allowance, financial year 2026/27**
 
-| 0–4 | £160
-
-| 5–10 | £179
-
-| 11–15 | £200
-
-| 16–17 | £235
+| Age of child | Weekly rate |
+| --- | --- |
+| 0–4 | £160 |
+| 5–10 | £179 |
+| 11–15 | £200 |
+| 16–17 | £235 |
 
 ## Wales
 
 Important
 
-In Wales the rate for a child **under 5 is higher** than for a child aged 5 to 15. That is the opposite of every other table on this page, so it looks like a mistake It is how the rates are published, though, and the same pattern appears in the previous year. What we have not been able to do is check it against the Welsh Government's own circular, only against reports of it, so we are telling you rather than quietly “correcting” a government figure.
+In Wales the rate for a child **under 5 is higher** than for a child aged 5 to 15. That is the opposite of every other table on this page, so it looks like a mistake. It is how the rates are published, though, and the same pattern appears in the previous year. What we have not been able to do is check it against the Welsh Government's own circular, only against reports of it, so we are telling you rather than quietly “correcting” a government figure.
 
-Wales: weekly minimum allowance, financial year 2026/27| Age of child | Weekly rate
+**Wales: weekly minimum allowance, financial year 2026/27**
 
-| 0–4 | £229
-
-| 5–15 | £208
-
-| 16–17 | £260
+| Age of child | Weekly rate |
+| --- | --- |
+| 0–4 | £229 |
+| 5–15 | £208 |
+| 16–17 | £260 |
 
 ## Previous years
 
 ### 2025/26
 
-England: weekly minimum allowance, financial year 2025/26| Age of child | London | South East | Rest of England
+**England: weekly minimum allowance, financial year 2025/26**
 
-| 0–2 | £198 | £189 | £170
-
-| 3–4 | £201 | £196 | £176
-
-| 5–10 | £225 | £216 | £194
-
-| 11–15 | £257 | £247 | £220
-
-| 16–17 | £299 | £288 | £258
+| Age of child | London | South East | Rest of England |
+| --- | --- | --- | --- |
+| 0–2 | £198 | £189 | £170 |
+| 3–4 | £201 | £196 | £176 |
+| 5–10 | £225 | £216 | £194 |
+| 11–15 | £257 | £247 | £220 |
+| 16–17 | £299 | £288 | £258 |
 
 ### 2024/25
 
-England: weekly minimum allowance, financial year 2024/25| Age of child | London | South East | Rest of England
+**England: weekly minimum allowance, financial year 2024/25**
 
-| 0–2 | £191 | £183 | £165
-
-| 3–4 | £195 | £189 | £170
-
-| 5–10 | £217 | £208 | £187
-
-| 11–15 | £248 | £238 | £213
-
-| 16–17 | £289 | £278 | £249
+| Age of child | London | South East | Rest of England |
+| --- | --- | --- | --- |
+| 0–2 | £191 | £183 | £165 |
+| 3–4 | £195 | £189 | £170 |
+| 5–10 | £217 | £208 | £187 |
+| 11–15 | £248 | £238 | £213 |
+| 16–17 | £289 | £278 | £249 |
 
 
 
@@ -406,7 +392,7 @@ These organisations give free, independent advice on kinship care and special gu
 
 **Search result description:** The fostering allowance is the starting point, not an adoption allowance and not a percentage. What the guidance and the courts actually say.
 
-**Length:** about 952 words
+**Length:** about 968 words
 
 
 ---
@@ -430,17 +416,15 @@ is the basis for the calculation.
 That is why the fostering national minimum allowance matters to you, even though you are not a
 foster carer:
 
-England: weekly minimum allowance, financial year 2026/27| Age of child | London | South East | Rest of England
+**England: weekly minimum allowance, financial year 2026/27**
 
-| 0–2 | £205 | £195 | £176
-
-| 3–4 | £208 | £203 | £182
-
-| 5–10 | £233 | £223 | £201
-
-| 11–15 | £266 | £255 | £227
-
-| 16–17 | £309 | £298 | £267
+| Age of child | London | South East | Rest of England |
+| --- | --- | --- | --- |
+| 0–2 | £205 | £195 | £176 |
+| 3–4 | £208 | £203 | £182 |
+| 5–10 | £233 | £223 | £201 |
+| 11–15 | £266 | £255 | £227 |
+| 16–17 | £309 | £298 | £267 |
 
 ## What has been ruled out
 
@@ -792,7 +776,7 @@ These organisations give free, independent advice on kinship care and special gu
 
 **Search result description:** Councils raise allowance rates on 1 April, the government states the same rates for a tax year starting 6 April, and benefit rates change in the first full week. The gaps between those dates matter.
 
-**Length:** about 1,012 words
+**Length:** about 1,049 words
 
 
 ---
@@ -824,35 +808,32 @@ much of the total depends on that choice. It is a few pounds per April, not a fe
 
 ## The current rates
 
-England: weekly minimum allowance, financial year 2026/27| Age of child | London | South East | Rest of England
+**England: weekly minimum allowance, financial year 2026/27**
 
-| 0–2 | £205 | £195 | £176
+| Age of child | London | South East | Rest of England |
+| --- | --- | --- | --- |
+| 0–2 | £205 | £195 | £176 |
+| 3–4 | £208 | £203 | £182 |
+| 5–10 | £233 | £223 | £201 |
+| 11–15 | £266 | £255 | £227 |
+| 16–17 | £309 | £298 | £267 |
 
-| 3–4 | £208 | £203 | £182
+**Scotland: weekly minimum allowance, financial year 2026/27**
 
-| 5–10 | £233 | £223 | £201
+| Age of child | Weekly rate |
+| --- | --- |
+| 0–4 | £177.68 |
+| 5–15 | £206.71 |
+| 16–17 | £283.35 |
 
-| 11–15 | £266 | £255 | £227
+**Northern Ireland: weekly minimum allowance, financial year 2026/27**
 
-| 16–17 | £309 | £298 | £267
-
-Scotland: weekly minimum allowance, financial year 2026/27| Age of child | Weekly rate
-
-| 0–4 | £177.68
-
-| 5–15 | £206.71
-
-| 16–17 | £283.35
-
-Northern Ireland: weekly minimum allowance, financial year 2026/27| Age of child | Weekly rate
-
-| 0–4 | £160
-
-| 5–10 | £179
-
-| 11–15 | £200
-
-| 16–17 | £235
+| Age of child | Weekly rate |
+| --- | --- |
+| 0–4 | £160 |
+| 5–10 | £179 |
+| 11–15 | £200 |
+| 16–17 | £235 |
 
 The full tables, including previous years, are on the [rates page](/rates).
 
@@ -931,7 +912,7 @@ These organisations give free, independent advice on kinship care and special gu
 
 **Search result description:** Special guardianship financial support is subject to annual review. Rates rise every April. If you have not had a review, ask for one.
 
-**Length:** about 844 words
+**Length:** about 860 words
 
 
 ---
@@ -979,17 +960,15 @@ Councils normally raise their rates on **1 April** every year. (The government s
 rates for a tax year beginning 6 April, which is explained on [the rates
 page](/guidance/rates).)
 
-England: weekly minimum allowance, financial year 2026/27| Age of child | London | South East | Rest of England
+**England: weekly minimum allowance, financial year 2026/27**
 
-| 0–2 | £205 | £195 | £176
-
-| 3–4 | £208 | £203 | £182
-
-| 5–10 | £233 | £223 | £201
-
-| 11–15 | £266 | £255 | £227
-
-| 16–17 | £309 | £298 | £267
+| Age of child | London | South East | Rest of England |
+| --- | --- | --- | --- |
+| 0–2 | £205 | £195 | £176 |
+| 3–4 | £208 | £203 | £182 |
+| 5–10 | £233 | £223 | £201 |
+| 11–15 | £266 | £255 | £227 |
+| 16–17 | £309 | £298 | £267 |
 
 An allowance that has not been reviewed in several years has quietly lost value against those
 figures. Nothing dramatic has to have gone wrong for you to be materially underpaid. It is enough
@@ -1088,7 +1067,7 @@ The Ombudsman has found a council at fault over a fixed-percentage policy and re
 backdating. Note the word: the Ombudsman finds **fault**, and reserves "unlawful" for describing
 what a court has held.
 
-[LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018)](https://web.archive.org/web/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf) (checked 2026-09-01, shown from the web archive because the original address no longer responds)
+[LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018)](https://web.archive.org/web/20231216202817/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf) (checked 2026-09-01, shown from the web archive because the original address no longer responds)
 
 ## The distinction that matters
 
@@ -1138,7 +1117,7 @@ Your council can lawfully pay less than the maximum after properly assessing you
 
 - [R (TT) v Merton LBC [2012] EWHC 2055 (Admin)](https://caselaw.nationalarchives.gov.uk/ewhc/admin/2012/2055) (checked 2026-09-03)Blanket percentage deduction unlawful. BUT: no duty to pay every special guardian an allowance, and the means-test methodology itself was upheld as lawful.
 
-- [LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018)](https://web.archive.org/web/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf) (checked 2026-09-01, shown from the web archive because the original address no longer responds)Calculating a special guardianship allowance as a percentage of the fostering allowance was contrary to statutory guidance and case law. The council identified 171 families who may not have received the right support, and payments were backdated to November 2013.
+- [LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018)](https://web.archive.org/web/20231216202817/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf) (checked 2026-09-01, shown from the web archive because the original address no longer responds)Calculating a special guardianship allowance as a percentage of the fostering allowance was contrary to statutory guidance and case law. The council identified 171 families who may not have received the right support, and payments were backdated to November 2013.
 
 - [DfE Special Guardianship Guidance (Jan 2017), para 65](https://www.gov.uk/government/publications/special-guardianship-guidance) (checked 2026-08-29)
 
@@ -1808,7 +1787,7 @@ benefits.
 [LGSCO decision, Devon County Council (23 000 973, 25 January 2024)](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/23-000-973) (checked 2026-08-31)
 **Backdating**, where a council's fixed-percentage policy was found to be at fault.
 
-[LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018)](https://web.archive.org/web/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf) (checked 2026-09-01, shown from the web archive because the original address no longer responds)
+[LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018)](https://web.archive.org/web/20231216202817/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf) (checked 2026-09-01, shown from the web archive because the original address no longer responds)
 **A finding of fault** where a council tapered a whole allowance to 75% and then 50%, misapplying
 the rule that concerns only the reward element.
 
@@ -1855,7 +1834,7 @@ Your council can lawfully pay less than the maximum after properly assessing you
 
 - [LGSCO decision, Southend-on-Sea (19 003 363, 5 October 2020)](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/19-003-363) (checked 2026-08-31)Reducing the whole allowance to 75% of the core fostering allowance in year one and 50% in year two misapplied the two-year transitional provision, which protects the reward element only. Backdating of about 6,948 pounds was recommended, and the council estimated 37 other families were affected.
 
-- [LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018)](https://web.archive.org/web/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf) (checked 2026-09-01, shown from the web archive because the original address no longer responds)Calculating a special guardianship allowance as a percentage of the fostering allowance was contrary to statutory guidance and case law. The council identified 171 families who may not have received the right support, and payments were backdated to November 2013.
+- [LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018)](https://web.archive.org/web/20231216202817/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf) (checked 2026-09-01, shown from the web archive because the original address no longer responds)Calculating a special guardianship allowance as a percentage of the fostering allowance was contrary to statutory guidance and case law. The council identified 171 families who may not have received the right support, and payments were backdated to November 2013.
 
 - [Special Guardianship Regulations 2005, reg 6](https://www.legislation.gov.uk/uksi/2005/1109/regulation/6) (checked 2026-08-29)
 
@@ -1981,7 +1960,7 @@ These organisations give free, independent advice on kinship care and special gu
 
 **Search result description:** Special guardianship orders do not exist in Scots law. Scotland has the Scottish Recommended Allowance, which is a minimum and applies equally to foster and kinship carers.
 
-**Length:** about 686 words
+**Length:** about 696 words
 
 
 ---
@@ -2006,13 +1985,13 @@ not attach English case law to a Scottish result.
 Scotland sets a recommended allowance covering both foster carers and kinship carers, at the same
 rates:
 
-Scotland: weekly minimum allowance, financial year 2026/27| Age of child | Weekly rate
+**Scotland: weekly minimum allowance, financial year 2026/27**
 
-| 0–4 | £177.68
-
-| 5–15 | £206.71
-
-| 16–17 | £283.35
+| Age of child | Weekly rate |
+| --- | --- |
+| 0–4 | £177.68 |
+| 5–15 | £206.71 |
+| 16–17 | £283.35 |
 
 [Scottish Recommended Allowance for foster and kinship carers, Scottish Government, page updated 11 May 2026](https://www.gov.scot/publications/scottish-recommended-allowance-for-foster-and-kinship-carers-information-for-carers-and-professionals/) (checked 2026-08-31)
 
@@ -2086,7 +2065,7 @@ These organisations give free, independent advice on kinship care and special gu
 
 **Search result description:** Seven English councils are piloting a non-means-tested kinship allowance at the full fostering National Minimum Allowance, from April 2026 to 2029.
 
-**Length:** about 720 words
+**Length:** about 736 words
 
 
 ---
@@ -2107,17 +2086,15 @@ funded to 2029.
 From April 2026, seven English councils are paying eligible kinship carers an allowance equal to
 the full fostering National Minimum Allowance, with **no means test**.
 
-England: weekly minimum allowance, financial year 2026/27| Age of child | London | South East | Rest of England
+**England: weekly minimum allowance, financial year 2026/27**
 
-| 0–2 | £205 | £195 | £176
-
-| 3–4 | £208 | £203 | £182
-
-| 5–10 | £233 | £223 | £201
-
-| 11–15 | £266 | £255 | £227
-
-| 16–17 | £309 | £298 | £267
+| Age of child | London | South East | Rest of England |
+| --- | --- | --- | --- |
+| 0–2 | £205 | £195 | £176 |
+| 3–4 | £208 | £203 | £182 |
+| 5–10 | £233 | £223 | £201 |
+| 11–15 | £266 | £255 | £227 |
+| 16–17 | £309 | £298 | £267 |
 
 [Kinship Zones - kinship allowance pilot (2026-2029)](https://www.communitycare.co.uk/content/news/councils-to-test-paying-kinship-carers-to-look-after-children-who-would-otherwise-go-into-care) (checked 2026-08-29)
 
@@ -2524,3 +2501,654 @@ These organisations give free, independent advice on kinship care and special gu
 - **Family Rights Group**: free advice line for families dealing with children's services. [frg.org.uk](https://frg.org.uk/)
 - **Citizens Advice**: benefits, debt and general advice. [citizensadvice.org.uk](https://www.citizensadvice.org.uk/)
 - **Local Government and Social Care Ombudsman** (England), if you have complained to your council and are not satisfied. [lgo.org.uk](https://www.lgo.org.uk/)
+
+
+
+---
+
+# The warnings shown on a result
+
+34 of them. A carer sees only the ones their own answers trigger, usually
+three to eight. They are the reason people share this site: the warning is often
+worth more than the number.
+
+**These carry the most legal weight of anything here.** Every one was reviewed on
+1 and 2 September 2026, and several are worded the way they are to survive a
+council lawyer reading them. Rewrite for clarity, not for strength.
+
+The example text below is filled with placeholder values where a warning takes
+them, so you can see the shape of the sentence.
+
+
+## critical (5)
+
+
+### Taking Child Benefit off your allowance may not be lawful in your case
+
+_Code `UNLAWFUL_CB_DEDUCTION_RISK`, source: Special Guardianship Regulations 2005, reg 13(2)_
+
+You have told us you get a means-tested benefit **and** that your council takes Child Benefit off your allowance.
+
+The regulations require your council to take account of other benefits available to you, and Child Benefit is one of them. The courts have contemplated it being deducted. What is not allowed is applying the same rule to everybody without looking at individual circumstances.
+
+In 2024 the Local Government and Social Care Ombudsman found a council at fault for deducting Child Benefit from every special guardian on Universal Credit as a blanket policy. That council had to recalculate around 170 carers' allowances and pay refunds. It changed its policy, and a later complaint about the new practice was not upheld.
+
+So the question is not whether your council can deduct Child Benefit. It is whether it decided your case individually, and what its reasons were. Ask for those reasons in writing.
+
+The Ombudsman normally expects a complaint within 12 months of you becoming aware of a problem.
+
+
+### Your council may be starting from the wrong figure
+
+_Code `FIXED_PERCENTAGE_POLICY`, source: Barrett v Kirklees MBC [2010] EWHC 467 (Admin)_
+
+[COUNCIL]'s published policy appears to set the allowance at a fixed share of the fostering rate, as we read it on [DATE].
+
+The courts have held that applying a flat percentage, two-thirds or a third or any other fixed fraction, without looking at the individual case, is an unjustified departure from the guidance. In other words, the council has stepped away from a rule it is supposed to follow without explaining why. The starting point should be the core fostering allowance, and your own circumstances should then be considered.
+
+This does not mean you are owed the full fostering rate. In the Merton case the court also held that a council does not have to pay every special guardian an allowance, and that means testing one is lawful. The problem is the blanket nature of a fixed fraction, not the arithmetic.
+
+Ask for the written policy and for the reasons behind the figure you were given.
+
+
+### This rate is below the national minimum for fostering
+
+_Code `BELOW_NMA`, source: DfE Special Guardianship Guidance (Jan 2017), para 65_
+
+The rate we hold for [COUNCIL] (£200 a week) is below the national minimum fostering allowance for the 11-15 age band in your area (£227 a week).
+
+The statutory guidance says the core fostering allowance is the starting point for a special guardianship allowance. A figure below it needs an explanation.
+
+Two things this does not mean. It is a minimum for fostering allowances, not a floor your own allowance cannot go below. And it is about the figure your council starts from, not the amount you end up with: a lower final figure after a means test can be perfectly proper, while a lower starting figure is the thing worth asking about.
+
+Ask the council to explain in writing how it arrived at the figure and how it compares with what it pays its foster carers.
+
+
+### The Ombudsman has made a finding about this council
+
+_Code `LGSCO_FINDING_AGAINST_LA`_
+
+[WHAT THE FINDING SAID]
+
+The decision was made on [DATE]. You can read it here: [LINK]
+
+A published decision about one carer does not automatically apply to you, but it is relevant background if you are asking the council to look at your case again.
+
+
+### These rates may be out of date
+
+_Code `RATES_STALE`_
+
+The rate table we are using ran to 2027-03-31. New rates are normally announced for April and we have not yet published them.
+
+Treat the figures below as last year's. Check the current national minimum allowance before you use them in a letter.
+
+
+## important (15)
+
+
+### Your council can keep paying your old fostering rate for two years
+
+_Code `REG7_FLOOR_APPLIED`, source: Special Guardianship Regulations 2005, reg 7_
+
+You fostered this child before the order, and the order was made 18 months ago.
+
+For the first two years your council can carry on paying the reward part of what you were paid as a foster carer. Our estimate assumes it does, so we have shown £300 a week rather than a lower figure. That is what we have assumed, not a figure your council has agreed.
+
+The Court of Appeal has held that family foster carers should not be worse off than unrelated foster carers, which is the argument for continuing it.
+
+
+### The two-year point is coming up
+
+_Code `REG7_EXPIRING`, source: Special Guardianship Regulations 2005, reg 7_
+
+The order was made 18 months ago. The two years during which your council can keep paying the reward part of your former fostering allowance end at 24 months.
+
+It cuts both ways. After two years the reward element can lawfully stop, and it can also lawfully carry on: the council can agree to continue it where it considers that appropriate. Ask now, in writing, rather than after your payments drop.
+
+
+### You can ask for the reward element to carry on past two years
+
+_Code `REG7_EXTENSION_AVAILABLE`, source: Special Guardianship Regulations 2005, reg 7_
+
+Two years is not a hard stop. Your council can carry on paying the reward element beyond it, but only where it considers that necessary because of the **exceptional needs of the child, or other exceptional circumstances**.
+
+That is a higher bar than it sounds, so it is worth putting your case in those terms rather than saying the needs have not reduced.
+
+There is also a question that comes first: this rule only applies where your council decided to include a reward element **before** the order was made. Ask whether it did.
+
+
+### Check what your council is tapering
+
+_Code `REG7_MISAPPLICATION_WARNING`, source: LGSCO decision, Southend-on-Sea (19 003 363, 5 October 2020)_
+
+Regulation 7 is about the **reward** part of a former foster carer's allowance, which a council can keep paying for two years. It does not authorise stepping down the whole allowance.
+
+The Ombudsman found in 2020 that reducing an entire allowance to 75% and then 50% misapplied that rule. If your payments are being stepped down, ask the council which element it is reducing and why.
+
+
+### Your assessment is not automatic
+
+_Code `NOT_LOOKED_AFTER_BEFORE_ORDER`, source: Special Guardianship Regulations 2005, reg 6_
+
+Because the child was not in the council's care immediately before the order, the circumstances in which financial support is payable are narrower. It is discretionary, which means it is up to the council. That does not shut the door: it can still consider your case, and you can ask.
+
+Put the request in writing and ask for the decision and its reasons in writing too.
+
+
+### Your council is in the Kinship Zones pilot
+
+_Code `KINSHIP_ZONE_ELIGIBLE`, source: Kinship Zones - kinship allowance pilot (2026-2029)_
+
+[COUNCIL] is one of seven councils in the Kinship Zones pilot. In the pilot, eligible carers get an allowance equal to the full fostering National Minimum Allowance, and it is **not** means tested.
+
+Ask your council whether you qualify, and ask for the answer in writing.
+
+
+### The pilot is time-limited and has conditions
+
+_Code `KINSHIP_ZONE_PILOT_CAVEAT`, source: Kinship Zones - kinship allowance pilot (2026-2029)_
+
+Kinship Zones runs from April 2026 to 2029 in seven councils only. It does not change the law anywhere else.
+
+You cannot get the pilot allowance and regulation 6 financial support for the same child at the same time. The scheme may change when it is evaluated.
+
+
+### You can ask for more because of your child's needs
+
+_Code `ENHANCEMENT_AVAILABLE`, source: Special Guardianship Regulations 2005, reg 6_
+
+You told us your child has a disability or additional needs. The regulations let a council pay more than the core allowance to meet the consequences of a disability, or of abuse or neglect the child suffered.
+
+There is **no national figure** for this and we have not added one to your estimate. It is decided council by council, on the child's needs. Ask for it, and give specifics: therapy, travel, respite, equipment, extra wear and tear.
+
+
+### The means test model is not law, and it pre-dates Universal Credit
+
+_Code `MEANS_TEST_MODEL_OUTDATED`, source: CoramBAAF Practice Note 75 - special guardianship financial support_
+
+Most English councils use a standard Department for Education spreadsheet model to work out how much of your income to take into account. That model is **not statutory**. No law requires it, and it was written before Universal Credit existed.
+
+Your council may use a different method, and it is entitled to. Treat the figure below as an illustration of how the common model works, not as the answer your council will reach.
+
+
+### We had to assume how your council reduces the allowance
+
+_Code `TAPER_METHOD_ASSUMED`, source: CoramBAAF Practice Note 75 - special guardianship financial support_
+
+There is **no published national rule** for how much of your spare income a council takes off the allowance. Policies vary.
+
+We have assumed pound-for-pound, which is the most common approach. Your council may use another.
+
+Ask it two things: which method it uses, **and where that comes from**. There being no national rule is not a gap in our research, it is how the scheme is built, so a council that cannot say where its own taper comes from is in a weaker position than one that can.
+
+
+### Plan now for what happens at 18
+
+_Code `AGE_17_TRANSITION`, source: Special Guardianship Regulations 2005, reg 9_
+
+Your child is 17. Special guardianship financial support normally stops when they turn 18, unless they stay in full-time education or training, in which case it can continue.
+
+Ask your council now, in writing, what will happen on their eighteenth birthday and what you need to do to keep support going.
+
+
+### The Scottish Recommended Allowance is a minimum, not a maximum
+
+_Code `SCOTLAND_SRA_IS_A_FLOOR`, source: Scottish Recommended Allowance for foster and kinship carers, Scottish Government, page updated 11 May 2026_
+
+The Scottish Recommended Allowance is the floor. Your council can pay more, and some do.
+
+If you are being offered less than the recommended allowance, ask why in writing.
+
+
+### Kinship carers and foster carers get the same recommended rate
+
+_Code `SCOTLAND_FOSTER_KINSHIP_PARITY`, source: Scottish Recommended Allowance for foster and kinship carers, Scottish Government, page updated 11 May 2026_
+
+Scotland sets one recommended allowance for foster carers and kinship carers alike. If your council pays its foster carers more than it pays you for a child of the same age, ask it to explain the difference.
+
+
+### The Ombudsman made a finding about a policy this council has since changed
+
+_Code `LGSCO_FINDING_FORMER_POLICY`_
+
+[WHAT THE FINDING SAID]
+
+The decision was made on [DATE]. You can read it here: [LINK]
+
+This is history rather than a live problem, but it is worth knowing. Where a council has been found at fault, the Ombudsman has often asked it to go back and recalculate old awards, so it can still be relevant to an order made some years ago.
+
+
+### Your council allows a different amount for basic living costs
+
+_Code `LA_LIVING_COSTS_VARIATION`, source: CoramBAAF Practice Note 75 - special guardianship financial support_
+
+The standardised model most councils use allows basic living costs at 125% of the Income Support rate for a household your size. [COUNCIL] publishes 100%, and that is the figure used above.
+
+Allowing less for living costs leaves more income counted as spare, which means a larger contribution expected from you and a smaller allowance. It is a local choice, not a national rule.
+
+If the figure matters to you, ask the council to confirm the percentage it applied and why.
+
+
+## info (14)
+
+
+### Worth checking: was the child in care just before the order?
+
+_Code `LOOKED_AFTER_STATUS_UNKNOWN`, source: Special Guardianship Regulations 2005, reg 6_
+
+You told us you were not sure. It matters, because it changes how strong your position is. If the child was in the council's care immediately before the order, you are squarely within the circumstances where financial support is payable. If not, those circumstances are narrower, though you can still ask.
+
+Your social worker or the court paperwork will say.
+
+
+### You are in a pilot area but already on regulation 6 support
+
+_Code `KINSHIP_ZONE_EXCLUDED_REG6`, source: Kinship Zones - kinship allowance pilot (2026-2029)_
+
+Your council is in the Kinship Zones pilot, but the pilot excludes carers already receiving regulation 6 financial support, so we have used the normal rules for your estimate.
+
+That comparison is worth raising with your council if your current support is lower.
+
+
+### What the pilot rate would be
+
+_Code `KINSHIP_ZONE_COMPARISON`, source: Kinship Zones - kinship allowance pilot (2026-2029)_
+
+The Kinship Zones pilot rate for your child's age band is the amount a week, not means tested.
+
+
+### You are in the few days of April where the rules disagree
+
+_Code `APRIL_RATE_BOUNDARY`, source: North Tyneside Council, Decision Record: Foster Care, Special Guardianship, Adoption and Child Arrangement Order Allowance Increases_
+
+The government sets these rates for a **tax year running 6 April to 5 April**. Most councils put their increase in from **1 April**.
+
+Between 1 and 5 April the two do not line up. We have shown you the new rate, because that is what councils normally pay from 1 April. But if your council follows the tax year, it may still be paying last year's rate for a few more days.
+
+It is worth a few pounds, not a few hundred. If you are checking a backdated claim, it is worth getting right.
+
+
+### In Wales, under-5s get more than 5 to 15 year olds
+
+_Code `WALES_BAND_ORDER_ANOMALY`, source: Welsh Government, National Minimum Allowances for foster carers 2024 to 2025, circular of 26 February 2024_
+
+The Welsh rates pay **more for a child under 5 than for a child aged 5 to 15**. Everywhere else in the UK the rate rises with age, so this looks like a mistake.
+
+It is not a mistake on this site. That is how the Welsh Government publishes them, and the same pattern appears in other years too.
+
+We have now checked it against the Welsh Government's own circular, which prints the rates that way. We are telling you rather than quietly correcting it.
+
+
+### Your council may have a savings rule
+
+_Code `CAPITAL_RULE_MAY_APPLY`, source: DWP, Benefit and pension rates 2026 to 2027_
+
+You told us about savings of £7,000. Some councils count savings above a threshold. A common pattern is £6,000, then £1 a week for each £250 above it. But there is no national rule and we do not hold your council's.
+
+We have not applied any savings rule to your estimate. Ask your council whether it has one.
+
+
+### Your allowance should be reviewed every year
+
+_Code `ANNUAL_REVIEW_DUE`, source: Special Guardianship Regulations 2005, reg 18(2)(a)_
+
+Your council has to review your financial support when it receives your annual statement of circumstances. The review is triggered by that statement, not simply by a year going by.
+
+So if your council has never asked you for an annual statement, that is the thing to raise. Ask whether it wants one, and if not, why your support has not been reviewed. Rates go up every April.
+
+
+### Which council is responsible
+
+_Code `THREE_YEAR_RESPONSIBILITY`, source: Special Guardianship Regulations 2005, reg 5_
+
+For three years after the order, the council that looked after the child stays responsible for assessing support needs, even if you have moved away. After three years, responsibility usually passes to the council where you live.
+
+**There is an important exception.** If your council was already paying you financial support, and it decided to pay it **before** the order was made, then it stays responsible for that support after the three years are up. It does not pass to your new council. That will often be the case if you were the child's foster carer.
+
+If you have moved recently, it is worth being clear which council you should be asking.
+
+
+### Check whether the benefit cap affects you
+
+_Code `BENEFIT_CAP_RISK`, source: DWP, Benefit and pension rates 2026 to 2027_
+
+Households getting a lot of benefit income can hit the benefit cap. Special guardianship allowance itself is not counted as your income for your own means-tested benefits, and Guardian's Allowance is exempt from the cap.
+
+If your benefits have been reduced without explanation, this is worth checking with an adviser.
+
+
+### The two-child limit no longer applies
+
+_Code `TWO_CHILD_LIMIT_ABOLISHED`, source: Universal Credit (Removal of Two Child Limit) Act 2026 c.13_
+
+The two-child limit in Universal Credit was removed from April 2026. If you are caring for three or more children and your Universal Credit has not changed, check your award.
+
+
+### Check whether you can claim Guardian's Allowance
+
+_Code `GUARDIANS_ALLOWANCE_CHECK`, source: Child Benefit and Guardian's Allowance Up-rating Order 2026_
+
+Guardian's Allowance is a weekly payment for someone bringing up a child whose parents have died, or where one has died and the other cannot be traced, is serving a long prison sentence, or cannot be found.
+
+It is tax free, it is ignored for means-tested benefits, and it is exempt from the benefit cap. It is widely missed.
+
+
+### We do not hold your council's published policy
+
+_Code `COUNCIL_POLICY_UNKNOWN`, source: DfE, Kinship Care: statutory guidance for local authorities (October 2024)_
+
+We do not yet hold a sourced, dated copy of [COUNCIL]'s special guardianship financial support policy, so your estimate uses the national minimum figures for your area.
+
+Every council in England has to publish a kinship local offer setting out the support it provides, and most publish a financial support policy as well. Asking for it in writing is a good first step, and it is the document any later challenge rests on.
+
+
+### This council is rewriting its policy
+
+_Code `LA_POLICY_UNDER_REVIEW`_
+
+[COUNCIL] says its special guardianship financial support policy is under review, so what is shown here is the last version it published.
+
+Ask the council for its current position in writing before you rely on any figure here.
+
+
+### No family should be worse off
+
+_Code `SCOTLAND_NO_WORSE_OFF`, source: Scottish Recommended Allowance for foster and kinship carers, Scottish Government, page updated 11 May 2026_
+
+Where you already have an arrangement that pays more than the recommended allowance, the higher amount applies. Moving to the recommended rate should not reduce what you get.
+
+
+
+---
+
+# The nine letters
+
+Sent by a carer to their council, pre-filled with their own figures. They go to a
+social worker the carer will deal with for years, so they are polite, short and
+specific, and they always request rather than demand.
+
+**Reviewed by a solicitor on 1 and 2 September 2026.** Several sentences are
+precisely worded to avoid handing a council an easy correction. Flag anything you
+want to change rather than changing it.
+
+
+## Ask about Child Benefit being taken off your allowance
+
+_Template `challenge-child-benefit-deduction`_
+
+**Subject:** Special guardianship allowance. Child Benefit deduction, ref [REFERENCE]
+
+```
+Dear [COUNCIL] Children's Services,
+
+I am the special guardian for [CHILD'S NAME]. I currently receive £200 a week.
+
+I understand that Child Benefit is being taken into account when my special guardianship allowance is worked out. I would be grateful if you could confirm in writing:
+
+1. whether Child Benefit is deducted from my allowance, and if so how much;
+2. whether your policy deducts Child Benefit from carers who receive means-tested benefits; and
+3. how that was decided in my case.
+
+I receive means-tested benefits. In 2024 the Local Government and Social Care Ombudsman found that deducting Child Benefit as a blanket rule from carers in that position was not appropriate, and asked the council concerned to recalculate its awards. I would be grateful if you could confirm how your policy takes that decision into account.
+
+I understand the regulations allow Child Benefit to be taken into account. I am asking how that was decided in my case, rather than whether it is permitted.
+
+Thank you for your help.
+
+Yours sincerely,
+
+[YOUR NAME]
+Special guardian for [CHILD'S NAME]
+Reference: [REFERENCE]
+```
+
+
+## Ask how your allowance was calculated, where a percentage seems to have been used
+
+_Template `challenge-fixed-percentage`_
+
+**Subject:** Special guardianship allowance, how my allowance was calculated, ref [REFERENCE]
+
+```
+Dear [COUNCIL] Children's Services,
+
+I am the special guardian for [CHILD'S NAME]. I currently receive £200 a week.
+
+My understanding is that the national minimum fostering allowance published by the Department for Education for a child in the 11-15 age band in the South East is £255 a week, and that the statutory guidance treats the core fostering allowance as the starting point for a special guardianship allowance.
+
+Please could you tell me:
+
+1. what figure you used as the starting point for my allowance;
+2. whether a fixed percentage or proportion was applied at any stage; and
+3. what was taken into account about my circumstances and my child's needs.
+
+I ask because the courts have said that applying a flat percentage of the fostering allowance, without considering the individual case, is a departure from the guidance that needs to be justified. I would like to understand how the figure in my case was reached.
+
+Thank you for your help.
+
+Yours sincerely,
+
+[YOUR NAME]
+Special guardian for [CHILD'S NAME]
+Reference: [REFERENCE]
+```
+
+
+## Ask which part of your allowance is being reduced
+
+_Template `ask-which-element-reduced`_
+
+**Subject:** Special guardianship allowance, how it is being reduced, ref [REFERENCE]
+
+```
+Dear [COUNCIL] Children's Services,
+
+I am the special guardian for [CHILD'S NAME], and I was [CHILD'S NAME]'s foster carer before the special guardianship order was made on [DATE]. I currently receive £200 a week.
+
+My payments are being reduced, and I would like to understand exactly what is being reduced and why. Please could you confirm:
+
+1. which element of my allowance is being reduced, and by how much;
+2. the basis on which that reduction is being made; and
+3. if regulation 7 is being relied on, how it is being applied in my case.
+
+I ask because regulation 7 concerns the reward element of a former foster carer's allowance. The Ombudsman found in 2020 that reducing an entire allowance in stages misapplied that rule. I would like to understand which of these applies to my payments.
+
+Thank you for your help.
+
+Yours sincerely,
+
+[YOUR NAME]
+Special guardian for [CHILD'S NAME]
+Reference: [REFERENCE]
+```
+
+
+## Ask for the reward element to continue past two years
+
+_Template `request-reg7-extension`_
+
+**Subject:** Special guardianship allowance, continuing the reward element, ref [REFERENCE]
+
+```
+Dear [COUNCIL] Children's Services,
+
+I am the special guardian for [CHILD'S NAME], and I was [CHILD'S NAME]'s foster carer before the special guardianship order was made on [DATE]. I currently receive £200 a week.
+
+I understand that your council can continue paying the reward element of my former fostering allowance for two years after the order, and beyond that where it considers continuation necessary because of the exceptional needs of the child or other exceptional circumstances.
+
+I would be grateful if you could confirm:
+
+1. whether the decision to include an element of remuneration in my financial support was taken before the special guardianship order was made;
+2. the date on which the two-year period ends;
+3. how I should ask for the reward element to continue beyond it; and
+4. what you would consider to be exceptional needs or exceptional circumstances in a case like mine.
+
+I would like to set out the particular needs and circumstances in [CHILD'S NAME]'s case. Please let me know what information would help you decide.
+
+Thank you for your help.
+
+Yours sincerely,
+
+[YOUR NAME]
+Special guardian for [CHILD'S NAME]
+Reference: [REFERENCE]
+```
+
+
+## Ask for more because of your child's needs
+
+_Template `request-enhancement-disability`_
+
+**Subject:** Special guardianship allowance, request for an enhancement, ref [REFERENCE]
+
+```
+Dear [COUNCIL] Children's Services,
+
+I am the special guardian for [CHILD'S NAME]. I currently receive £200 a week.
+
+The regulations allow financial support to take account of a child's disability or additional needs, including the consequences of any abuse or neglect they experienced before the order.
+
+[CHILD'S NAME] has additional needs which mean extra costs for our household. In particular:
+
+  • [describe the need, e.g. travel to therapy appointments]
+  • [describe the cost, e.g. £__ a month]
+  • [add as many as apply]
+
+I would be grateful if you could assess whether an enhancement to my allowance would be appropriate, and let me know what evidence would help.
+
+Thank you for your help.
+
+Yours sincerely,
+
+[YOUR NAME]
+Special guardian for [CHILD'S NAME]
+Reference: [REFERENCE]
+```
+
+
+## Ask for your council's written policy
+
+_Template `request-written-policy`_
+
+**Subject:** Request for your special guardianship financial support policy, ref [REFERENCE]
+
+```
+Dear [COUNCIL] Children's Services,
+
+I am the special guardian for [CHILD'S NAME].
+
+Please could you send me a copy of your current policy on financial support for special guardians, including:
+
+1. how the starting figure for an allowance is decided;
+2. how any means test is applied, and what income is taken into account;
+3. whether Child Benefit is taken into account; and
+4. how allowances are reviewed each year.
+
+A link to the published version is fine if it is on your website.
+
+Thank you for your help.
+
+Yours sincerely,
+
+[YOUR NAME]
+Special guardian for [CHILD'S NAME]
+Reference: [REFERENCE]
+```
+
+
+## Ask for the arithmetic behind your figure
+
+_Template `request-calculation-breakdown`_
+
+**Subject:** Special guardianship allowance, request for a breakdown, ref [REFERENCE]
+
+```
+Dear [COUNCIL] Children's Services,
+
+I am the special guardian for [CHILD'S NAME]. I currently receive £200 a week.
+
+I would be grateful for a written breakdown of how that figure was calculated, showing:
+
+1. the starting figure and where it came from;
+2. what income was taken into account, and what was disregarded;
+3. what outgoings were allowed; and
+4. any deductions, and the reason for each.
+
+For reference, the national minimum fostering allowance for the 11-15 age band in the South East is £255 a week.
+
+Thank you for your help.
+
+Yours sincerely,
+
+[YOUR NAME]
+Special guardian for [CHILD'S NAME]
+Reference: [REFERENCE]
+```
+
+
+## Ask for your annual review
+
+_Template `request-annual-review`_
+
+**Subject:** Special guardianship allowance, annual review, ref [REFERENCE]
+
+```
+Dear [COUNCIL] Children's Services,
+
+I am the special guardian for [CHILD'S NAME]. I currently receive £200 a week.
+
+I understand that my financial support should be reviewed when you receive my annual statement of circumstances, and that the national minimum allowance rates changed in April.
+
+Please could you confirm:
+
+1. whether you have asked me for an annual statement of my circumstances, and if not, whether you would like one now;
+2. when my financial support was last reviewed; and
+3. what information you need from me so that a review can take place.
+
+Thank you for your help.
+
+Yours sincerely,
+
+[YOUR NAME]
+Special guardian for [CHILD'S NAME]
+Reference: [REFERENCE]
+```
+
+
+## Make a stage 1 complaint
+
+_Template `formal-complaint-stage-1`_
+
+**Subject:** Stage 1 complaint, special guardianship allowance, ref [REFERENCE]
+
+```
+Dear [COUNCIL] Children's Services,
+
+I would like to make a stage 1 complaint about the way my special guardianship allowance for [CHILD'S NAME] has been handled. I currently receive £200 a week.
+
+What happened:
+
+  • [what you asked for, and when]
+  • [what the council did or did not do]
+  • [what effect it has had on you and your child]
+
+What I would like to happen:
+
+  • [e.g. a written explanation of how the figure was calculated]
+  • [e.g. a reassessment]
+
+[I raised this on [DATE] and have not had a full answer. If you have not raised it before, delete this sentence.]
+
+I am asking for it to be looked at under your complaints procedure. Please confirm you have received this and let me know when I can expect a reply.
+
+If I am not satisfied with the outcome, I understand I can ask the Local Government and Social Care Ombudsman to look at it.
+
+Thank you for your help.
+
+Yours sincerely,
+
+[YOUR NAME]
+Special guardian for [CHILD'S NAME]
+Reference: [REFERENCE]
+```

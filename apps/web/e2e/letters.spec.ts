@@ -7,7 +7,49 @@
  * complaint stays behind its gate, and that the gate lifts when waiting would
  * cost them the complaint.
  */
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
+
+/**
+ * Wait for the smooth scroll to stop.
+ *
+ * Every test here acts on a letter, and every letter sits below a scroll the
+ * page has just animated. Clicking into a moving page can land the press on
+ * whatever slid under the cursor, which fails as a lost click rather than as
+ * anything to do with letters.
+ */
+async function scrollSettled(page: Page): Promise<void> {
+  await page.waitForFunction(
+    () =>
+      new Promise<boolean>((resolve) => {
+        let previous = window.scrollY;
+        let stillFor = 0;
+        const tick = (): void => {
+          if (window.scrollY === previous) stillFor += 1;
+          else {
+            stillFor = 0;
+            previous = window.scrollY;
+          }
+          if (stillFor >= 3) resolve(true);
+          else requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }),
+  );
+}
+
+/**
+ * Open the first letter and hand back that letter, not a fresh search.
+ *
+ * Opening one relabels its own button to "Hide this letter", so a search for
+ * "Read this letter" made after the click lands on the NEXT letter down. Both
+ * the press and everything read afterwards have to be pinned to one letter.
+ */
+async function openFirstLetter(page: Page): Promise<Locator> {
+  const letter = page.locator('.letter').first();
+  await letter.getByRole('button', { name: 'Read this letter' }).click();
+  await expect(letter.locator('.letter__body')).toBeVisible();
+  return letter;
+}
 
 async function toResult(page: Page, opts: { months?: string } = {}): Promise<void> {
   await page.goto('/');
@@ -24,6 +66,8 @@ async function toResult(page: Page, opts: { months?: string } = {}): Promise<voi
     await page.getByRole('button', { name: 'Continue' }).click();
     await expect(page.getByRole('heading', { name: /Letters you can send/i })).toBeVisible();
   }
+
+  await scrollSettled(page);
 }
 
 test('a carer can reach a letter at all', async ({ page }) => {
@@ -34,8 +78,8 @@ test('a carer can reach a letter at all', async ({ page }) => {
 
 test('the letter carries this carer, not a placeholder council', async ({ page }) => {
   await toResult(page);
-  await page.getByRole('button', { name: 'Read this letter' }).first().click();
-  const body = await page.locator('.letter__body').first().innerText();
+  const letter = await openFirstLetter(page);
+  const body = await letter.locator('.letter__body').innerText();
 
   // The carer fills in their own name and their child's; everything about the
   // council and the figures is already there.
@@ -68,10 +112,10 @@ test('a letter can be copied without a clipboard permission prompt failing the p
   page,
 }) => {
   await toResult(page);
-  await page.getByRole('button', { name: 'Read this letter' }).first().click();
-  await page.getByRole('button', { name: 'Copy the whole letter' }).first().click();
+  const letter = await openFirstLetter(page);
+  await letter.getByRole('button', { name: 'Copy the whole letter' }).click();
   // Whether the clipboard is available or not, the page must not break.
-  await expect(page.locator('.letter__body').first()).toBeVisible();
+  await expect(letter.locator('.letter__body')).toBeVisible();
 });
 
 test('the offer to answer more questions is not printed either', async ({ page }) => {

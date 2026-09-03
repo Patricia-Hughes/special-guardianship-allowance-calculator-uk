@@ -124,13 +124,22 @@ export function segmentBoundaries(
 
   points.set(fromDate, 'period-start');
 
+  // Only England has a tax-year framing to disagree with. The Welsh circular
+  // says "from 1 April", the Northern Irish model scheme says "From 1st April",
+  // and the Scottish rates were backdated to 1 April. Cutting those three at
+  // 6 April produces five-day segments with the same rate on both sides: noise
+  // in the segment list and nothing in the arithmetic.
+  const hasTaxYearFraming = base.carer.nation === 'england';
+
   for (const boundary of financialYearBoundaries(fromDate, toDate)) {
     if (!points.has(boundary)) points.set(boundary, 'financial-year-change');
     // The five days a council and the DfE disagree about. Cutting here keeps
     // 1 to 5 April in a segment of its own, so the part of the total that
     // depends on which convention the council follows can be stated rather
     // than buried inside a longer segment.
-    cut(`${boundary.slice(0, 4)}-04-06` as IsoDate, 'april-tax-year-boundary');
+    if (hasTaxYearFraming) {
+      cut(`${boundary.slice(0, 4)}-04-06` as IsoDate, 'april-tax-year-boundary');
+    }
   }
 
   for (const child of base.children) {
@@ -316,7 +325,9 @@ function taxYearAlternative(
   at: IsoDate,
   maximumWeekly: Pence,
 ): { weekly: Pence; difference: Pence } | null {
-  if (!inAprilWindow(at)) return null;
+  // England only, for the same reason the 6 April cut is: nowhere else has a
+  // second convention for the alternative to be an alternative TO.
+  if (base.carer.nation !== 'england' || !inAprilWindow(at)) return null;
 
   const previous = rateTableFor(deps.rateTables, addDays(at, -7), base.carer.nation);
   if ('blocked' in previous) return null;
