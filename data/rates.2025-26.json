@@ -6,7 +6,7 @@
   "dfeStatedTaxYearTo": "2026-04-05",
   "councilApplicationFrom": "2025-04-01",
   "dataVersion": "2025-26.2",
-  "note": "England only. The other three nations are null on purpose, not by oversight, so backdating blocks 2025/26 for them rather than estimating. Scotland: the SRA implementation review records no uplift in 2024/25 and no indication of one in 2025/26, but an absence of indications is not a published rate, so the 2024/25 figures are NOT carried forward here. Northern Ireland: a 4% uplift for 2025/26 backdated to 1 April 2025 is on record and the Department of Health has since published a 2025-26 model scheme PDF, but nobody has read the figures out of it. Wales: no Welsh Government rate table has been located for this year. See OPEN-ITEMS.md item 1b.",
+  "note": "Wales is the only gap in this year, and it is deliberate. Northern Ireland and Scotland were sourced on 3 September 2026 from the Department of Health model scheme and an archived gov.scot capture. Wales is null because no Welsh Government rate table has been located after three exhaustive searches: a 2.6 per cent uplift is on record and figures are reported, but only in a reproduced table, which is secondary and not usable. Backdating therefore excludes 2025/26 for Wales and names the excluded year on screen. See OPEN-ITEMS.md item 1b and watchlist.json ciw-nma-bulletins.",
   "england": {
     "sourceId": "dfe-nma-2025-26",
     "unit": "weekly-pence",

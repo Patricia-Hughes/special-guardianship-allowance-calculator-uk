@@ -23,7 +23,9 @@
     "export:review": "tsx scripts/export-review-pack.mts",
     "test:e2e": "pnpm --filter @sgo/web test:e2e",
     "test:a11y": "pnpm --filter @sgo/web test:a11y",
-    "verify": "pnpm typecheck && pnpm test:unit && pnpm validate:data && pnpm check:staleness && pnpm check:content && pnpm check:headers"
+    "verify": "pnpm typecheck && pnpm test:unit && pnpm validate:data && pnpm check:staleness && pnpm check:content && pnpm check:headers",
+    "export:writer": "tsx scripts/export-writer-pack.mts",
+    "export:facts": "tsx scripts/export-facts-pack.mts"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
