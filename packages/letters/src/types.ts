@@ -58,4 +58,14 @@ export interface TemplateSpec {
    * whether the earlier letters have been sent, and offers those instead if not.
    */
   requiresFirst?: LetterTemplate[];
+  /**
+   * Let the carer past `requiresFirst` when they are near the Ombudsman's usual
+   * twelve-month time limit.
+   *
+   * The gate exists so nobody complains without the documents that make a
+   * complaint stick. But a carer whose problem has been running for close to a
+   * year can lose the complaint entirely by waiting, and that is the one case
+   * where the gate does more harm than good.
+   */
+  gateExceptionNearTimeLimit?: boolean;
 }

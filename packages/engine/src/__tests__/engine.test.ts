@@ -579,6 +579,28 @@ describe('reference data', () => {
     expect(wales.userFacingNote).toBeDefined();
   });
 
+  it('keeps the Welsh age band inversion exactly as published', () => {
+    // Wales pays MORE for an under-5 than for a 5 to 15 year old. Every other UK
+    // table rises with age, so this reads as a transcription error and is not.
+    // It is on the Welsh Government's own letter of 26 February 2024, and it
+    // reproduces across 2024/25, 2025/26 and 2026/27.
+    //
+    // This test exists because the data gate only NOTES the inversion, and a
+    // note is easy to walk past. Anyone who "fixes" the figures to make them
+    // rise with age breaks this instead, and reads why.
+    for (const table of RATE_TABLES) {
+      const wales = table.wales;
+      if (!wales?.rates) continue;
+      const under5 = wales.rates['0-4'];
+      const fiveToFifteen = wales.rates['5-15'];
+      if (under5 === undefined || fiveToFifteen === undefined) continue;
+      expect(under5).toBeGreaterThan(fiveToFifteen);
+      // And it must still be flagged as corroborated, or the site would serve a
+      // figure that looks wrong with no explanation next to it.
+      expect(wales.anomalyConfirmed).toBe(true);
+    }
+  });
+
   it('keeps Wiltshire out of the South East until a DfE list says otherwise', () => {
     // The DfE publishes no authority-level region list, so this map rests on
     // ONS Government Office Regions. Everything located puts Wiltshire in the

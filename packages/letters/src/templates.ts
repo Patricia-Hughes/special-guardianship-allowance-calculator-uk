@@ -119,12 +119,19 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
       `. ${paidLine(ctx)}` +
       // Regulation 7 is a power, not an entitlement. Opening with "is protected"
       // hands the council an easy correction and weakens everything after it.
-      'I understand that your council can continue paying the reward element of my former fostering allowance for two years after the order, and for longer where it considers that appropriate.\n\n' +
+      // Two things the earlier draft got wrong, both from the review of
+      // 2 September. Regulation 7 only applies at all where the decision to
+      // include remuneration was taken BEFORE the order, so that is a threshold
+      // question and it comes first. And the continuation test is exceptional
+      // needs or other exceptional circumstances, not "the needs have not
+      // reduced", which is a request that fails on its own terms.
+      'I understand that your council can continue paying the reward element of my former fostering allowance for two years after the order, and beyond that where it considers continuation necessary because of the exceptional needs of the child or other exceptional circumstances.\n\n' +
       'I would be grateful if you could confirm:\n\n' +
-      '1. the date on which that two-year period ends;\n' +
-      '2. how I can ask for the reward element to continue beyond it, and what information would help you decide; and\n' +
-      '3. how you would decide that.\n\n' +
-      `${PLACEHOLDER_CHILD}'s needs have not reduced, and I would like to set out why continuing it would help. Please let me know what you need from me.\n\n` +
+      '1. whether the decision to include an element of remuneration in my financial support was taken before the special guardianship order was made;\n' +
+      '2. the date on which the two-year period ends;\n' +
+      '3. how I should ask for the reward element to continue beyond it; and\n' +
+      '4. what you would consider to be exceptional needs or exceptional circumstances in a case like mine.\n\n' +
+      `I would like to set out the particular needs and circumstances in ${PLACEHOLDER_CHILD}'s case. Please let me know what information would help you decide.\n\n` +
       signOff(),
     citationIds: ['sg-regs-2005-reg7', 'tower-hamlets-2013'],
     suggestedBy: ['REG7_EXPIRING', 'REG7_EXTENSION_AVAILABLE', 'REG7_FLOOR_APPLIED'],
@@ -190,10 +197,16 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
-      'I understand that financial support should be reviewed each year. I do not think my allowance has been reviewed recently, and the national minimum allowance rates changed in April.\n\n' +
-      'Please could you carry out a review, and let me know what information you need from me.\n\n' +
+      // The duty is triggered by receipt of the annual statement, not by twelve
+      // months passing. A carer who has never been asked for one is not late for
+      // a review: the council has not set up the thing that produces it.
+      'I understand that my financial support should be reviewed when you receive my annual statement of circumstances, and that the national minimum allowance rates changed in April.\n\n' +
+      'Please could you confirm:\n\n' +
+      '1. whether you have asked me for an annual statement of my circumstances, and if not, whether you would like one now;\n' +
+      '2. when my financial support was last reviewed; and\n' +
+      '3. what information you need from me so that a review can take place.\n\n' +
       signOff(),
-    citationIds: ['sg-regs-2005-reg10-11'],
+    citationIds: ['sg-regs-2005-reg18', 'sg-regs-2005-reg10'],
     suggestedBy: ['ANNUAL_REVIEW_DUE', 'RATES_STALE'],
   },
 
@@ -221,5 +234,14 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
     // process without the evidence to make it stick.
     suggestedBy: [],
     requiresFirst: ['request-written-policy', 'request-calculation-breakdown'],
+    // ONE exception, from the review of 2 September, for whoever builds the
+    // letters screen. The Ombudsman normally expects a complaint within twelve
+    // months of the carer becoming aware of the problem. Where a carer says the
+    // problem has been running close to or beyond that, the gate could cost them
+    // the complaint altogether, which is the one case where slowing someone down
+    // does real harm. Surface the time limit and let them through, with a note
+    // that they can complain now and supply the documents afterwards. A narrow
+    // exception to a good rule, not a loosening of it.
+    gateExceptionNearTimeLimit: true,
   },
 };

@@ -111,7 +111,8 @@
       "0-4": 22900,
       "5-15": 20800,
       "16-17": 26000
-    }
+    },
+    "bandNote": "The Welsh letter prints the top band as \"16+\", not 16-17. It is stored closed here because this calculator is for children under 18 and the bands must tile 0 to 17 exactly, so the two are equivalent for this product. Not a transcription error. The letter also states the rates apply from 1 April, so Wales follows the council convention rather than the DfE tax year."
   },
   "northern-ireland": {
     "sourceId": "hsc-fostering-2026-27",

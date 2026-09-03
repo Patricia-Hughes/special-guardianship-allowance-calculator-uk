@@ -29,7 +29,11 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     // The test is justification, not prohibition.
     body: () =>
       'You have told us you get a means-tested benefit **and** that your council takes Child Benefit off your allowance.\n\n' +
-      'The regulations allow a council to take Child Benefit into account. What they do not allow is applying the same rule to everybody without looking at individual circumstances.\n\n' +
+      // Reg 13(2) does not name Child Benefit. It imposes a DUTY to take account
+      // of other benefits, of which Child Benefit is plainly one, and the
+      // deduction itself was contemplated in Barrett v Kirklees. Attributing the
+      // deduction to the text of reg 13 invites a council lawyer to correct it.
+      'The regulations require your council to take account of other benefits available to you, and Child Benefit is one of them. The courts have contemplated it being deducted. What is not allowed is applying the same rule to everybody without looking at individual circumstances.\n\n' +
       'In 2024 the Local Government and Social Care Ombudsman found a council at fault for deducting Child Benefit from every special guardian on Universal Credit as a blanket policy. That council had to recalculate around 170 carers\' allowances and pay refunds. It changed its policy, and a later complaint about the new practice was not upheld.\n\n' +
       'So the question is not whether your council can deduct Child Benefit. It is whether it decided your case individually, and what its reasons were. Ask for those reasons in writing.\n\n' +
       'The Ombudsman normally expects a complaint within 12 months of you becoming aware of a problem.',
@@ -49,7 +53,9 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     body: (c) =>
       `${c.councilName ? `${c.councilName}'s published policy` : 'This policy'} appears to set the allowance at a fixed share of the fostering rate${c.policyCheckedOn ? `, as we read it on ${c.policyCheckedOn}` : ''}.\n\n` +
       'The courts have held that applying a flat percentage, two-thirds or a third or any other fixed fraction, without looking at the individual case, is an unjustified departure from the guidance. In other words, the council has stepped away from a rule it is supposed to follow without explaining why. The starting point should be the core fostering allowance, and your own circumstances should then be considered.\n\n' +
-      'This does not mean you are owed the full fostering rate. The courts have also held that a council does not have to pay every special guardian an allowance, and that means testing one is lawful. The problem is the blanket nature of a fixed fraction, not the arithmetic.\n\n' +
+      // The qualification comes from Merton, while the warning cites Kirklees for
+      // the main proposition, so Merton is named in the sentence itself.
+      'This does not mean you are owed the full fostering rate. In the Merton case the court also held that a council does not have to pay every special guardian an allowance, and that means testing one is lawful. The problem is the blanket nature of a fixed fraction, not the arithmetic.\n\n' +
       'Ask for the written policy and for the reasons behind the figure you were given.',
     citationId: 'kirklees-2010',
     actionUrl: '/guidance/fixed-percentage-policies',
@@ -113,9 +119,13 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
   REG7_EXTENSION_AVAILABLE: {
     severity: 'important',
     title: 'You can ask for the reward element to carry on past two years',
+    // Two corrections from the review of 2 September. Reg 7 only bites where the
+    // remuneration decision was taken before the order, and the continuation
+    // test is exceptional needs or circumstances, not ordinary ones.
     body: () =>
-      'Two years is not a hard stop. The regulations let a council carry on paying the reward element beyond it where it considers that appropriate.\n\n' +
-      'Nothing makes it automatic, in either direction. Ask in writing, and set out what has changed or what has not.',
+      'Two years is not a hard stop. Your council can carry on paying the reward element beyond it, but only where it considers that necessary because of the **exceptional needs of the child, or other exceptional circumstances**.\n\n' +
+      'That is a higher bar than it sounds, so it is worth putting your case in those terms rather than saying the needs have not reduced.\n\n' +
+      'There is also a question that comes first: this rule only applies where your council decided to include a reward element **before** the order was made. Ask whether it did.',
     citationId: 'sg-regs-2005-reg7',
     actionUrl: '/guidance/former-foster-carers',
   },
@@ -221,7 +231,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
           : c.taperMethod === 'pound-for-pound'
             ? 'pound-for-pound, which is the most common approach'
             : `the "${c.taperMethod}" method`
-      }. Your council may use another. Ask it which it uses.`,
+      }. Your council may use another.\n\nAsk it two things: which method it uses, **and where that comes from**. There being no national rule is not a gap in our research, it is how the scheme is built, so a council that cannot say where its own taper comes from is in a weaker position than one that can.`,
     citationId: 'corambaaf-pn75',
     actionUrl: '/guidance/how-the-means-test-works',
   },
@@ -257,17 +267,26 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
   ANNUAL_REVIEW_DUE: {
     severity: 'info',
     title: 'Your allowance should be reviewed every year',
+    // The trigger is receipt of the annual statement, not twelve months passing.
+    // A carer who has never been asked for one has a sharper question than "it
+    // has been a year": the council has not set up the thing that produces the
+    // review at all.
     body: () =>
-      'Financial support is reviewed annually. The council should ask you for updated information, tell you what it proposes, and give you a chance to comment before it changes anything.\n\n' +
-      'If you have not had a review in over a year, ask for one. Rates go up every April.',
-    citationId: 'sg-regs-2005-reg10-11',
+      'Your council has to review your financial support when it receives your annual statement of circumstances. The review is triggered by that statement, not simply by a year going by.\n\n' +
+      'So if your council has never asked you for an annual statement, that is the thing to raise. Ask whether it wants one, and if not, why your support has not been reviewed. Rates go up every April.',
+    citationId: 'sg-regs-2005-reg18',
     actionUrl: '/guidance/annual-reviews',
   },
   THREE_YEAR_RESPONSIBILITY: {
     severity: 'info',
     title: 'Which council is responsible',
+    // Reg 5(2) carries an exception that matters most to exactly the carers most
+    // likely to be reading this: where support was already being provided and the
+    // decision to provide it was taken before the order, responsibility does not
+    // end at three years at all.
     body: () =>
       'For three years after the order, the council that looked after the child stays responsible for assessing support needs, even if you have moved away. After three years, responsibility usually passes to the council where you live.\n\n' +
+      '**There is an important exception.** If your council was already paying you financial support, and it decided to pay it **before** the order was made, then it stays responsible for that support after the three years are up. It does not pass to your new council. That will often be the case if you were the child\'s foster carer.\n\n' +
       'If you have moved recently, it is worth being clear which council you should be asking.',
     citationId: 'sg-regs-2005-reg5',
     actionUrl: '/guidance/which-council-is-responsible',

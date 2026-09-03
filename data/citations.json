@@ -31,13 +31,6 @@
     "retrieved": "2026-08-29",
     "holding": "Financial support ceases in the circumstances set out in the regulation, including when the child reaches 18 unless the conditions for continuing are met."
   },
-  "sg-regs-2005-reg10-11": {
-    "label": "Special Guardianship Regulations 2005, regs 10-11",
-    "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/10",
-    "kind": "regulation",
-    "retrieved": "2026-08-29",
-    "holding": "Financial support is subject to annual review, and the council must notify the special guardian of any proposed variation."
-  },
   "dfe-guidance-2017-para65": {
     "label": "DfE Special Guardianship Guidance (Jan 2017), para 65",
     "url": "https://www.gov.uk/government/publications/special-guardianship-guidance",
@@ -47,35 +40,31 @@
   },
   "lewisham-2008": {
     "label": "R (B) v Lewisham LBC [2008] EWHC 738 (Admin)",
-    "url": "",
+    "url": "https://www.bailii.org/ew/cases/EWHC/Admin/2008/738.html",
     "kind": "case",
-    "retrieved": "2026-08-29",
-    "holding": "Using the lower adoption allowance model was unlawful. Fostering allowances are the starting point.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "retrieved": "2026-09-03",
+    "holding": "Using the lower adoption allowance model was unlawful. Fostering allowances are the starting point."
   },
   "kirklees-2010": {
     "label": "Barrett v Kirklees MBC [2010] EWHC 467 (Admin)",
-    "url": "",
+    "url": "https://www.bailii.org/ew/cases/EWHC/Admin/2010/467.html",
     "kind": "case",
-    "retrieved": "2026-08-29",
-    "holding": "A flat two-thirds of the core fostering allowance was an unjustified departure from guidance.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "retrieved": "2026-09-03",
+    "holding": "A flat two-thirds of the core fostering allowance was an unjustified departure from guidance."
   },
   "merton-2012": {
     "label": "R (TT) v Merton LBC [2012] EWHC 2055 (Admin)",
-    "url": "",
+    "url": "https://caselaw.nationalarchives.gov.uk/ewhc/admin/2012/2055",
     "kind": "case",
-    "retrieved": "2026-08-29",
-    "holding": "Blanket percentage deduction unlawful. BUT: no duty to pay every special guardian an allowance, and the means-test methodology itself was upheld as lawful.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "retrieved": "2026-09-03",
+    "holding": "Blanket percentage deduction unlawful. BUT: no duty to pay every special guardian an allowance, and the means-test methodology itself was upheld as lawful."
   },
   "tower-hamlets-2013": {
     "label": "R (X) v Tower Hamlets LBC [2013] EWCA Civ 904",
-    "url": "",
+    "url": "https://caselaw.nationalarchives.gov.uk/ewca/civ/2013/904",
     "kind": "case",
-    "retrieved": "2026-08-29",
-    "holding": "Paying family foster carers less than unrelated foster carers was unlawful. Former foster carers should not be worse off.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "retrieved": "2026-09-03",
+    "holding": "Paying family foster carers less than unrelated foster carers was unlawful. Former foster carers should not be worse off."
   },
   "lgsco-devon-2024": {
     "label": "LGSCO decision, Devon County Council (23 000 973, 25 January 2024)",
@@ -103,11 +92,11 @@
   },
   "corambaaf-pn75": {
     "label": "CoramBAAF Practice Note 75 - special guardianship financial support",
-    "url": "",
+    "url": "https://corambaaf.org.uk/sites/default/files/Members%20Area/Resources/Practice%20Notes/PN%2075%20Financial%20Support%20for%20Special%20Guardians_Englandv2.pdf",
     "kind": "guidance",
-    "retrieved": "2026-08-29",
+    "retrieved": "2026-09-03",
     "holding": "The DfE standardised means-test model is non-statutory and pre-dates Universal Credit.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "note": "Resolves publicly but sits on a members-area path, so it may be withdrawn without notice. A substitute for the one proposition we rely on it for, that the DfE means test model is not law, is tracked in watchlist.json as corambaaf-substitute: Lincolnshire's published assessment framework calls the model non-statutory guidance in its own words, which is a council conceding the point."
   },
   "dfe-nma-2026-27": {
     "label": "DfE National Minimum Allowance for foster carers, 2026 to 2027",
@@ -133,10 +122,9 @@
   },
   "hsc-fostering-2026-27": {
     "label": "HSC (Northern Ireland) fostering allowances, 2026 to 2027",
-    "url": "",
+    "url": "https://www.health-ni.gov.uk/sites/default/files/2026-05/Foster%20care%20allowances%202026-27.pdf",
     "kind": "dataset",
-    "retrieved": "2026-08-29",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "retrieved": "2026-09-03"
   },
   "sra-2026-27": {
     "label": "Scottish Recommended Allowance for foster and kinship carers, Scottish Government, page updated 11 May 2026",
@@ -148,24 +136,21 @@
   },
   "cb-ga-uprating-order-2026": {
     "label": "Child Benefit and Guardian's Allowance Up-rating Order 2026",
-    "url": "",
+    "url": "https://www.legislation.gov.uk/uksi/2026/232/made",
     "kind": "regulation",
-    "retrieved": "2026-08-29",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "retrieved": "2026-09-03"
   },
   "cb-ga-uprating-order-2025": {
     "label": "Child Benefit and Guardian's Allowance Up-rating Order 2025",
-    "url": "",
+    "url": "https://www.legislation.gov.uk/uksi/2025/292/made",
     "kind": "regulation",
-    "retrieved": "2026-08-29",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2"
+    "retrieved": "2026-09-03"
   },
   "uc-two-child-limit-act-2026": {
     "label": "Universal Credit (Removal of Two Child Limit) Act 2026 c.13",
-    "url": "",
+    "url": "https://www.legislation.gov.uk/ukpga/2026/13",
     "kind": "statute",
-    "retrieved": "2026-08-29",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/9"
+    "retrieved": "2026-09-03"
   },
   "kinship-zones-2026": {
     "label": "Kinship Zones - kinship allowance pilot (2026-2029)",
@@ -202,9 +187,9 @@
     "label": "Special Guardianship Regulations 2005, reg 13(2)",
     "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/13",
     "kind": "regulation",
-    "retrieved": "2026-09-01",
-    "holding": "Requires a council to take into account other grants, benefits, allowances and resources available to the guardian, and allows it to deduct an amount to take account of Child Benefit received for the child.",
-    "note": "This is the provision the site never mentioned. Because it expressly permits the deduction, a carer who was told only that the Ombudsman found a deduction wrong had nothing prepared for the obvious reply. The Devon decision records reg 13 at its own paragraph 8. What Devon got wrong was applying it to everyone on Universal Credit as a blanket rule; the Brent decision (20 008 652) frames the test as whether the council had justification, not whether deduction is permitted at all."
+    "retrieved": "2026-09-03",
+    "holding": "Reg 13(2): in determining the amount of financial support the local authority MUST take account of any other grant, benefit, allowance or resource available to the person. It does not name Child Benefit. It imposes a duty to take other benefits into account, of which Child Benefit is one.",
+    "note": "Refined by the legal review of 2 September 2026. Cite reg 13(2) for the DUTY TO TAKE ACCOUNT of other benefits, and Barrett v Kirklees for the DEDUCTION itself: the court said councils should pay in line with the fostering allowance \"(with the deduction of Child Benefit if appropriate)\", recorded at paragraph 10 of the North Tyneside report. Do not attribute the Child Benefit deduction to the text of reg 13, because it is not there and a council lawyer will say so. The site's position is unchanged: what Devon got wrong was applying it to everyone without individual consideration."
   },
   "north-tyneside-decision-2025": {
     "label": "North Tyneside Council, Decision Record: Foster Care, Special Guardianship, Adoption and Child Arrangement Order Allowance Increases",
@@ -307,12 +292,11 @@
   },
   "sra-implementation-review": {
     "label": "Scottish Government, Foster and kinship carers, Scottish Recommended Allowance: implementation review",
-    "url": "",
+    "url": "https://www.gov.scot/publications/review-implementation-scottish-recommended-allowance-foster-kinship-carers/",
     "kind": "dataset",
-    "retrieved": "2026-08-31",
+    "retrieved": "2026-09-03",
     "holding": "Records that there was no uplift to payments in the financial year 2024/25.",
-    "note": "No permanent address located for the review document itself. It is the evidence that the August 2023 rates stood through 2024/25, so it is recorded rather than dropped. The same review says there was no indication of an uplift in 2025/26, which is an expectation and not a published rate, so 2025/26 stays unsourced.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/1"
+    "note": "No permanent address located for the review document itself. It is the evidence that the August 2023 rates stood through 2024/25, so it is recorded rather than dropped. The same review says there was no indication of an uplift in 2025/26, which is an expectation and not a published rate, so 2025/26 stays unsourced."
   },
   "devon-sgo-procedures-2024": {
     "label": "Devon County Council, Applications for Special Guardianship Orders (procedures manual), last updated 24 October 2024",
@@ -355,12 +339,11 @@
   },
   "wg-nma-2024-25": {
     "label": "Welsh Government, National Minimum Allowances for foster carers 2024 to 2025, circular of 26 February 2024",
-    "url": "",
+    "url": "https://www.thefosteringnetwork.org.uk/media/rzzgloqq/nma-letter-2024-25-english-e-_0.pdf",
     "kind": "dataset",
-    "retrieved": "2026-09-01",
+    "retrieved": "2026-09-03",
     "holding": "Sets the Welsh national minimum allowances from 1 April 2024 at 218 pounds for ages 0 to 4, 199 pounds for 5 to 15 and 248 pounds for 16 and over, a rise of 3 per cent.",
-    "note": "On Welsh Government letterhead, signed Alistair Davey. Supplied by the reviewer on 1 September 2026 and transcribed as printed. This is the primary source the site had been missing for Wales: it confirms directly that the 0 to 4 band is paid more than the 5 to 15 band, which had only been corroborated from secondary reports. The top band is printed \"16+\", not \"16 to 17\", so it is not stored as a closed range. Rates apply from 1 April, the council convention, not the tax year.",
-    "pendingSourceIssue": "https://github.com/fantasy-324/new-test-tool/issues/2"
+    "note": "A copy of the Welsh Government letter of 26 February 2024, on Welsh Government letterhead and signed by Alistair Davey, hosted by The Fostering Network. Located by the review of 2 September 2026. It is the primary document, not a report of it, which is what makes it usable. A gov.wales or Care Inspectorate Wales copy would be better and is still wanted: these go out as email bulletins, so one may not exist publicly. Tracked in watchlist.json as ciw-nma-bulletins."
   },
   "sg-regs-2005-reg6-2-b": {
     "label": "Special Guardianship Regulations 2005, reg 6(2)(b)",
@@ -369,5 +352,35 @@
     "retrieved": "2026-09-01",
     "holding": "The specific provision on taking a child's needs into account when deciding financial support, including any disability or the consequences of earlier abuse or neglect.",
     "note": "Cited specifically rather than as reg 6 as a whole, on the reviewer's instruction of 1 September 2026, so an enhancement request points at the sub paragraph it rests on."
+  },
+  "ca1989-s14f-3": {
+    "label": "Children Act 1989, s.14F(3)",
+    "url": "https://www.legislation.gov.uk/ukpga/1989/41/section/14F",
+    "kind": "statute",
+    "retrieved": "2026-09-03",
+    "holding": "A local authority MAY assess a person's needs for special guardianship support services on request, but MUST do so where that person is of a description prescribed in regulations. The duty to assess therefore does not exist in the Act alone: it needs reg 11(1) to supply the prescribed description.",
+    "note": "Identified by the legal review of 2 September 2026, answering the question parked on 1 September. The site previously rested the duty on reg 6, which governs when financial support is payable rather than when an assessment is owed. Cite this together with sg-regs-2005-reg11; neither carries the claim alone."
+  },
+  "sg-regs-2005-reg11": {
+    "label": "Special Guardianship Regulations 2005, reg 11",
+    "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/11",
+    "kind": "regulation",
+    "retrieved": "2026-09-03",
+    "holding": "Prescribes, for the purposes of s.14F(3), the persons at whose request an assessment MUST be carried out: reg 11(1)(a) a relevant child looked after, or looked after immediately before the order; (b) a special guardian or prospective special guardian of such a child; (c) a parent of such a child. Where reg 11(1) does not apply, reg 11(2) to (3) require the authority, if minded not to assess, to give notice with reasons and allow representations."
+  },
+  "sg-regs-2005-reg18": {
+    "label": "Special Guardianship Regulations 2005, reg 18(2)(a)",
+    "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/18",
+    "kind": "regulation",
+    "retrieved": "2026-09-03",
+    "holding": "The local authority must review financial support payable periodically on receipt of the annual statement mentioned in reg 10. The trigger is receipt of the statement, not the passage of twelve months.",
+    "note": "Replaces sg-regs-2005-reg10-11, which was wrong for this purpose: reg 10 imposes a duty on the CARER to supply an annual statement, and reg 11 is the request for assessment. Reg 17(2) carries the words \"in any event, at least annually\" but reg 17(1) applies it to support other than periodic financial support, so it does not cover the allowance. Corrected by the legal review of 2 September 2026."
+  },
+  "sg-regs-2005-reg10": {
+    "label": "Special Guardianship Regulations 2005, reg 10",
+    "url": "https://www.legislation.gov.uk/uksi/2005/1109/regulation/10",
+    "kind": "regulation",
+    "retrieved": "2026-09-03",
+    "holding": "Conditions. Reg 10(1)(b) requires the special guardian to agree to supply an annual statement of their circumstances. That statement is what triggers the review duty in reg 18(2)(a)."
   }
 }

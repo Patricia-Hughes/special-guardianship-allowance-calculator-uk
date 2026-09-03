@@ -74,7 +74,7 @@ describe('guardrails', () => {
             severity: 'info',
             title: 'x',
             body: 'y',
-            citation: cite('sg-regs-2005-reg10-11'),
+            citation: cite('sg-regs-2005-reg18'),
           },
         ],
       },
@@ -245,12 +245,22 @@ describe('the Job A review findings, pinned', () => {
     expect(flag.body).toMatch(/unjustified departure/);
   });
 
-  it('leads the Child Benefit warning with what the regulations permit', () => {
+  it('leads the Child Benefit warning with what the regulations require', () => {
+    // Job A established the order: what the rules allow comes before the
+    // Ombudsman finding, so a carer is not sent to argue a point they lose.
+    //
+    // The 2 September review refined the wording. Reg 13(2) does not name Child
+    // Benefit; it imposes a duty to take account of other benefits, and the
+    // deduction itself was contemplated in Barrett v Kirklees. So the warning no
+    // longer says the regulations "allow" the deduction. The order is unchanged
+    // and is still what this test is for.
     const flag = makeFlag('UNLAWFUL_CB_DEDUCTION_RISK', ctx);
-    const permitted = flag.body.indexOf('regulations allow a council');
+    const permitted = flag.body.indexOf('require your council to take account of other benefits');
     const finding = flag.body.indexOf('found a council at fault');
     expect(permitted).toBeGreaterThan(-1);
     expect(finding).toBeGreaterThan(permitted);
+    // The deduction is attributed to the courts, not to the text of reg 13.
+    expect(flag.body).toMatch(/courts have contemplated it being deducted/);
     expect(flag.body).toMatch(/within 12 months/);
     expect(flag.citation?.id).toBe('sg-regs-2005-reg13');
   });

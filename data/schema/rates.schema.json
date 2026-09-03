@@ -1,243 +1,247 @@
 {
- "$schema": "http://json-schema.org/draft-07/schema#",
- "$id": "https://sgo-calculator.example/schema/rates.schema.json",
- "title": "Rate table for one financial year",
- "type": "object",
- "required": [
-  "financialYear",
-  "effectiveFrom",
-  "effectiveTo",
-  "dataVersion"
- ],
- "additionalProperties": false,
- "properties": {
-  "financialYear": {
-   "type": "string",
-   "pattern": "^[0-9]{4}-[0-9]{2}$"
-  },
-  "effectiveFrom": {
-   "type": "string",
-   "format": "date"
-  },
-  "effectiveTo": {
-   "type": "string",
-   "format": "date"
-  },
-  "dfeStatedTaxYearFrom": {
-   "type": "string",
-   "format": "date"
-  },
-  "dfeStatedTaxYearTo": {
-   "type": "string",
-   "format": "date"
-  },
-  "councilApplicationFrom": {
-   "type": "string",
-   "format": "date"
-  },
-  "aprilBoundaryNote": {
-   "type": "string"
-  },
-  "dataVersion": {
-   "type": "string"
-  },
-  "status": {
-   "type": "string",
-   "enum": [
-    "PENDING_SOURCE"
-   ]
-  },
-  "pendingSourceIssue": {
-   "type": "string",
-   "format": "uri"
-  },
-  "note": {
-   "type": "string"
-  },
-  "england": {
-   "oneOf": [
-    {
-     "type": "null"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://sgo-calculator.example/schema/rates.schema.json",
+  "title": "Rate table for one financial year",
+  "type": "object",
+  "required": [
+    "financialYear",
+    "effectiveFrom",
+    "effectiveTo",
+    "dataVersion"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "financialYear": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}$"
     },
-    {
-     "type": "object",
-     "required": [
-      "sourceId",
-      "unit",
-      "ageBands",
-      "regions"
-     ],
-     "additionalProperties": false,
-     "properties": {
-      "sourceId": {
-       "type": "string"
-      },
-      "unit": {
-       "const": "weekly-pence"
-      },
-      "upliftPercent": {
-       "type": "number"
-      },
-      "note": {
-       "type": "string"
-      },
-      "ageBands": {
-       "$ref": "#/definitions/ageBands"
-      },
-      "regions": {
-       "type": "object",
-       "required": [
-        "london",
-        "south-east",
-        "rest-of-england"
-       ],
-       "additionalProperties": false,
-       "properties": {
-        "london": {
-         "$ref": "#/definitions/bandRates"
-        },
-        "south-east": {
-         "$ref": "#/definitions/bandRates"
-        },
-        "rest-of-england": {
-         "$ref": "#/definitions/bandRates"
-        }
-       }
-      }
-     }
-    }
-   ]
-  },
-  "wales": {
-   "$ref": "#/definitions/flatNation"
-  },
-  "northern-ireland": {
-   "$ref": "#/definitions/flatNation"
-  },
-  "scotland": {
-   "$ref": "#/definitions/flatNation"
-  }
- },
- "definitions": {
-  "ageBands": {
-   "type": "array",
-   "minItems": 1,
-   "items": {
-    "type": "object",
-    "required": [
-     "id",
-     "minAge",
-     "maxAge"
-    ],
-    "additionalProperties": false,
-    "properties": {
-     "id": {
+    "effectiveFrom": {
+      "type": "string",
+      "format": "date"
+    },
+    "effectiveTo": {
+      "type": "string",
+      "format": "date"
+    },
+    "dfeStatedTaxYearFrom": {
+      "type": "string",
+      "format": "date"
+    },
+    "dfeStatedTaxYearTo": {
+      "type": "string",
+      "format": "date"
+    },
+    "councilApplicationFrom": {
+      "type": "string",
+      "format": "date"
+    },
+    "aprilBoundaryNote": {
       "type": "string"
-     },
-     "minAge": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 17
-     },
-     "maxAge": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 17
-     },
-     "openEnded": {
-      "type": "boolean",
-      "description": "The published source prints this band open ended, for instance \"16+\". maxAge is then this calculator's own cap of 17, not a limit the source states. Recording the difference stops a later reader treating our cap as the published rule."
-     }
-    }
-   }
-  },
-  "bandRates": {
-   "type": "object",
-   "minProperties": 1,
-   "additionalProperties": {
-    "type": "integer",
-    "minimum": 0
-   }
-  },
-  "flatNation": {
-   "oneOf": [
-    {
-     "type": "null"
     },
-    {
-     "type": "object",
-     "required": [
-      "sourceId",
-      "unit",
-      "ageBands",
-      "rates"
-     ],
-     "additionalProperties": false,
-     "properties": {
-      "sourceId": {
-       "type": "string"
-      },
-      "unit": {
-       "const": "weekly-pence"
-      },
-      "upliftPercent": {
-       "type": "number"
-      },
-      "note": {
-       "type": "string"
-      },
-      "verify": {
-       "type": "boolean"
-      },
-      "verifyNote": {
-       "type": "string"
-      },
-      "anomalyConfirmed": {
-       "type": "boolean"
-      },
-      "anomalyConfirmedOn": {
-       "type": "string",
-       "format": "date"
-      },
-      "anomalyCorroboration": {
-       "type": "array",
-       "minItems": 2,
-       "items": {
+    "dataVersion": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PENDING_SOURCE"
+      ]
+    },
+    "pendingSourceIssue": {
+      "type": "string",
+      "format": "uri"
+    },
+    "note": {
+      "type": "string"
+    },
+    "england": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "sourceId",
+            "unit",
+            "ageBands",
+            "regions"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "sourceId": {
+              "type": "string"
+            },
+            "unit": {
+              "const": "weekly-pence"
+            },
+            "upliftPercent": {
+              "type": "number"
+            },
+            "note": {
+              "type": "string"
+            },
+            "ageBands": {
+              "$ref": "#/definitions/ageBands"
+            },
+            "regions": {
+              "type": "object",
+              "required": [
+                "london",
+                "south-east",
+                "rest-of-england"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "london": {
+                  "$ref": "#/definitions/bandRates"
+                },
+                "south-east": {
+                  "$ref": "#/definitions/bandRates"
+                },
+                "rest-of-england": {
+                  "$ref": "#/definitions/bandRates"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "wales": {
+      "$ref": "#/definitions/flatNation"
+    },
+    "northern-ireland": {
+      "$ref": "#/definitions/flatNation"
+    },
+    "scotland": {
+      "$ref": "#/definitions/flatNation"
+    }
+  },
+  "definitions": {
+    "ageBands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
         "type": "object",
         "required": [
-         "source",
-         "url",
-         "finding"
+          "id",
+          "minAge",
+          "maxAge"
         ],
+        "additionalProperties": false,
         "properties": {
-         "source": {
-          "type": "string"
-         },
-         "url": {
-          "type": "string",
-          "format": "uri"
-         },
-         "date": {
-          "type": "string"
-         },
-         "finding": {
-          "type": "string"
-         }
+          "id": {
+            "type": "string"
+          },
+          "minAge": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 17
+          },
+          "maxAge": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 17
+          },
+          "openEnded": {
+            "type": "boolean",
+            "description": "The published source prints this band open ended, for instance \"16+\". maxAge is then this calculator's own cap of 17, not a limit the source states. Recording the difference stops a later reader treating our cap as the published rule."
+          }
         }
-       }
-      },
-      "userFacingNote": {
-       "type": "string"
-      },
-      "ageBands": {
-       "$ref": "#/definitions/ageBands"
-      },
-      "rates": {
-       "$ref": "#/definitions/bandRates"
       }
-     }
+    },
+    "bandRates": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "flatNation": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "sourceId",
+            "unit",
+            "ageBands",
+            "rates"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "sourceId": {
+              "type": "string"
+            },
+            "unit": {
+              "const": "weekly-pence"
+            },
+            "upliftPercent": {
+              "type": "number"
+            },
+            "note": {
+              "type": "string"
+            },
+            "verify": {
+              "type": "boolean"
+            },
+            "verifyNote": {
+              "type": "string"
+            },
+            "anomalyConfirmed": {
+              "type": "boolean"
+            },
+            "anomalyConfirmedOn": {
+              "type": "string",
+              "format": "date"
+            },
+            "anomalyCorroboration": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "required": [
+                  "source",
+                  "url",
+                  "finding"
+                ],
+                "properties": {
+                  "source": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "date": {
+                    "type": "string"
+                  },
+                  "finding": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "userFacingNote": {
+              "type": "string"
+            },
+            "ageBands": {
+              "$ref": "#/definitions/ageBands"
+            },
+            "rates": {
+              "$ref": "#/definitions/bandRates"
+            },
+            "bandNote": {
+              "type": "string",
+              "description": "Maintainer note about how the published bands were transcribed, for example where a source prints an open top band. Stripped from the shipped copy by sync-engine-data."
+            }
+          }
+        }
+      ]
     }
-   ]
   }
- }
 }

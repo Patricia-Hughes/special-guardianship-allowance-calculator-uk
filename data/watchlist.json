@@ -2,38 +2,24 @@
   "note": "Documents we know exist, or expect to exist, and are waiting on. Each one is a short lookup rather than a piece of research. check-staleness warns once checkAfter has passed, so nothing here can quietly rot in a markdown file. Adding a row is cheap; leaving a known gap unrecorded is not.",
   "items": [
     {
-      "id": "must-assess-provision",
-      "what": "Identify the provision that creates the duty to assess a special guardian for support where the child was looked after immediately before the order, and confirm it. Also confirm that regs 10 and 11 are the right citation for the annual review, and that reg 5 is right for the three year responsibility rule.",
-      "why": "The site said the council \"must\" assess, citing regulation 6. Regulation 6 governs when financial support is payable, not when an assessment is owed, so the citation did not support the claim. The reviewer said the claim looks right but not to guess the provision. The wording has been changed so nothing rests on the wrong source, and an on-screen note says why. This is the only finding from the review that is parked rather than fixed.",
-      "checkAfter": "2026-09-30",
-      "openItem": "6"
-    },
-    {
       "id": "ni-model-scheme-2025-26",
-      "what": "Open the Department of Health (Northern Ireland) model scheme PDFs for 2025-26 and 2026-27 and read the SCALE RATES table out of each.",
-      "why": "2024/25 is now sourced from the 2024-25 model scheme, so Northern Irish backdating works for that year and blocks 2025/26. Note the trap: each scheme prints a second REDUCED RATES table for enhanced allowances and short breaks, about 28 per cent lower, which is not the allowance.",
-      "url": "https://www.health-ni.gov.uk/publications/foster-care-allowances",
+      "what": "Open the Department of Health (Northern Ireland) foster care allowances PDF for 2025-26 and read the SCALE RATES table out of it. Located by the review of 2 September at a NEW path: the 2024-25 pattern /publications/health/model-scheme-... no longer applies, so guessing a filename from the old URL will fail.",
+      "why": "2024/25 is sourced, so Northern Irish backdating works for that year and blocks 2025/26. A 4% uplift for 2025/26 backdated to 1 April 2025 is confirmed, after two years of no uplift, but the figures themselves have not been read from the document. Secondary sources suggest about 155/173/194/228 a week: DO NOT USE THEM, they are rounded and from a summary. The trap stands: each scheme prints a second REDUCED RATES table for enhanced allowances and short breaks, about 28 per cent lower, which is not the allowance. Give both the Per Week and Per 4 Weeks columns so the arithmetic cross-checks as it did for 2024/25.",
+      "url": "https://www.health-ni.gov.uk/sites/default/files/2026-05/Foster%20care%20allowances%202025-26.pdf",
       "checkAfter": "2026-09-30",
       "openItem": "1b"
     },
     {
       "id": "scotland-2025-26",
-      "what": "A published Scottish Recommended Allowance table for 2025/26.",
-      "why": "The implementation review says there was no uplift in 2024/25 and gives no indication of one in 2025/26. An absence of indications is not a published rate, so 2025/26 is left null and Scottish backdating blocks that year.",
-      "checkAfter": "2026-10-31",
-      "openItem": "1b"
-    },
-    {
-      "id": "sra-implementation-review-url",
-      "what": "A permanent address for the Scottish Recommended Allowance implementation review.",
-      "why": "It is the evidence that the August 2023 rates stood through 2024/25, and it is currently cited without a link.",
+      "what": "Resolve the Scottish Recommended Allowance for 2025/26 from an archived gov.scot snapshot taken after 27 June 2025. The live page now shows 2026/27, so the archive is the only route: web.archive.org/web/2025*/https://www.gov.scot/publications/scottish-recommended-allowance-for-foster-and-kinship-carers-information-for-carers-and-professionals/",
+      "why": "There WAS an uplift: 1.7 per cent, announced May 2025, backdated to 1 April 2025, so this is not another frozen year. But two published figure sets conflict. One reports 171.17 / 199.14 / 199.14 / 272.97; East Renfrewshire HSCP publishes 168.31 / 195.81 / 207.60 / 268.41, which repeats the 2023/24 figures for three of four bands and shows a 207.60 that appears in no year at all. Neither is safe. Remember the band structure: the SRA is three bands (0-4, 5-15, 16-17) presented as four, so any source showing different values for 5-10 and 11-15 has reintroduced a distinction the SRA does not make, which is itself a signal it is wrong.",
       "checkAfter": "2026-10-31",
       "openItem": "1b"
     },
     {
       "id": "ciw-nma-bulletins",
-      "what": "The Care Inspectorate Wales bulletins for 2024/25 and 2026/27, via the CIW bulletins archive and the National Archives web archive.",
-      "why": "The publication route is now confirmed and the 2023/24 bulletin gives the URL pattern. A person has to read the rate table, because it is an image inside the bulletin rather than text.",
+      "what": "The Welsh National Minimum Allowance letters for 2025/26 and 2026/27. Two routes. First, the Care Inspectorate Wales bulletins archive and the National Archives web archive. Second, and not yet tried: The Fostering Network appears to host these letters as it receives them, and the 2024/25 one sits at a predictable path, thefosteringnetwork.org.uk/media/rzzgloqq/nma-letter-2024-25-english-e-_0.pdf. Vary the year in the filename and search their media library for nma-letter-2025-26.",
+      "why": "A 2.6 per cent uplift for 2025/26 was announced in February 2025, with reported figures of 224 (0-4), 204 (5-15) and 255 (16+), inversion intact, but no primary letter or bulletin has been located. It is a Welsh Government letter on Welsh Government letterhead wherever it is hosted, which is what made the 2024/25 one usable. A person has to read it either way: the table inside a CIW bulletin is an image, not text.",
       "url": "https://content.govdelivery.com/accounts/UKWALES_CSSIW_INT/bulletins/3450cef",
       "checkAfter": "2026-11-30",
       "openItem": "2"
@@ -53,6 +39,21 @@
       "url": "https://leedscs.trixonline.co.uk/chapter/applications-for-special-guardianship-orders",
       "checkAfter": "2026-11-30",
       "openItem": "5"
+    },
+    {
+      "id": "wg-sgo-code-of-practice",
+      "what": "The final Special Guardianship Orders Code of Practice for Wales.",
+      "why": "The consultation that closed on 7 April 2026 covers TWO codes, and one of them is the SGO code. That is the Welsh equivalent of the statutory guidance the whole English side of this site rests on, so when it is finalised the Wales pages need more than a rates refresh. Tracked separately from the Part 6 code for that reason. As at 2 September 2026 the responses are still being reviewed, and a fuller review was signalled for early in the next Senedd term.",
+      "url": "https://www.gov.wales/written-statement-launch-consultation-revisions-part-6-and-special-guardianship-codes-practice",
+      "checkAfter": "2026-12-31",
+      "openItem": "2"
+    },
+    {
+      "id": "corambaaf-substitute",
+      "what": "Lincolnshire County Council's published Special Guardianship Allowance Assessment Framework, which describes the DfE means test model as non-statutory guidance in its own words. Find a permanent address for it.",
+      "why": "CoramBAAF Practice Note 75 is the only source cited for the proposition that the means test model is not law. It resolves publicly but sits on a members-area path and could be withdrawn without notice. A council conceding the point in its own published policy is a better citation than a practice note, and it removes a single point of failure.",
+      "checkAfter": "2026-10-31",
+      "openItem": "4"
     }
   ]
 }

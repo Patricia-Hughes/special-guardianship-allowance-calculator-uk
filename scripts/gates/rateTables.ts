@@ -49,6 +49,11 @@ export function checkRateShape({ rateDocs, report }: GateContext): void {
           const message =
             `${file} ${set.label}: band ${band.id} (${value}p) is lower than ${previousBand} (${previous}p). ` +
             'Rates must not fall as age rises, this is usually a transcription error.';
+          // If you are reading this because the build just failed on Wales, the
+          // figures are RIGHT and the exemption below is what has gone missing.
+          // Do not "correct" the rates to make them rise with age. Restore
+          // anomalyConfirmed on the Welsh section instead, and see the Welsh
+          // Government letter of 26 February 2024 recorded in anomalyCorroboration.
           if (set.anomalyConfirmed) {
             // Established as genuinely published. This no longer requires
             // verify: true, because verify means "we doubt this figure" and a
@@ -60,7 +65,11 @@ export function checkRateShape({ rateDocs, report }: GateContext): void {
           } else if (set.unverified) {
             report.note(`${message} Marked verify: true, so the route must stay disabled.`);
           } else {
-            report.fail('2 monotonic', message);
+            report.fail(
+              '2 monotonic',
+              `${message} If this is Wales, the figures are correct as published and the ` +
+                'anomalyConfirmed flag has been lost. Restore the flag, do not change the rates.',
+            );
           }
         }
         previous = value;

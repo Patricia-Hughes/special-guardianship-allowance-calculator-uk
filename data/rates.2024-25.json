@@ -96,9 +96,9 @@
     "anomalyCorroboration": [
       {
         "source": "Welsh Government circular of 26 February 2024, signed Alistair Davey",
-        "url": "https://www.gov.wales/",
+        "url": "https://www.thefosteringnetwork.org.uk/media/rzzgloqq/nma-letter-2024-25-english-e-_0.pdf",
         "date": "2024-02-26",
-        "finding": "Primary source, on Welsh Government letterhead. Prints 218 pounds for ages 0 to 4 against 199 pounds for 5 to 15. The inversion is how the Welsh Government publishes the rates, not an error in a report of them."
+        "finding": "Primary source, on Welsh Government letterhead. Prints 218 pounds for ages 0 to 4 against 199 pounds for 5 to 15. The inversion is how the Welsh Government publishes the rates, not an error in a report of them. The letter itself is now linked rather than the Welsh Government home page."
       },
       {
         "source": "The Welsh rates for 2026/27, held separately in rates.2026-27.json",
@@ -106,7 +106,8 @@
         "date": "2026-09-01",
         "finding": "Shows the same inversion two years later, and walking these 2024/25 figures forward through the announced uplifts of 2.6 per cent and 2.2 per cent reproduces all three of those cells exactly. The pattern is stable across years, not a one-off misprint."
       }
-    ]
+    ],
+    "bandNote": "The Welsh letter prints the top band as \"16+\", not 16-17. It is stored closed here because this calculator is for children under 18 and the bands must tile 0 to 17 exactly, so the two are equivalent for this product. Not a transcription error. The letter also states the rates apply from 1 April, so Wales follows the council convention rather than the DfE tax year."
   },
   "northern-ireland": {
     "sourceId": "ni-model-scheme-2024-25",
