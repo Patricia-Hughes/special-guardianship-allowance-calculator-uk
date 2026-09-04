@@ -75,7 +75,7 @@ test.describe('journeys', () => {
     // their figure is protected would be telling them they hold a right they do
     // not. See the Job A review, finding 3.
     await expect(
-      page.getByRole('heading', { name: /we have assumed your old fostering rate continues/i }),
+      page.getByRole('heading', { name: /i have assumed your old fostering rate continues/i }),
     ).toBeVisible();
     await expect(page.getByText('£300 a week').first()).toBeVisible();
     await expect(page.getByText('£223', { exact: false }).first()).toBeVisible();

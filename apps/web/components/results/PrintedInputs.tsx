@@ -103,8 +103,8 @@ export function PrintedInputs({
             <th scope="row">Council deducts Child Benefit</th>
             <td>
               {input.applyChildBenefitDeduction
-                ? 'Yes, as told to us by the carer'
-                : 'Not applied, we never deduct it unless told to'}
+                ? 'Yes, as told to me by the carer'
+                : 'Not applied, I never deduct it unless told to'}
             </td>
           </tr>
           {input.finances && (

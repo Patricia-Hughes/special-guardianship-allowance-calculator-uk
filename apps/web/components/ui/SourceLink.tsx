@@ -30,7 +30,7 @@ export function SourceLink({ citation }: { citation: Citation }) {
             )
           </>
         ) : (
-          <>(we are still sourcing a public link for this)</>
+          <>(I am still sourcing a public link for this)</>
         )}
       </span>
     </span>

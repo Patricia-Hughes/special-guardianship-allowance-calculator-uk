@@ -26,7 +26,7 @@ export function BenefitAmount({ name }: { name: keyof typeof FIELDS }) {
   const value = table ? FIELDS[name](table) : undefined;
   if (value === undefined || value === null) {
     // Never a broken figure and never a blank: say what is missing.
-    return <span>an amount we do not currently hold</span>;
+    return <span>an amount I do not currently hold</span>;
   }
   return (
     <span className="tabular">

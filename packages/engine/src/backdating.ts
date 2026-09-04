@@ -352,15 +352,15 @@ function caveatsFor(blockedYears: Set<string>, aprilBoundaryDifference: Pence): 
 
   if (aprilBoundaryDifference > 0) {
     caveats.unshift(
-      `Councils normally raise their rates on 1 April and we have used that date. The Department for ` +
+      `Councils normally raise their rates on 1 April and I have used that date. The Department for ` +
         `Education states the same rates on a tax year beginning 6 April. If your council follows the tax ` +
         `year instead, ${formatMoney(aprilBoundaryDifference)} of the figure below would not apply.`,
     );
   }
   if (blockedYears.size > 0) {
     caveats.unshift(
-      `We have left out ${[...blockedYears].sort().join(', ')} because we do not yet hold verified rates for ` +
-        `${blockedYears.size === 1 ? 'that year' : 'those years'}. The total below covers only the years we can evidence.`,
+      `I have left out ${[...blockedYears].sort().join(', ')} because I do not yet hold verified rates for ` +
+        `${blockedYears.size === 1 ? 'that year' : 'those years'}. The total below covers only the years I can evidence.`,
     );
   }
   return caveats;

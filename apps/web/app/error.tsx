@@ -15,7 +15,7 @@ export default function Error({ reset }: { error: Error; reset: () => void }) {
       <h1>Something went wrong on this page</h1>
       <p>
         The calculator stopped rather than show you a figure it could not stand behind. That is
-        deliberate, but it means you have not got an answer, and we are sorry.
+        deliberate, but it means you have not got an answer, and I am sorry.
       </p>
       <p>Try again. If it keeps happening, the guides and the rate tables still work.</p>
       <div className="row gap-lg">

@@ -31,7 +31,7 @@ export function CouncilStep({ form, set, headingRef, goTo, run, wantsMeansTest }
         My council takes Child Benefit off my allowance
       </Choice>
       <p className="field__hint">
-        We never do this unless you tick it. Whether a council may do it at all is contested, and it
+        I never do this unless you tick it. Whether a council may do it at all is contested, and it
         has been found wrong where the carer is on means-tested benefits.
       </p>
 

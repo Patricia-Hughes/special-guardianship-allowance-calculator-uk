@@ -41,9 +41,9 @@ export function WhereStep({ form, set, errorFor, headingRef, goTo }: StepProps) 
       {form.nation === 'wales' && !FLAGS.WALES_ROUTE_ENABLED && (
         <div className="callout callout--important" role="note" aria-label="Important">
           <p className="flush">
-            <strong>We are not showing Welsh figures yet.</strong> We are checking the Welsh rates
-            against the Welsh Government&apos;s own published table before we publish them, one of
-            the age bands in the sources we have looks wrong, and a wrong figure here is worse than
+            <strong>I am not showing Welsh figures yet.</strong> I am checking the Welsh rates
+            against the Welsh Government&apos;s own published table before I publish them, one of
+            the age bands in the sources I have looks wrong, and a wrong figure here is worse than
             none. The rest of this guide still applies in Wales.
           </p>
         </div>
@@ -73,15 +73,13 @@ export function WhereStep({ form, set, errorFor, headingRef, goTo }: StepProps) 
               */
               <p className="field__hint">
                 The government publishes rates by region but does not publish a list of which
-                council is in which region. We use the standard national regions. If you think
-                yours is wrong, choose it here, your choice overrides ours.
+                council is in which region. I use the standard national regions. If you think yours is wrong, choose it here, your choice overrides mine.
               </p>
             }
           >
             <FieldError id="region-error" message={errorFor('carer.englandRegion')} />
             <span className="field__hint">
-              Rates are higher in London and the South East. If you picked a council above, we have
-              already filled this in.
+              Rates are higher in London and the South East. If you picked a council above, I have already filled this in.
             </span>
           </RadioGroup>
         </>

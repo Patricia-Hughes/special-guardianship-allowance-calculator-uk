@@ -9,7 +9,7 @@ export function BenefitsStep({ form, set, headingRef, goTo, run }: StepProps) {
   return (
     <StepPanel heading="Benefits you receive" headingRef={headingRef} stepNumber={4}>
       <p>
-        This does not change your figure. It tells us which rules about your council&apos;s
+        This does not change your figure. It tells me which rules about your council&apos;s
         behaviour apply to you.
       </p>
 

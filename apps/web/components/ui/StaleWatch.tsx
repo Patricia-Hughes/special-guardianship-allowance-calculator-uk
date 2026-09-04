@@ -42,7 +42,7 @@ export function StaleWatch({
     <div role="alert" className="banner-critical">
       <div className="wrap">
         <p>
-          <strong>These rates may be out of date.</strong> Our newest figures ran to {effectiveTo}.
+          <strong>These rates may be out of date.</strong> My newest figures ran to {effectiveTo}.
           New rates take effect on 1 April each year. Please check the current national minimum
           allowance before using anything here in a letter.
         </p>

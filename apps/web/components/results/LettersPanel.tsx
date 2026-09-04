@@ -40,7 +40,7 @@ const REASON: Partial<Record<LetterTemplate, string>> = {
     'Your council appears to pay a fixed share of the fostering rate.',
   'ask-which-element-reduced': 'Your allowance is being stepped down.',
   'request-reg7-extension': 'You fostered this child before the order.',
-  'request-enhancement-disability': 'You told us your child has a disability or additional needs.',
+  'request-enhancement-disability': 'You told me your child has a disability or additional needs.',
   'request-calculation-breakdown': 'You have not been shown how your figure was worked out.',
   'request-written-policy': 'Everything else rests on this document.',
   'request-annual-review': 'Your allowance may not have been reviewed recently.',
@@ -187,7 +187,7 @@ function Letter({
           <p aria-live="polite" className="share__status">
             {copied === 'done' && 'Letter copied. Paste it into an email.'}
             {copied === 'failed' &&
-              'Your browser would not let us copy it. Select the letter above and copy it yourself, or use Download as a file.'}
+              'Your browser would not let me copy it. Select the letter above and copy it yourself, or use Download as a file.'}
           </p>
         </>
       )}

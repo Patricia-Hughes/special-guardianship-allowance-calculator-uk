@@ -66,6 +66,16 @@ export interface TemplateSpec {
    */
   requiresFirst?: LetterTemplate[];
   /**
+   * What the carer ends up HOLDING once this letter is answered, as a noun
+   * phrase, for the sentence that names the prerequisites.
+   *
+   * The titles are imperatives, so dropping them into "a complaint made before
+   * you hold ..." produced "before you hold ask for your council's written
+   * policy and ask for the arithmetic behind your figure". Only the letters
+   * named in another letter's requiresFirst need one.
+   */
+  obtains?: string;
+  /**
    * Let the carer past `requiresFirst` when they are near the Ombudsman's usual
    * twelve-month time limit.
    *

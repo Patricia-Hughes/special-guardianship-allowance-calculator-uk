@@ -37,17 +37,17 @@ function carerFacing(e: unknown): string {
   const raw = e instanceof Error ? e.message : '';
   if (/not yet sourced|PENDING_SOURCE|No rate table effective/i.test(raw)) {
     return (
-      'We do not hold checked figures for part of that period, so we will not guess at them. ' +
+      'I do not hold checked figures for part of that period, so I will not guess at them. ' +
       'Try a later start date, or ask your council for its own figures for those years.'
     );
   }
   if (/one child at a time|needs a child/i.test(raw)) {
-    return 'We can only work this out for one child at a time.';
+    return 'I can only work this out for one child at a time.';
   }
   if (/before its start|before the start/i.test(raw)) {
     return 'The end date is before the start date.';
   }
-  return 'We could not work that period out. Check the dates and try again.';
+  return 'I could not work that period out. Check the dates and try again.';
 }
 
 export function BackdatingPanel({ input }: { input: CalculatorInput }) {
@@ -77,10 +77,10 @@ export function BackdatingPanel({ input }: { input: CalculatorInput }) {
           up the difference, and the Ombudsman has told councils to do exactly that.
         </p>
         <p>
-          <strong>We can only work this out for one child at a time.</strong> You have told us about{' '}
+          <strong>I can only work this out for one child at a time.</strong> You have told me about{' '}
           {input.children.length} children, and each of them has their own birthdays and their own
           age bands, so a single total across all of them would be a figure your council could pick
-          apart. Rather than give you one we cannot stand behind, we would rather say so.
+          apart. Rather than give you one I cannot stand behind, I would rather say so.
         </p>
         <p className="flush-bot">
           You can still ask. The letter asking for a written breakdown, further down this page,
@@ -131,8 +131,7 @@ export function BackdatingPanel({ input }: { input: CalculatorInput }) {
         difference. The Ombudsman has ordered councils to backdate payments in real cases.
       </p>
       <p>
-        Tell us the period and what you have actually been paid, and we will work out the gap year
-        by year.
+        Tell me the period and what you have actually been paid, and I will work out the gap year by year.
       </p>
 
       <div className="field">
@@ -197,11 +196,11 @@ function BackdatingResultView({ result }: { result: BackdatingResult }) {
 
   return (
     <div aria-live="polite" className="gap-lg">
-      <h3>{nothingOwed ? 'We cannot see a shortfall' : 'The difference'}</h3>
+      <h3>{nothingOwed ? 'I cannot see a shortfall' : 'The difference'}</h3>
 
       {nothingOwed ? (
         <p>
-          Over the period you gave us, what you were paid matches or exceeds the maximum your
+          Over the period you gave me, what you were paid matches or exceeds the maximum your
           council should have been starting from. That does not mean nothing is wrong, it means
           this particular check does not show a gap.
         </p>
@@ -228,9 +227,9 @@ function BackdatingResultView({ result }: { result: BackdatingResult }) {
               {result.blockedYears.map((y) => y.replace('-', '/')).join(' and ')}{' '}
               {result.blockedYears.length === 1 ? 'is' : 'are'} not included.
             </strong>{' '}
-            We do not hold verified rates for{' '}
+            I do not hold verified rates for{' '}
             {result.blockedYears.length === 1 ? 'that year' : 'those years'} in your part of the UK,
-            and we will not estimate them. The figure above covers only the years we can evidence,
+            and I will not estimate them. The figure above covers only the years I can evidence,
             so the real gap may be larger.
           </p>
         </div>

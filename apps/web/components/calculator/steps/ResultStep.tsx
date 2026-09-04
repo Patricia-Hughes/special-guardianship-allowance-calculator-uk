@@ -44,7 +44,7 @@ export function ResultContinuation({ goTo }: Pick<StepProps, 'goTo'>) {
         print it or send a letter with it exactly as it is.
       </p>
       <p>
-        If you tell us a little more about your situation, we can be more specific about what your
+        If you tell me a little more about your situation, I can be more specific about what your
         council should be paying you, and which of the rules below apply to you.
       </p>
       <StepNav

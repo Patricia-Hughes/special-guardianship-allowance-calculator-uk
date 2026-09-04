@@ -35,7 +35,7 @@ export function RateTable({
   if (!section) {
     return (
       <p>
-        We do not yet publish {NATION_LABEL[nation]} rates for {table.financialYear.replace('-', '/')}.
+        I do not yet publish {NATION_LABEL[nation]} rates for {table.financialYear.replace('-', '/')}.
       </p>
     );
   }

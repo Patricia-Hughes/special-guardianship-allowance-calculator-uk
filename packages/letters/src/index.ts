@@ -70,12 +70,19 @@ export function suggestLetters(flagsRaised: FlagCode[]): LetterTemplate[] {
 }
 
 /**
- * What a carer must already have done before this letter is worth sending, as
- * the titles of the letters that come first. Empty for every letter but the
- * formal complaint.
+ * What a carer must already HOLD before this letter is worth sending. Empty for
+ * every letter but the formal complaint.
+ *
+ * Noun phrases, not titles. The titles are imperatives, so the sentence that
+ * uses this read "a complaint made before you hold ask for your council's
+ * written policy and ask for the arithmetic behind your figure". The title is
+ * kept as the fallback, so a letter added to a requiresFirst list without an
+ * `obtains` still reads as something rather than nothing.
  */
 export function lettersRequiredFirst(t: LetterTemplate): string[] {
-  return (LETTER_TEMPLATES[t].requiresFirst ?? []).map((r) => LETTER_TEMPLATES[r].title);
+  return (LETTER_TEMPLATES[t].requiresFirst ?? []).map(
+    (r) => LETTER_TEMPLATES[r].obtains ?? LETTER_TEMPLATES[r].title,
+  );
 }
 
 export function letterTitle(t: LetterTemplate): string {

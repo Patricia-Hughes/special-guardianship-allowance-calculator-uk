@@ -39,7 +39,13 @@ const signOff = (): string =>
   `Thank you for your help.\n\nYours sincerely,\n\n${PLACEHOLDER_NAME}\nSpecial guardian for ${PLACEHOLDER_CHILD}\nReference: ${PLACEHOLDER_REF}`;
 
 /**
- * What the carer was paid before the order, if they told us.
+ * What the carer was paid before the order, if they told me.
+ *
+ * Only in the three letters where the old fostering rate is part of the
+ * argument: challenging a fixed percentage, asking which element was reduced,
+ * and asking for the reward element to continue. It used to appear in eight of
+ * the nine, including the complaint, where it sat between the complaint itself
+ * and the list of what happened and did no work at all.
  *
  * Stated as the past fact it is. This figure is their FOSTERING allowance from
  * before the order, so writing "I currently receive" put a false sentence in
@@ -51,13 +57,34 @@ const paidLine = (ctx: LetterContext): string =>
     ? ''
     : `Before the order was made I was paid ${formatMoney(ctx.previousFosteringWeekly)} a week in total as a foster carer.\n\n`;
 
+/**
+ * The order date as a person would write it.
+ *
+ * The date arrives as an ISO string because that is what the engine works in,
+ * and it was going straight into the letter: "the order was made on
+ * 2025-01-15". In a letter from a grandmother to her council that reads like a
+ * database record, which is the opposite of the impression the letter is
+ * trying to make.
+ */
+const onOrderDate = (ctx: LetterContext): string => {
+  if (!ctx.orderDate) return '';
+  const d = new Date(`${ctx.orderDate}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return ` on ${ctx.orderDate}`;
+  return ` on ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+};
+
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+] as const;
+
 export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
   'challenge-child-benefit-deduction': {
     title: 'Ask about Child Benefit being taken off your allowance',
     subject: () => `Special guardianship allowance. Child Benefit deduction, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
-      `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
+      `I am the special guardian for ${PLACEHOLDER_CHILD}. ` +
       'I understand that Child Benefit is being taken into account when my special guardianship allowance is worked out. I would be grateful if you could confirm in writing:\n\n' +
       '1. whether Child Benefit is deducted from my allowance, and if so how much;\n' +
       '2. whether your policy deducts Child Benefit from carers who receive means-tested benefits; and\n' +
@@ -105,7 +132,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}, and I was ${PLACEHOLDER_CHILD}'s foster carer before the special guardianship order was made` +
-      (ctx.orderDate ? ` on ${ctx.orderDate}` : '') +
+      onOrderDate(ctx) +
       `. ${paidLine(ctx)}` +
       'My payments are being reduced, and I would like to understand exactly what is being reduced and why. Please could you confirm:\n\n' +
       '1. which element of my allowance is being reduced, and by how much;\n' +
@@ -123,7 +150,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
     body: (ctx) =>
       `${to(ctx)}\n\n` +
       `I am the special guardian for ${PLACEHOLDER_CHILD}, and I was ${PLACEHOLDER_CHILD}'s foster carer before the special guardianship order was made` +
-      (ctx.orderDate ? ` on ${ctx.orderDate}` : '') +
+      onOrderDate(ctx) +
       `. ${paidLine(ctx)}` +
       // Regulation 7 is a power, not an entitlement. Opening with "is protected"
       // hands the council an easy correction and weakens everything after it.
@@ -150,7 +177,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
     subject: () => `Special guardianship allowance, request for an enhancement, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
-      `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
+      `I am the special guardian for ${PLACEHOLDER_CHILD}. ` +
       'The regulations allow financial support to take account of a child\'s disability or additional needs, including the consequences of any abuse or neglect they experienced before the order.\n\n' +
       `${PLACEHOLDER_CHILD} has additional needs which mean extra costs for our household. In particular:\n\n` +
       '  • [describe the need, e.g. travel to therapy appointments]\n' +
@@ -164,6 +191,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
 
   'request-written-policy': {
     title: "Ask for your council's written policy",
+    obtains: "your council's written policy",
     subject: () => `Request for your special guardianship financial support policy, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
@@ -181,10 +209,11 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
 
   'request-calculation-breakdown': {
     title: 'Ask for the arithmetic behind your figure',
+    obtains: 'the arithmetic behind your figure',
     subject: () => `Special guardianship allowance, request for a breakdown, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
-      `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
+      `I am the special guardian for ${PLACEHOLDER_CHILD}. ` +
       // Always "my allowance". The only figure the letter can quote is the old
       // fostering allowance, and the breakdown being asked for is of the
       // CURRENT allowance, so "that figure" pointed at the wrong number.
@@ -204,7 +233,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
     subject: () => `Special guardianship allowance, annual review, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
-      `I am the special guardian for ${PLACEHOLDER_CHILD}. ${paidLine(ctx)}` +
+      `I am the special guardian for ${PLACEHOLDER_CHILD}. ` +
       // The duty is triggered by receipt of the annual statement, not by twelve
       // months passing. A carer who has never been asked for one is not late for
       // a review: the council has not set up the thing that produces it.
@@ -223,7 +252,7 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
     subject: () => `Stage 1 complaint, special guardianship allowance, ref ${PLACEHOLDER_REF}`,
     body: (ctx) =>
       `${to(ctx)}\n\n` +
-      `I would like to make a stage 1 complaint about the way my special guardianship allowance for ${PLACEHOLDER_CHILD} has been handled. ${paidLine(ctx)}` +
+      `I would like to make a stage 1 complaint about the way my special guardianship allowance for ${PLACEHOLDER_CHILD} has been handled. ` +
       'What happened:\n\n' +
       '  • [what you asked for, and when]\n' +
       '  • [what the council did or did not do]\n' +
@@ -231,7 +260,11 @@ export const LETTER_TEMPLATES: Record<LetterTemplate, TemplateSpec> = {
       'What I would like to happen:\n\n' +
       '  • [e.g. a written explanation of how the figure was calculated]\n' +
       '  • [e.g. a reassessment]\n\n' +
-      '[I raised this on [DATE] and have not had a full answer. If you have not raised it before, delete this sentence.]\n\n' +
+      // A bracket inside a bracket, with an instruction to the reader buried in a
+      // sentence addressed to the council. The sentence to send and the note
+      // about whether to send it are now separate lines.
+      'I raised this on [DATE] and have not had a full answer.\n' +
+      '[Delete the line above if you have not raised it before.]\n\n' +
       'I am asking for it to be looked at under your complaints procedure. Please confirm you have received this and let me know when I can expect a reply.\n\n' +
       'If I am not satisfied with the outcome, I understand I can ask the Local Government and Social Care Ombudsman to look at it.\n\n' +
       signOff(),

@@ -46,10 +46,14 @@ describe('finding 1: a complaint is never promoted by someone else’s case', ()
     expect(order[order.length - 1]).toBe('formal-complaint-stage-1');
   });
 
-  it('says what has to be asked first', () => {
+  it('names what has to be HELD first, as things rather than instructions', () => {
+    // Titles are imperatives. Dropped into "a complaint made before you hold
+    // ..." they produced "before you hold ask for your council's written policy
+    // and ask for the arithmetic behind your figure", which is what a carer read
+    // on the result page.
     expect(lettersRequiredFirst('formal-complaint-stage-1')).toEqual([
-      "Ask for your council's written policy",
-      'Ask for the arithmetic behind your figure',
+      "your council's written policy",
+      'the arithmetic behind your figure',
     ]);
     // And no other letter carries a prerequisite, so the gate stays meaningful.
     for (const t of ALL.filter((x) => x !== 'formal-complaint-stage-1')) {
@@ -63,7 +67,11 @@ describe('finding 2: the site never asserts what it cannot know', () => {
     for (const paid of [pence(12000), undefined]) {
       const body = generateLetter('formal-complaint-stage-1', ctx({ previousFosteringWeekly: paid })).body;
       expect(body).not.toMatch(/I have raised this before/);
-      expect(body).toMatch(/delete this sentence/);
+      // The claim is offered, never asserted, and the way to drop it is a line
+      // of its own. It used to be a bracket inside a bracket, with the
+      // instruction buried in a sentence addressed to the council.
+      expect(body).toMatch(/\[Delete the line above/);
+      expect(body).not.toMatch(/\[I raised this on \[DATE\]/);
     }
   });
 });

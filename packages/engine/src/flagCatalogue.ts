@@ -28,7 +28,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     // council's obvious reply, and pointed them at a question they cannot win.
     // The test is justification, not prohibition.
     body: () =>
-      'You have told us you get a means-tested benefit **and** that your council takes Child Benefit off your allowance.\n\n' +
+      'You have told me you get a means-tested benefit **and** that your council takes Child Benefit off your allowance.\n\n' +
       // Reg 13(2) does not name Child Benefit. It imposes a DUTY to take account
       // of other benefits, of which Child Benefit is plainly one, and the
       // deduction itself was contemplated in Barrett v Kirklees. Attributing the
@@ -51,7 +51,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'critical',
     title: 'Your council may be starting from the wrong figure',
     body: (c) =>
-      `${c.councilName ? `${c.councilName}'s published policy` : 'This policy'} appears to set the allowance at a fixed share of the fostering rate${c.policyCheckedOn ? `, as we read it on ${c.policyCheckedOn}` : ''}.\n\n` +
+      `${c.councilName ? `${c.councilName}'s published policy` : 'This policy'} appears to set the allowance at a fixed share of the fostering rate${c.policyCheckedOn ? `, as I read it on ${c.policyCheckedOn}` : ''}.\n\n` +
       'The courts have held that applying a flat percentage, two-thirds or a third or any other fixed fraction, without looking at the individual case, is an unjustified departure from the guidance. In other words, the council has stepped away from a rule it is supposed to follow without explaining why. The starting point should be the core fostering allowance, and your own circumstances should then be considered.\n\n' +
       // The qualification comes from Merton, while the warning cites Kirklees for
       // the main proposition, so Merton is named in the sentence itself.
@@ -64,7 +64,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'critical',
     title: 'This rate is below the national minimum for fostering',
     body: (c) =>
-      `The rate we hold for ${c.councilName ?? 'your council'} (${money(c.coreWeekly)} a week) is below the national minimum fostering allowance for ${c.ageBand ? `the ${c.ageBand} age band` : 'this age band'} in your area (${money(c.nationalWeekly)} a week).\n\n` +
+      `The rate I hold for ${c.councilName ?? 'your council'} (${money(c.coreWeekly)} a week) is below the national minimum fostering allowance for ${c.ageBand ? `the ${c.ageBand} age band` : 'this age band'} in your area (${money(c.nationalWeekly)} a week).\n\n` +
       'The statutory guidance says the core fostering allowance is the starting point for a special guardianship allowance. A figure below it needs an explanation.\n\n' +
       // "National minimum" reads as "the least I am entitled to". It is not: it
       // is a minimum for FOSTERING allowances, and there is no statutory floor
@@ -102,7 +102,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     title: 'Your council can keep paying your old fostering rate for two years',
     body: (c) =>
       `You fostered this child before the order, and the order was made ${c.monthsSinceOrder !== undefined ? `${c.monthsSinceOrder} months` : 'less than two years'} ago.\n\n` +
-      `For the first two years your council can carry on paying the reward part of what you were paid as a foster carer. Our estimate assumes it does, so we have shown ${money(c.previousWeekly)} a week rather than a lower figure. That is what we have assumed, not a figure your council has agreed.\n\n` +
+      `For the first two years your council can carry on paying the reward part of what you were paid as a foster carer. My estimate assumes it does, so I have shown ${money(c.previousWeekly)} a week rather than a lower figure. That is what I have assumed, not a figure your council has agreed.\n\n` +
       'The Court of Appeal has held that family foster carers should not be worse off than unrelated foster carers, which is the argument for continuing it.',
     citationId: 'sg-regs-2005-reg7',
     actionUrl: '/guidance/former-foster-carers',
@@ -156,7 +156,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'info',
     title: 'Worth checking: was the child in care just before the order?',
     body: () =>
-      'You told us you were not sure. It matters, because it changes how strong your position is. If the child was in the council\'s care immediately before the order, you are squarely within the circumstances where financial support is payable. If not, those circumstances are narrower, though you can still ask.\n\n' +
+      'You told me you were not sure. It matters, because it changes how strong your position is. If the child was in the council\'s care immediately before the order, you are squarely within the circumstances where financial support is payable. If not, those circumstances are narrower, though you can still ask.\n\n' +
       'Your social worker or the court paperwork will say.',
     citationId: 'sg-regs-2005-reg6',
     actionUrl: '/guidance/who-can-get-an-allowance',
@@ -183,7 +183,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'info',
     title: 'You are in a pilot area but already on regulation 6 support',
     body: (c) =>
-      'Your council is in the Kinship Zones pilot, but the pilot excludes carers already receiving regulation 6 financial support, so we have used the normal rules for your estimate.\n\n' +
+      'Your council is in the Kinship Zones pilot, but the pilot excludes carers already receiving regulation 6 financial support, so I have used the normal rules for your estimate.\n\n' +
       (c.kinshipZoneWeekly !== undefined
         ? `For comparison, the pilot rate for ${c.ageBand ? `the ${c.ageBand} age band` : "your child's age band"} would be ${money(c.kinshipZoneWeekly)} a week with no means test.\n\n`
         : '') +
@@ -203,8 +203,8 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'important',
     title: 'You can ask for more because of your child\'s needs',
     body: () =>
-      'You told us your child has a disability or additional needs. The regulations let a council pay more than the core allowance to meet the consequences of a disability, or of abuse or neglect the child suffered.\n\n' +
-      'There is **no national figure** for this and we have not added one to your estimate. It is decided council by council, on the child\'s needs. Ask for it, and give specifics: therapy, travel, respite, equipment, extra wear and tear.',
+      'You told me your child has a disability or additional needs. The regulations let a council pay more than the core allowance to meet the consequences of a disability, or of abuse or neglect the child suffered.\n\n' +
+      'There is **no national figure** for this and I have not added one to your estimate. It is decided council by council, on the child\'s needs. Ask for it, and give specifics: therapy, travel, respite, equipment, extra wear and tear.',
     citationId: 'sg-regs-2005-reg6',
     actionUrl: '/guidance/enhancements-for-additional-needs',
   },
@@ -219,19 +219,19 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
   },
   TAPER_METHOD_ASSUMED: {
     severity: 'important',
-    title: 'We had to assume how your council reduces the allowance',
+    title: 'I had to assume how your council reduces the allowance',
     body: (c) =>
       `There is **no published national rule** for how much of your spare income a council takes off the allowance. Policies vary.\n\n` +
-      // Without a guard this rendered: 'We have assumed the "undefined" method.'
+      // Without a guard this rendered: 'I have assumed the "undefined" method.'
       // The engine happens always to supply one today, so nothing was reaching a
       // carer, but a flag body must read as a sentence whatever it is handed.
-      `We have assumed ${
+      `I have assumed ${
         c.taperMethod === undefined
           ? 'the most common approach, which is pound for pound'
           : c.taperMethod === 'pound-for-pound'
             ? 'pound-for-pound, which is the most common approach'
             : `the "${c.taperMethod}" method`
-      }. Your council may use another.\n\nAsk it two things: which method it uses, **and where that comes from**. There being no national rule is not a gap in our research, it is how the scheme is built, so a council that cannot say where its own taper comes from is in a weaker position than one that can.`,
+      }. Your council may use another.\n\nAsk it two things: which method it uses, **and where that comes from**. There being no national rule is not a gap in my research, it is how the scheme is built, so a council that cannot say where its own taper comes from is in a weaker position than one that can.`,
     citationId: 'corambaaf-pn75',
     actionUrl: '/guidance/how-the-means-test-works',
   },
@@ -240,7 +240,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     title: 'You are in the few days of April where the rules disagree',
     body: () =>
       'The government sets these rates for a **tax year running 6 April to 5 April**. Most councils put their increase in from **1 April**.\n\n' +
-      'Between 1 and 5 April the two do not line up. We have shown you the new rate, because that is what councils normally pay from 1 April. But if your council follows the tax year, it may still be paying last year\'s rate for a few more days.\n\n' +
+      'Between 1 and 5 April the two do not line up. I have shown you the new rate, because that is what councils normally pay from 1 April. But if your council follows the tax year, it may still be paying last year\'s rate for a few more days.\n\n' +
       'It is worth a few pounds, not a few hundred. If you are checking a backdated claim, it is worth getting right.',
     citationId: 'north-tyneside-decision-2025',
     actionUrl: '/guidance/rates',
@@ -251,7 +251,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     body: () =>
       'The Welsh rates pay **more for a child under 5 than for a child aged 5 to 15**. Everywhere else in the UK the rate rises with age, so this looks like a mistake.\n\n' +
       'It is not a mistake on this site. That is how the Welsh Government publishes them, and the same pattern appears in other years too.\n\n' +
-      'We have now checked it against the Welsh Government\'s own circular, which prints the rates that way. We are telling you rather than quietly correcting it.',
+      'The Welsh Government\'s own circular for an earlier year prints them that way, so the pattern is settled. This year\'s figures come from a table reproducing that circular, because the letter for this year has not been published anywhere I can find. I am telling you rather than quietly correcting it.',
     citationId: 'wg-nma-2024-25',
     actionUrl: '/guidance/rates',
   },
@@ -259,8 +259,8 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'info',
     title: 'Your council may have a savings rule',
     body: (c) =>
-      `You told us about savings of ${money(c.savingsCapital)}. Some councils count savings above a threshold. A common pattern is £6,000, then £1 a week for each £250 above it. But there is no national rule and we do not hold your council's.\n\n` +
-      'We have not applied any savings rule to your estimate. Ask your council whether it has one.',
+      `You told me about savings of ${money(c.savingsCapital)}. Some councils count savings above a threshold. A common pattern is £6,000, then £1 a week for each £250 above it. But there is no national rule and I do not hold your council's.\n\n` +
+      'I have not applied any savings rule to your estimate. Ask your council whether it has one.',
     citationId: 'dwp-benefit-rates-2026-27',
     actionUrl: '/guidance/how-the-means-test-works',
   },
@@ -330,15 +330,15 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'critical',
     title: 'These rates may be out of date',
     body: (c) =>
-      `The rate table we are using ran to ${c.effectiveTo ?? 'a date that has now passed'}. New rates are normally announced for April and we have not yet published them.\n\n` +
+      `The rate table I am using ran to ${c.effectiveTo ?? 'a date that has now passed'}. New rates are normally announced for April and I have not yet published them.\n\n` +
       'Treat the figures below as last year\'s. Check the current national minimum allowance before you use them in a letter.',
     actionUrl: '/guidance/rates',
   },
   COUNCIL_POLICY_UNKNOWN: {
     severity: 'info',
-    title: 'We do not hold your council\'s published policy',
+    title: 'I do not hold your council\'s published policy',
     body: (c) =>
-      `We do not yet hold a sourced, dated copy of ${c.councilName ?? 'your council'}'s special guardianship financial support policy, so your estimate uses the national minimum figures for your area.\n\n` +
+      `I do not yet hold a sourced, dated copy of ${c.councilName ?? 'your council'}'s special guardianship financial support policy, so your estimate uses the national minimum figures for your area.\n\n` +
       // Was "Councils must have a published policy", unsourced, which is the one
       // thing this site is not allowed to do. What is on record is the October
       // 2024 duty to publish a kinship local offer.

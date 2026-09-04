@@ -22,8 +22,8 @@ export default function DisclaimerPage() {
       <h2>Every figure is an estimate</h2>
       <p>
         Financial support for special guardians is <strong>discretionary</strong>. There is no fixed
-        amount you are entitled to. What the calculator shows you is the figure the statutory
-        guidance says your council should be starting from, not a figure you can require it to pay.
+        amount you can require your council to pay. What the calculator shows you is the figure the
+        statutory guidance says your council should be starting from.
       </p>
       <p>
         A council can lawfully pay less than the maximum after properly assessing your
@@ -31,37 +31,36 @@ export default function DisclaimerPage() {
         without considering your case.
       </p>
 
-      <h2>What we do not know about your council</h2>
+      <h2>What I do not know about your council</h2>
       <p>
         Unless the result said otherwise, the calculator uses national minimum figures for your
         area. It does not know your council&apos;s own policy, its enhancement rates, or how it
         applies its means test. Those vary a great deal.
       </p>
 
-      <h2>Where our data has gaps, we say so</h2>
+      <h2>Where my data has gaps, I say so</h2>
       <p>
-        We do not publish figures we have not verified against their original source, and we do not
-        work missing figures out from percentages. A number that looks precise and is slightly wrong
-        is worse than no number, because you might take it to your council.
+        I do not publish figures I have not verified against their original source, and I do not work missing figures out from percentages. A number that looks precise and is slightly wrong is worse than no number, because you might take it to your council.
       </p>
       <p>
-        So <strong>working out what you were underpaid in past years is not here yet</strong>. It
-        needs the 2024/25 rate tables as they were published, and we have not been able to find
-        them. We could get close by taking this year&rsquo;s figures and removing the increase, but
-        close is not good enough for a claim you are going to put to your council.
+        <strong>Working out what you were underpaid in past years</strong> now covers England,
+        Scotland and Northern Ireland. One year of Welsh rates is still missing, so a Welsh
+        calculation leaves that year out and names it. I could get close by taking a later
+        year&rsquo;s figures and removing the increase, but close is not good enough for a claim you
+        are going to put to your council.
       </p>
       <p>
-        The <strong>Welsh rates</strong> are here, with one caveat we would rather you heard from
-        us: in Wales the rate for a child under 5 is higher than for a child aged 5 to 15. That is
-        genuinely how they are published, and we have checked it against two years of figures, but
-        we have not seen the Welsh Government&rsquo;s own circular, only reports of it.
+        The <strong>Welsh rates</strong> are here, with one caveat I would rather you heard from
+        me: in Wales the rate for a child under 5 is higher than for a child aged 5 to 15. That is
+        genuinely how they are published. The Welsh Government&rsquo;s own circular for an earlier
+        year prints them that way, so the pattern is settled. This year&rsquo;s figures come from a
+        table reproducing that circular, because the letter for this year has not been published
+        anywhere I can find.
       </p>
 
       <h2>Rates change</h2>
       <p>
-        Allowance rates change on 1 April each year and benefit rates change a few days later. Check
-        the date on any page before you rely on it. If our rates are out of date, a banner at the
-        top of every page will tell you.
+        Allowance rates change on 1 April each year and benefit rates change a few days later. Check the date on any page before you rely on it. If my rates are out of date, a banner at the top of every page will tell you.
       </p>
 
       <h2>Please check anything that matters</h2>

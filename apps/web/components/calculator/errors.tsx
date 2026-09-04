@@ -55,20 +55,20 @@ export type EngineErrorKind = 'guardrail' | 'data';
 
 /**
  * [§15, §33] A GuardrailViolation is never shown raw to a user. A DataError
- * says what we do not have, rather than pretending.
+ * says what I do not have, rather than pretending.
  */
 export function EngineErrorFallback({ kind }: { kind: EngineErrorKind }) {
   return (
     <div className="callout callout--critical" role="alert">
       <h2 className="flush-top big">
         {kind === 'guardrail'
-          ? "We can't produce a reliable estimate for your situation"
-          : "We don't have verified figures for that"}
+          ? 'I cannot produce a reliable estimate for your situation'
+          : 'I do not have verified figures for that'}
       </h2>
       <p>
         {kind === 'guardrail'
-          ? 'Something about your answers means we cannot give you a figure we are confident is right. We would rather tell you that than show you a number that might be wrong.'
-          : 'Rather than guess, we have stopped. This usually means we do not yet hold a verified rate table or benefit figure for the date or the situation you gave us.'}
+          ? 'Something about your answers means I cannot give you a figure I am confident is right. I would rather tell you that than show you a number that might be wrong.'
+          : 'Rather than guess, I have stopped. This usually means I do not yet hold a verified rate table or benefit figure for the date or the situation you gave me.'}
       </p>
       <p className="flush-bot">
         Please talk to one of the advice organisations listed at the bottom of this page, they can

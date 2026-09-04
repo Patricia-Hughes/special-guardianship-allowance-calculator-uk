@@ -6,7 +6,7 @@ const FLOOR_HEADING: Record<string, string> = {
   // Regulation 7 is a power, not an entitlement: it lets a council keep
   // paying the reward element, and lets it stop. Saying the figure is
   // "protected" told carers they held something they do not.
-  'reg7-former-foster-carer': 'We have assumed your old fostering rate continues',
+  'reg7-former-foster-carer': 'I have assumed your old fostering rate continues',
   'kinship-zone-nma': 'The pilot rate applies to you',
   'scottish-recommended-allowance': 'This is the recommended minimum',
 };
@@ -50,13 +50,13 @@ function FloorNotice({ result }: { result: CalculatorResult }) {
         You fostered {result.perChild.length > 1 ? 'these children' : 'this child'} before the
         order, and it was made less than two years ago. For that period your council can carry on
         paying the reward part of your fostering allowance, and it can carry on for longer if it
-        thinks that right. We have assumed it does, which is why this figure is higher than the
-        standard rate for your area. That is our assumption, not something your council has agreed.
+        thinks that right. I have assumed it does, which is why this figure is higher than the
+        standard rate for your area. That is my assumption, not something your council has agreed.
       </p>
       {result.perChild.length > 1 && (
         <p className="flush-bot">
           This is the total for all {result.perChild.length} children, because the amount you told
-          us you were paid as a foster carer was a total too.
+          me you were paid as a foster carer was a total too.
         </p>
       )}
     </div>

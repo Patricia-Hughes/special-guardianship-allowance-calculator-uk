@@ -122,7 +122,7 @@ function ShareControl({ url }: { url: string }) {
       <p aria-live="polite" className="share__status">
         {state === 'done' && 'Link copied.'}
         {state === 'failed' &&
-          'Your browser would not let us copy it. Select the address in the bar at the top and copy it yourself.'}
+          'Your browser would not let me copy it. Select the address in the bar at the top and copy it yourself.'}
       </p>
     </div>
   );

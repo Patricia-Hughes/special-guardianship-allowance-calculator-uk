@@ -81,7 +81,7 @@ export const childInputSchema = z.object({
     .min(0, 'An age cannot be less than 0. For a baby under one, enter 0.')
     .max(
       MAX_CHILD_AGE,
-      'This calculator is for children under 18. If they have turned 18, support works differently, and our guide on turning 18 explains what happens next.',
+      'This calculator is for children under 18. If they have turned 18, support works differently, and my guide on turning 18 explains what happens next.',
     ),
   dateOfBirth: isoDateSchema.optional(),
   hasDisabilityOrAdditionalNeeds: z.boolean(),
@@ -117,7 +117,7 @@ export const carerInputSchema = z
     // England rates vary by region, so one of the two routes to a region has to
     // be taken. Everywhere else has a single national table.
     if (carer.nation === 'england' && !carer.englandRegion && !carer.localAuthoritySlug) {
-      problem(ctx, ['englandRegion'], 'Choose a region so we can use the right rates.');
+      problem(ctx, ['englandRegion'], 'Choose a region so I can use the right rates.');
     }
     // Without the previous allowance the reg 7 floor cannot be applied, and a
     // former foster carer would silently be shown a figure below it.
@@ -142,7 +142,7 @@ export const carerInputSchema = z
       problem(
         ctx,
         ['monthsSinceOrderMade'],
-        'Tell us when the order was made, either the date or roughly how many months ago. ' +
+        'Tell me when the order was made, either the date or roughly how many months ago. ' +
           'Your old fostering rate only counts for the first two years.',
       );
     }

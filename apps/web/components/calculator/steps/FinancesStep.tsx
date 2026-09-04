@@ -60,7 +60,7 @@ export function FinancesStep({
       <TextField
         id="household-children"
         label="How many dependent children live in your household?"
-        hint="Include the children you have already told us about, plus any others."
+        hint="Include the children you have already told me about, plus any others."
         numeric
         // Starts at the number of children already entered, not at 1. It used
         // to sit at 1 however many children the carer had added, so anyone

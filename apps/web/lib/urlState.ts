@@ -96,4 +96,4 @@ export function fromQueryString(search: string): ShareableState {
 
 export const SHARE_EXPLANATION =
   'This link shares the rates for your area and your children’s ages. It does not include ' +
-  'anything you told us about your finances.';
+  'anything you told me about your finances.';

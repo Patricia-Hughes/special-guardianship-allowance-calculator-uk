@@ -63,11 +63,11 @@ export function CouncilPicker({
         .map((d) => d.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
         .find((slug) => slug in LA_REGION_MAP);
       if (!match) {
-        setStatus("We couldn't match that postcode to a council. Choose yours from the list instead.");
+        setStatus('I could not match that postcode to a council. Choose yours from the list instead.');
         return;
       }
       onChange(match, LA_REGION_MAP[match] ?? null);
-      setStatus(`We think your council is ${LA_NAMES[match] ?? match}. Change it below if not.`);
+      setStatus(`I think your council is ${LA_NAMES[match] ?? match}. Change it below if not.`);
     } catch {
       // Silent fallback to the manual picker. Never block on this (§12, §33).
       setStatus('Choose your council from the list below.');
@@ -114,8 +114,7 @@ export function CouncilPicker({
               Postcode
             </label>
             <span className="field__hint" id="postcode-hint">
-              We only send the first part (like SW1A). We do not store it, log it, or put it in the
-              web address. Nothing else you have typed is sent with it.
+              Only the first part (like SW1A) is sent. I do not store it, log it, or put it in the web address. Nothing else you have typed is sent with it.
             </span>
             <input
               id="postcode"
