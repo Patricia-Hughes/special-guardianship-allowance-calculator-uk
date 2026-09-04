@@ -8,8 +8,8 @@ export function Disclaimer({ compact = false }: { compact?: boolean }) {
       <p className="flush">
         <strong>This is an estimate, not legal advice.</strong> Financial support for special
         guardians is discretionary, and there is no fixed amount you can require your council to
-        pay. What this tool shows you is the figure your council should be starting from, and what
-        the rules and published decisions say about how it must decide.
+        pay. It shows you the figure your council should be starting from, and what the rules and
+        the published decisions say about how it has to decide.
       </p>
       {!compact && (
         <p className="gap-md flush-bot">

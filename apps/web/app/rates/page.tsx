@@ -44,7 +44,7 @@ export default function RatesPage() {
       <RateTable nation="northern-ireland" />
 
       <h2>Wales</h2>
-      <p>The Welsh table below is not a mistake, although it looks like one.</p>
+      <p>The Welsh table below reads oddly, and it is correct anyway.</p>
       <Callout type="important">
         <p>
           In Wales the rate for a child <strong>under 5 is higher</strong> than for a child aged 5

@@ -60,9 +60,9 @@ export default function HomePage() {
       <section className="section" aria-labelledby="rates-heading">
         <h2 id="rates-heading">The national minimum allowance, 2026/27</h2>
         <p>
-          These are the fostering national minimum allowances. The statutory guidance says the core
-          fostering allowance is the starting point for a special guardianship allowance, that is
-          why they matter to you.
+          These are the fostering national minimum allowances. They matter to you because the
+          statutory guidance makes the core fostering allowance the starting point for a special
+          guardianship allowance.
         </p>
         <RateTable nation="england" />
         <p>

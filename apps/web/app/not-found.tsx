@@ -6,7 +6,7 @@ export default function NotFound() {
       <h1>That page does not exist</h1>
       <p>
         It may have moved, or the address may have a typo in it. Nothing you were doing has been
-        lost, the calculator never saves anything.
+        lost. The calculator never saves anything anyway.
       </p>
       <ul>
         <li>
