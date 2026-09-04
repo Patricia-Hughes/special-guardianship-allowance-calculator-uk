@@ -84,23 +84,20 @@ export default function AboutPage() {
         guardianship allowances.
       </p>
 
-      <p>But a fostering rate is not a special guardianship rate.</p>
+      <p>But the fostering rate was not a special guardianship rate.</p>
 
       <p>
-        Nothing said that a special guardian caring for a child of a certain age should receive a
-        set amount each week. I had assumed something would. The rates{' '}
-        <a href="/rates">published on this site</a> are fostering rates, and that is why.
+        There was no national table saying that a special guardian caring for a child of a certain
+        age should receive a set amount each week. I had assumed there would be. There was not.
       </p>
 
       <p>Then I found the thing I had missed.</p>
 
       <p>
-        There is a rule about the reward element of a fostering allowance continuing for a period
-        after a Special Guardianship Order, depending on what was decided before the order was made.
-        It is regulation 7, and I have set out{' '}
-        <a href="/guidance/former-foster-carers">what it does and does not say</a>. I went back
-        through my old fostering paperwork to see whether a decision about that had been made in my
-        case.
+        I later learned that there was a rule about the reward element of a fostering allowance
+        continuing for a period after a Special Guardianship Order, depending on what had been
+        decided before the order was made. I went back through my old fostering paperwork to see
+        whether a decision about that had actually been made in my case.
       </p>
 
       <p>I could not find a clear answer.</p>
@@ -110,15 +107,12 @@ export default function AboutPage() {
       <p>
         I had been asking the wrong question. I was hunting for a national special guardianship rate
         when what I needed to understand was <strong>what had happened to my own fostering
-        allowance</strong> on the day the order was made.
+        allowance</strong> when the order was made.
       </p>
 
       <p>
-        My allowance was also{' '}
-        <a href="/guidance/how-the-means-test-works">means tested</a>. I was receiving Universal
-        Credit at the time, and{' '}
-        <a href="/guidance/child-benefit-deduction">Child Benefit had been deducted</a> from the
-        calculation.
+        I also discovered that my allowance was means tested. I was receiving Universal Credit at
+        the time, and Child Benefit had been deducted from the calculation.
       </p>
 
       <p>That explained part of the £127.</p>
@@ -135,9 +129,8 @@ export default function AboutPage() {
       </p>
 
       <p>
-        I also had to work out for myself that the council responsible was{' '}
-        <a href="/guidance/which-council-is-responsible">the one looking after my granddaughter</a>,
-        and not the one where I live.
+        I also had to work out that the relevant council was the one responsible for my
+        granddaughter&apos;s care, rather than simply the council where I lived.
       </p>
 
       <p>The letter, when it came, said they were satisfied that the allowance was correct.</p>
@@ -176,20 +169,22 @@ export default function AboutPage() {
       <p>And how did my council arrive at my particular figure?</p>
 
       <p>
-        The first can usually be checked. The second is often not published in a way that lets you
-        reproduce it. This site is built on that distinction, which is why the calculator is as
-        specific about what it cannot tell you as about what it can.
+        The first can often be checked. The second is not always published in a way that lets you
+        reproduce the calculation yourself. This site is built on that distinction, which is why the
+        calculator is as specific about what it cannot tell you as about what it can.
       </p>
 
       <p>
-        I am a grandmother, not a professional. I needed to understand a payment affecting my own
-        family, and I spent months working through policies, rates, letters and calculations to do
-        it.
+        I am not a solicitor or a social worker. I am a grandmother who needed to understand a
+        payment affecting my family, and who spent months working through policies, rates, letters
+        and calculations.
       </p>
 
       <p>I built this site because I wished I had found that table when I first needed it.</p>
 
       <p>I still have the notebook.</p>
+
+      <p className="story-figure">£127 a week.</p>
 
       <h2>My editorial policy</h2>
 
@@ -234,8 +229,7 @@ export default function AboutPage() {
 
       <h2>What this site is not</h2>
       <p>
-        I am not a solicitor and I am not a social worker. This site is not a law firm, a charity,
-        or part of any council or government department.
+        This site is not a law firm, a charity, or part of any council or government department.
       </p>
       <p>
         I do not give advice on individual cases. Where your situation needs that, the advice
