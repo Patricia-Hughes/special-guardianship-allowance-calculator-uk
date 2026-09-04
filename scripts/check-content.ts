@@ -111,6 +111,34 @@ for (const kind of ['guidance', 'la'] as const) {
   }
 }
 
+// ── Every heading is answered in its own first line ─────────────────────────
+// The house style's first structure rule: answer in the first line after every
+// heading, no run-up. A <Callout> straight under a heading breaks it in a way
+// that is invisible in the source and obvious on the page, because the first
+// words the reader actually sees are the box's label, "Important", and not the
+// answer. It had happened in five guides before anyone noticed, which is why
+// this is a gate rather than a note. Put the answer above the box; the box
+// still gets to do its job underneath.
+for (const kind of ['guidance', 'la'] as const) {
+  const dir = join(contentRoot, kind);
+  if (!existsSync(dir)) continue;
+  for (const file of readdirSync(dir).filter((f) => f.endsWith('.mdx'))) {
+    const rel = `content/${kind}/${file}`;
+    const body = matter(readFileSync(join(dir, file), 'utf8')).content.split('\n');
+    body.forEach((line, i) => {
+      if (!/^#{2,3} /.test(line)) return;
+      const next = body.slice(i + 1).find((l) => l.trim() !== '');
+      if (next !== undefined && /^<Callout\b/.test(next.trim())) {
+        failures.push(
+          `${rel}:${i + 2}: "${line.replace(/^#+ /, '')}" is answered by a callout box.\n` +
+            '      The reader sees the word "Important" where the answer should be. Put one plain\n' +
+            '      sentence answering the heading between the heading and the box.',
+        );
+      }
+    });
+  }
+}
+
 // ── No em dashes in anything a carer reads ──────────────────────────────────
 // A house style rule, not a typographic preference. Em dashes are the single
 // clearest tell of machine-written prose, and this site is asking people to

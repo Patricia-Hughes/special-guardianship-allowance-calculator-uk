@@ -45,14 +45,16 @@ export default function RatesPage() {
 
       <h2>Wales</h2>
       <Callout type="important">
-        <p className="flush-bot">
+        <p>
           In Wales the rate for a child <strong>under 5 is higher</strong> than for a child aged 5
           to 15. That is the opposite of every other table on this page, so it looks like a mistake.
-          It is how the rates are published, though. The Welsh Government&apos;s own circular for an
-          earlier year prints them that way, so the pattern itself is settled. This year&apos;s
-          figures come from a table reproducing that circular, because the letter for this year has
-          not been published anywhere I can find. So I am telling you rather than quietly
-          &ldquo;correcting&rdquo; a government figure.
+          It is how the rates are published, though.
+        </p>
+        <p className="flush-bot">
+          The Welsh Government&apos;s own circular for an earlier year prints them that way, so the
+          pattern itself is settled. This year&apos;s figures come from a table reproducing that
+          circular, because the letter for this year has not been published anywhere I can find. So
+          I am telling you rather than quietly &ldquo;correcting&rdquo; a government figure.
         </p>
       </Callout>
       <RateTable nation="wales" />

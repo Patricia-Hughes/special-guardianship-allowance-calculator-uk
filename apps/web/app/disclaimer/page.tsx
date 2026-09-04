@@ -52,10 +52,12 @@ export default function DisclaimerPage() {
       <p>
         The <strong>Welsh rates</strong> are here, with one caveat I would rather you heard from
         me: in Wales the rate for a child under 5 is higher than for a child aged 5 to 15. That is
-        genuinely how they are published. The Welsh Government&rsquo;s own circular for an earlier
-        year prints them that way, so the pattern is settled. This year&rsquo;s figures come from a
-        table reproducing that circular, because the letter for this year has not been published
-        anywhere I can find.
+        genuinely how they are published.
+      </p>
+      <p>
+        The Welsh Government&rsquo;s own circular for an earlier year prints them that way, so the
+        pattern is settled. This year&rsquo;s figures come from a table reproducing that circular,
+        because the letter for this year has not been published anywhere I can find.
       </p>
 
       <h2>Rates change</h2>

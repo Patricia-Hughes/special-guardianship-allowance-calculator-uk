@@ -121,8 +121,11 @@ export default function AboutPage() {
 
       <p>
         I asked the council to review the calculation. At one point I was told to speak to the
-        social worker. The social worker sent me back to the finance team. I also had to work out
-        for myself that the council responsible was{' '}
+        social worker. The social worker sent me back to the finance team.
+      </p>
+
+      <p>
+        I also had to work out for myself that the council responsible was{' '}
         <a href="/guidance/which-council-is-responsible">the one looking after my granddaughter</a>,
         and not the one where I live.
       </p>
@@ -222,9 +225,11 @@ export default function AboutPage() {
       <h2>What this site is not</h2>
       <p>
         I am not a solicitor and I am not a social worker. This site is not a law firm, a charity,
-        or part of any council or government department. I do not give advice on individual cases.
-        Where your situation needs that, the advice organisations I point to throughout the site can
-        help, and they are independent of me.
+        or part of any council or government department.
+      </p>
+      <p>
+        I do not give advice on individual cases. Where your situation needs that, the advice
+        organisations I point to throughout the site can help, and they are independent of me.
       </p>
 
       <h2>Corrections</h2>

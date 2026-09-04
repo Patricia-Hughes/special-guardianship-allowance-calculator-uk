@@ -12,8 +12,9 @@ export default function AccessibilityPage() {
       <h1>Accessibility statement</h1>
 
       <p className="big">
-        Most people who use this site are grandparents and other relatives in their fifties,
-        sixties and seventies. Accessibility here is the core use case, not a compliance exercise.
+        I built this for grandparents and other relatives in their fifties, sixties and seventies. I
+        do not measure who actually visits, so that is the audience I designed for and not something
+        I have counted. Accessibility here is the core use case, not a compliance exercise.
       </p>
 
       <h2>What I aim for</h2>

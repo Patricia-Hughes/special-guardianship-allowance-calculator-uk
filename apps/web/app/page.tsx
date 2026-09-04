@@ -20,9 +20,9 @@ export default function HomePage() {
       <h1>What should your special guardianship allowance be?</h1>
 
       <p className="lede">
-        Most special guardians are paid less than they should be, because councils apply blanket
-        policies that have repeatedly been found wrong. This tool shows you the figure your council
-        should be starting from, the rule it comes from, and what you can do about a gap.
+        Under the statutory guidance, your council is supposed to start from the fostering allowance
+        for a child that age. This shows you that figure, the rule it comes from, and what to ask if
+        your council started somewhere else.
       </p>
 
       <ul>
@@ -34,8 +34,8 @@ export default function HomePage() {
       </ul>
 
       <p>
-        My name is {AUTHOR_NAME}. I am a special guardian myself, and I built this after I could not
-        work out how my own allowance had been calculated.{' '}
+        My name is {AUTHOR_NAME}. I am a special guardian myself, and nobody would show me the sum
+        behind my own figure, so I built the table I needed.{' '}
         <a href="/about">More about me, and where the figures come from</a>.
       </p>
 
