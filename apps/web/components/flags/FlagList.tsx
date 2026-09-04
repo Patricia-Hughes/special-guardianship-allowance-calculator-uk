@@ -23,7 +23,7 @@ const GROUPS: Array<{ severity: FlagSeverity; heading: string; blurb: string }> 
   {
     severity: 'critical',
     heading: 'Check these first',
-    blurb: 'These are the points where councils have most often been found wrong.',
+    blurb: 'Each of these has been found wrong in a published decision. The source is on the card.',
   },
   {
     severity: 'important',

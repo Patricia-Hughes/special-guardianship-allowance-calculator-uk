@@ -199,6 +199,62 @@ for (const target of EM_DASH_ROOTS) {
   }
 }
 
+// The same rule in JSX. The gate above reads MDX only, and the /rates page had
+// <h2>Wales</h2> sitting directly on a <Callout> for exactly as long, which is
+// how a gate with a blind spot lets the thing it was written for straight past.
+for (const file of walkFiles(join(root, 'apps', 'web', 'app'))) {
+  const rel = relative(root, file);
+  const lines = readFileSync(file, 'utf8').split('\n');
+  lines.forEach((line, i) => {
+    if (!/<h[23]>/.test(line)) return;
+    const next = lines.slice(i + 1).find((l) => l.trim() !== '');
+    if (next !== undefined && /^<Callout\b/.test(next.trim())) {
+      failures.push(
+        `${rel}:${i + 1}: "${line.replace(/<[^>]*>/g, '').trim()}" is answered by a callout box.\n` +
+          '      The reader sees the word "Important" where the answer should be. Put one plain\n' +
+          '      sentence answering the heading between the heading and the box.',
+      );
+    }
+  });
+}
+
+// ── The site never claims to know who is using it ───────────────────────────
+//
+// The other half of the promise below. Measuring nobody is only worth promising
+// if the copy cannot quietly start claiming to have measured them. "Most people
+// who use this site are grandparents" and "the figure most people come here for"
+// were both live, on the accessibility page and the result step, and neither is
+// knowable on a site with no analytics at all.
+//
+// Deliberately narrow. A ban on the word "most" would be noisy and would wrongly
+// catch sourced claims like "the standardised model most councils use", which
+// carries CoramBAAF Practice Note 75 beside it. What is caught here is only the
+// shape that is unsupportable by construction: a claim about this site's own
+// readers.
+const AUDIENCE_CLAIM =
+  /\b(most|many|nearly all|almost all)\s+(people|readers|users|visitors|carers)\s+(who\s+(use|visit|read)|come\s+here|arrive)|most\s+of\s+(my|our)\s+(readers|users|visitors)/i;
+for (const file of [
+  ...walkFiles(join(root, 'apps', 'web', 'app')),
+  ...walkFiles(join(root, 'apps', 'web', 'components')),
+  ...walkFiles(join(root, 'apps', 'web', 'content')),
+  ...walkFiles(join(root, 'packages', 'engine', 'src')),
+]) {
+  const rel = relative(root, file);
+  readFileSync(file, 'utf8')
+    .split('\n')
+    .forEach((line, i) => {
+      if (isComment(line)) return;
+      const hit = AUDIENCE_CLAIM.exec(line);
+      if (!hit) return;
+      failures.push(
+        `${rel}:${i + 1} claims to know who reads this site (\"${hit[0]}\").\n` +
+          '      Nothing here measures the people who use it, so a claim about them cannot be\n' +
+          '      sourced. Address the reader instead of counting a population: "the figure you\n' +
+          '      came for", not "the figure most people come here for".',
+      );
+    });
+}
+
 // ── Nothing measures the people using this site ─────────────────────────────
 //
 // A settled decision, taken on 31 August 2026, not an oversight: the people

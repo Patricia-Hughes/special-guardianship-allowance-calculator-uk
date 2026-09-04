@@ -22,8 +22,8 @@ export default function GuidanceIndex() {
       />
       <h1>Guides</h1>
       <p className="lede">
-        Everything here is written to be read once, quickly, by someone who is tired and worried.
-        Every legal point has its source next to it.
+        I wrote these to be read once, quickly. Every legal point has its source next to it, so you
+        can check it or show it to someone.
       </p>
       <ul className="cards">
         {docs.map((d) => (

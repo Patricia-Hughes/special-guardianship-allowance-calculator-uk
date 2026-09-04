@@ -44,6 +44,7 @@ export default function RatesPage() {
       <RateTable nation="northern-ireland" />
 
       <h2>Wales</h2>
+      <p>The Welsh table below is not a mistake, although it looks like one.</p>
       <Callout type="important">
         <p>
           In Wales the rate for a child <strong>under 5 is higher</strong> than for a child aged 5
@@ -66,12 +67,12 @@ export default function RatesPage() {
             t.status === 'PENDING_SOURCE' ? (
               <div key={t.financialYear}>
                 <h3>{t.financialYear.replace('-', '/')}</h3>
+                <p>I do not hold verified rates for this year.</p>
                 <Callout type="info">
                   <p className="flush-bot">
-                    I do not hold verified rates for {t.financialYear.replace('-', '/')}. I will
-                    not work them backwards from the uplift percentage, because the rounding rules
-                    are not published and a wrong historic rate would produce a wrong backdating
-                    claim.
+                    I will not work them backwards from the uplift percentage, because the rounding
+                    rules are not published and a wrong historic rate would produce a wrong
+                    backdating claim.
                   </p>
                 </Callout>
               </div>

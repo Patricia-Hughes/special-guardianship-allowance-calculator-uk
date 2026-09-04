@@ -21,7 +21,7 @@ export function ResultStep({ headingRef }: StepProps) {
   return (
     <StepPanel heading="Your result" headingRef={headingRef}>
       <p className="flush">
-        This is the figure most people come here for. You do not have to answer anything else.
+        This is the figure you came for. You do not have to answer anything else.
       </p>
     </StepPanel>
   );
@@ -40,8 +40,8 @@ export function ResultContinuation({ goTo }: Pick<StepProps, 'goTo'>) {
         Do you want a more accurate figure?
       </h2>
       <p>
-        You do not have to. What is above is the figure most people come here for, and you can
-        print it or send a letter with it exactly as it is.
+        You do not have to. The figure above is usable exactly as it is: print it, or send a letter
+        with it.
       </p>
       <p>
         If you tell me a little more about your situation, I can be more specific about what your

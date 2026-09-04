@@ -18,7 +18,7 @@ export function NextSteps({ result }: { result: CalculatorResult }) {
     // the legal review of 1 September; this copy of it lives on the result page
     // and so was not in the packs the reviewer was given. What is on record is
     // the October 2024 duty to publish a kinship local offer.
-    body: 'Every council in England has to publish a kinship local offer setting out the support it provides, and most publish a financial support policy as well. It is the document every later question rests on.',
+    body: 'Every council in England has to publish a kinship local offer setting out the support it provides. It is the document every later question rests on.',
     href: '/guidance/asking-for-the-policy',
   });
 
