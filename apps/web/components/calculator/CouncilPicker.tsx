@@ -67,7 +67,13 @@ export function CouncilPicker({
         return;
       }
       onChange(match, LA_REGION_MAP[match] ?? null);
-      setStatus(`I think your council is ${LA_NAMES[match] ?? match}. Change it below if not.`);
+      // Not "I think": this is what the lookup returned, and the hedge belongs on
+      // the thing that is genuinely uncertain, which is whether the council for
+      // the carer's address is the one responsible for the child at all.
+      setStatus(
+        `That postcode is in ${LA_NAMES[match] ?? match}. If a different council looked after your ` +
+          `child before the order, change it below.`,
+      );
     } catch {
       // Silent fallback to the manual picker. Never block on this (§12, §33).
       setStatus('Choose your council from the list below.');

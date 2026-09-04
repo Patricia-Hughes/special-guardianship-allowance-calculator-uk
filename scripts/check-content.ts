@@ -218,6 +218,30 @@ for (const file of walkFiles(join(root, 'apps', 'web', 'app'))) {
   });
 }
 
+// ── Every guide draws the line ──────────────────────────────────────────────
+//
+// The site's whole reason for existing, in the author's own words on the About
+// page: the table separated two questions, what does the published guidance say,
+// and how did my council arrive at my particular figure. The first can usually be
+// checked. The second usually cannot.
+//
+// A guide that only states the law leaves a carer knowing more and able to do
+// nothing. The section this requires is the one that tells them which half of
+// their problem they can settle themselves and which half has to be asked for.
+// It was present on one guide out of sixteen before this gate went in, which is
+// exactly how a signature move quietly stops happening.
+for (const file of readdirSync(join(contentRoot, 'guidance')).filter((f) => f.endsWith('.mdx'))) {
+  const body = matter(readFileSync(join(contentRoot, 'guidance', file), 'utf8')).content;
+  if (!/^##\s+What you can check, and what you have to ask for\s*$/m.test(body)) {
+    failures.push(
+      `content/guidance/${file}: no section drawing the line between what a reader can check\n` +
+        '      and what only their council can tell them.\n' +
+        '      Add "## What you can check, and what you have to ask for" with both halves. A guide\n' +
+        '      that only states the law leaves a carer knowing more and able to do nothing.',
+    );
+  }
+}
+
 // ── The site never claims to know who is using it ───────────────────────────
 //
 // The other half of the promise below. Measuring nobody is only worth promising
