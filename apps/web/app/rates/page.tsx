@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
-import { RATE_TABLES } from '@sgo/engine';
+import { RATE_TABLES, cite } from '@sgo/engine';
 import { RateTable } from '../../components/ui/RateTable';
 import { Callout } from '../../components/ui/Callout';
+import { JsonLd, datasetNode, pageGraph } from '../../lib/jsonLd';
 
 export const metadata: Metadata = {
   title: 'Allowance rates for 2026/27',
@@ -14,8 +15,37 @@ export default function RatesPage() {
   const current = RATE_TABLES.find((t) => t.status !== 'PENDING_SOURCE');
   const historic = RATE_TABLES.filter((t) => t !== current);
 
+  // The Dataset node describes what the page publishes: every year held, every
+  // nation held, and the source behind each one. Built from the tables rather
+  // than written out, so it cannot drift from what is actually served.
+  const years = RATE_TABLES.map((t) => t.effectiveFrom).sort();
+  const ends = RATE_TABLES.map((t) => t.effectiveTo).sort();
+  const sourceIds = [
+    ...new Set(
+      RATE_TABLES.flatMap((t) =>
+        (['england', 'wales', 'scotland', 'northern-ireland'] as const)
+          .map((n) => t[n]?.sourceId)
+          .filter((id): id is string => typeof id === 'string'),
+      ),
+    ),
+  ];
+
   return (
     <>
+      <JsonLd
+        data={pageGraph({
+          path: '/rates',
+          name: String(metadata.title),
+          description: String(metadata.description),
+          trail: [{ name: 'Rates', url: '/rates' }],
+          extra: [
+            datasetNode({
+              temporalCoverage: `${years[0]}/${ends[ends.length - 1]}`,
+              citations: sourceIds.map(cite),
+            }),
+          ],
+        })}
+      />
       <h1>Allowance rates</h1>
       <p>
         These are the fostering minimum allowances each nation publishes. They matter to special

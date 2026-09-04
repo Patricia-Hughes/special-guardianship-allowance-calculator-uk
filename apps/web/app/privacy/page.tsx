@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { JsonLd, pageGraph } from '../../lib/jsonLd';
 
 export const metadata: Metadata = {
   title: 'Privacy notice',
@@ -9,6 +10,14 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <>
+      <JsonLd
+        data={pageGraph({
+          path: '/privacy',
+          name: String(metadata.title),
+          description: String(metadata.description),
+          trail: [{ name: 'Privacy', url: '/privacy' }],
+        })}
+      />
       <h1>Privacy notice</h1>
       <p className="big">
         <strong>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { AdviceLines } from '../../components/ui/AdviceLines';
 import { Callout } from '../../components/ui/Callout';
+import { ID, JsonLd, pageGraph } from '../../lib/jsonLd';
 
 export const metadata: Metadata = {
   title: 'Contact and corrections',
@@ -11,6 +12,16 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
+      <JsonLd
+        data={pageGraph({
+          path: '/contact',
+          type: 'ContactPage',
+          name: String(metadata.title),
+          description: String(metadata.description),
+          trail: [{ name: 'Contact', url: '/contact' }],
+          mainEntity: ID.person,
+        })}
+      />
       <h1>Contact and corrections</h1>
 
       <Callout type="important">

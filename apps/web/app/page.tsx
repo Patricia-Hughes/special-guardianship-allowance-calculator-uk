@@ -3,7 +3,7 @@ import { CalculatorShell } from '../components/calculator/CalculatorShell';
 import { RateTable } from '../components/ui/RateTable';
 import { Disclaimer } from '../components/ui/Disclaimer';
 import { AdviceLines } from '../components/ui/AdviceLines';
-import { AUTHOR_NAME, JsonLd, webApplicationJsonLd } from '../lib/jsonLd';
+import { AUTHOR_NAME, ID, JsonLd, calculatorNode, pageGraph } from '../lib/jsonLd';
 
 export const metadata: Metadata = {
   title: 'Special guardianship allowance calculator, what your council should be paying',
@@ -15,7 +15,15 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <JsonLd data={webApplicationJsonLd} />
+      <JsonLd
+        data={pageGraph({
+          path: '/',
+          name: 'Special guardianship allowance calculator',
+          description: String(metadata.description),
+          mainEntity: ID.calculator,
+          extra: [calculatorNode],
+        })}
+      />
 
       <h1>What should your special guardianship allowance be?</h1>
 

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { JsonLd, pageGraph } from '../../lib/jsonLd';
 
 export const metadata: Metadata = {
   title: 'Terms of use',
@@ -9,6 +10,14 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <>
+      <JsonLd
+        data={pageGraph({
+          path: '/terms',
+          name: String(metadata.title),
+          description: String(metadata.description),
+          trail: [{ name: 'Terms', url: '/terms' }],
+        })}
+      />
       <h1>Terms of use</h1>
 
       <h2>What you can expect from me</h2>

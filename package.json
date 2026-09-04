@@ -27,7 +27,9 @@
     "export:writer": "tsx scripts/export-writer-pack.mts",
     "export:facts": "tsx scripts/export-facts-pack.mts",
     "export:content-bundle": "tsx scripts/export-content-bundle.mts",
-    "export:brief": "tsx scripts/export-master-brief.mts"
+    "export:brief": "tsx scripts/export-master-brief.mts",
+    "check:schema": "tsx scripts/check-schema.ts",
+    "verify:build": "pnpm build && pnpm check:bundle && pnpm check:schema"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

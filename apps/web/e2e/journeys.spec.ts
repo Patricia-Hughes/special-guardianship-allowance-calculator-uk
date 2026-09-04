@@ -223,7 +223,19 @@ test.describe('journeys', () => {
     await expect(page.locator('.hero__figure')).toContainText('£206.71');
 
     // [HARD R5] No English law may appear on a Scottish result.
-    const body = (await page.locator('body').textContent()) ?? '';
+    //
+    // Everything a person can perceive, which deliberately includes .sr-only
+    // text: a screen reader user hearing "regulation 6" on a Scottish result is
+    // the same failure as seeing it. Only <script> and <style> come out, because
+    // the JSON-LD graph names the regulations the AUTHOR knows about, on every
+    // page of the site, and that is a fact about her rather than a claim about
+    // this carer's entitlement. textContent alone would read the graph as page
+    // copy and fail on it.
+    const body = await page.evaluate(() => {
+      const clone = document.body.cloneNode(true) as HTMLElement;
+      clone.querySelectorAll('script, style').forEach((n) => n.remove());
+      return clone.textContent ?? '';
+    });
     for (const forbidden of [
       'Special Guardianship Regulations 2005',
       'regulation 6',

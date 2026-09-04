@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { allContent } from '../../lib/content';
 import { LA_REGION_MAP } from '@sgo/engine';
-import { AUTHOR_NAME } from '../../lib/jsonLd';
+import { AUTHOR_NAME, ID, JsonLd, pageGraph } from '../../lib/jsonLd';
 
 export const metadata: Metadata = {
   title: 'About this site and how I source it',
@@ -13,6 +13,16 @@ export default function AboutPage() {
   const guides = allContent('guidance');
   return (
     <>
+      <JsonLd
+        data={pageGraph({
+          path: '/about',
+          type: 'AboutPage',
+          name: String(metadata.title),
+          description: String(metadata.description),
+          trail: [{ name: 'About', url: '/about' }],
+          mainEntity: ID.person,
+        })}
+      />
       <h1>About this site</h1>
 
       <p className="lede">

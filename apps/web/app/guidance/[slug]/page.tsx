@@ -8,7 +8,7 @@ import { LastUpdated } from '../../../components/ui/LastUpdated';
 import { Disclaimer } from '../../../components/ui/Disclaimer';
 import { AdviceLines } from '../../../components/ui/AdviceLines';
 import { CitationsList } from '../../../components/ui/SourceLink';
-import { AUTHOR_NAME, JsonLd, articleJsonLd, breadcrumbJsonLd, faqJsonLd } from '../../../lib/jsonLd';
+import { AUTHOR_NAME, ID, JsonLd, articleNode, faqNode, pageGraph } from '../../../lib/jsonLd';
 
 export function generateStaticParams(): Array<{ slug: string }> {
   return contentSlugs('guidance').map((slug) => ({ slug }));
@@ -42,23 +42,32 @@ export default async function GuidancePage({ params }: { params: Promise<{ slug:
   return (
     <article>
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: 'Home', url: '/' },
-          { name: 'Guides', url: '/guidance' },
-          { name: fm.title, url: `/guidance/${slug}` },
-        ])}
-      />
-      <JsonLd
-        data={articleJsonLd({
-          title: fm.title,
+        data={pageGraph({
+          path: `/guidance/${slug}`,
+          name: fm.title,
           description: fm.description,
-          slug,
-          published: fm.lastUpdated,
-          modified: fm.lastUpdated,
-          citationLabels: citations.map((c) => c.label),
+          trail: [
+            { name: 'Guides', url: '/guidance' },
+            { name: fm.title, url: `/guidance/${slug}` },
+          ],
+          datePublished: fm.lastUpdated,
+          dateModified: fm.lastUpdated,
+          lastReviewed: fm.lastReviewed,
+          mainEntity: ID.article(slug),
+          extra: [
+            articleNode({
+              slug,
+              title: fm.title,
+              description: fm.description,
+              published: fm.lastUpdated,
+              modified: fm.lastUpdated,
+              citations,
+              about: ['Special guardianship allowance', fm.title],
+            }),
+            ...(fm.faq && fm.faq.length > 0 ? [faqNode(slug, fm.faq)] : []),
+          ],
         })}
       />
-      {fm.faq && fm.faq.length > 0 && <JsonLd data={faqJsonLd(fm.faq)} />}
 
       <nav aria-label="Breadcrumb" className="print-hide">
         <a href="/guidance">← All guides</a>

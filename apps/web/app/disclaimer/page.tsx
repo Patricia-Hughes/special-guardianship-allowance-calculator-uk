@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { AdviceLines } from '../../components/ui/AdviceLines';
+import { JsonLd, pageGraph } from '../../lib/jsonLd';
 
 export const metadata: Metadata = {
   title: 'Disclaimer',
@@ -10,6 +11,14 @@ export const metadata: Metadata = {
 export default function DisclaimerPage() {
   return (
     <>
+      <JsonLd
+        data={pageGraph({
+          path: '/disclaimer',
+          name: String(metadata.title),
+          description: String(metadata.description),
+          trail: [{ name: 'Disclaimer', url: '/disclaimer' }],
+        })}
+      />
       <h1>Disclaimer</h1>
 
       <h2>This is not legal advice</h2>

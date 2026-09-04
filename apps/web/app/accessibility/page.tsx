@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { JsonLd, pageGraph } from '../../lib/jsonLd';
 
 export const metadata: Metadata = {
   title: 'Accessibility statement',
@@ -9,6 +10,14 @@ export const metadata: Metadata = {
 export default function AccessibilityPage() {
   return (
     <>
+      <JsonLd
+        data={pageGraph({
+          path: '/accessibility',
+          name: String(metadata.title),
+          description: String(metadata.description),
+          trail: [{ name: 'Accessibility', url: '/accessibility' }],
+        })}
+      />
       <h1>Accessibility statement</h1>
 
       <p className="big">

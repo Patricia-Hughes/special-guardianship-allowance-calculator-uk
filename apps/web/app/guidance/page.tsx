@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { allContent } from '../../lib/content';
-import { JsonLd, breadcrumbJsonLd } from '../../lib/jsonLd';
+import { ID, JsonLd, pageGraph } from '../../lib/jsonLd';
 import { CalculatorCTA } from '../../components/ui/mdxComponents';
 
 export const metadata: Metadata = {
@@ -15,10 +15,14 @@ export default function GuidanceIndex() {
   return (
     <>
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: 'Home', url: '/' },
-          { name: 'Guides', url: '/guidance' },
-        ])}
+        data={pageGraph({
+          path: '/guidance',
+          type: 'CollectionPage',
+          name: String(metadata.title),
+          description: String(metadata.description),
+          trail: [{ name: 'Guides', url: '/guidance' }],
+          hasPart: docs.map((d) => ID.article(d.frontmatter.slug)),
+        })}
       />
       <h1>Guides</h1>
       <p className="lede">
