@@ -72,7 +72,7 @@ export default function ContactPage() {
           ever POST anywhere (see the security headers in §29.2). A published
           address is honest about where the message actually goes.
         */}
-        Email <strong>corrections@example.invalid</strong>.
+        Email <strong>patricia@specialguardianshipallowance.uk</strong>.
       </p>
       <p className="muted">
         Please do not send me details of your child or your finances. I do not need them, and I would rather not hold them.
