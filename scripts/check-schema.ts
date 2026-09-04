@@ -121,6 +121,18 @@ for (const file of htmlFiles(outDir)) {
         }
       }
 
+      // privacyPolicy is an Organization property. This site has no Organization
+      // by design, so the property has nowhere valid to sit and a validator
+      // rejects it wherever it is put. It shipped on WebSite for one release
+      // because it looked harmless and nobody checked the domain.
+      if ('privacyPolicy' in node) {
+        failures.push(
+          `${rel}: uses "privacyPolicy" on ${String(node['@type'])}.\n` +
+            '      It belongs to Organization, which this site does not have. Link the privacy\n' +
+            '      page from the footer, which is where a reader looks for it anyway.',
+        );
+      }
+
       for (const role of ['publisher', 'author', 'creator'] as const) {
         const v = node[role];
         if (v && typeof v === 'object' && (v as Record<string, unknown>)['@type'] === 'Organization') {

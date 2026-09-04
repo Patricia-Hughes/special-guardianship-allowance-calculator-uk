@@ -79,8 +79,12 @@ const websiteNode = {
   inLanguage: LANG,
   publisher: ref(ID.person),
   copyrightHolder: ref(ID.person),
-  privacyPolicy: `${SITE_URL}/privacy`,
-  // No potentialAction/SearchAction: there is no search on this site, and
+  // No privacyPolicy. It is an Organization property, and this site has no
+  // Organization by design, so there is nowhere valid to put it. A validator
+  // rejects it on WebSite. The privacy page has its own WebPage node and a
+  // footer link, which is how a reader actually gets to it.
+  //
+  // No potentialAction/SearchAction either: there is no search on this site, and
   // declaring one Google cannot use is a claim about a feature that is not here.
 };
 
@@ -91,7 +95,7 @@ const personNode = {
   url: `${SITE_URL}/about`,
   description:
     'A grandmother and special guardian. After her allowance was set without an explanation she could reproduce, she built the table of rates and sources that this site is made from.',
-  nationality: 'GB',
+  nationality: { '@type': 'Country', name: 'United Kingdom' },
   knowsAbout: [
     'Special guardianship allowances',
     'The Special Guardianship Regulations 2005',
@@ -240,7 +244,6 @@ export const calculatorNode = {
   author: ref(ID.person),
   publisher: ref(ID.person),
   isPartOf: ref(ID.website),
-  privacyPolicy: `${SITE_URL}/privacy`,
   featureList: [
     'Maximum special guardianship allowance for England, Wales, Scotland and Northern Ireland',
     'Per-child figures using the fostering national minimum allowance for each age band',
