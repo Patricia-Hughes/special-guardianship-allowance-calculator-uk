@@ -167,7 +167,7 @@ describe('engine — routing and regimes', () => {
         }),
         depsWithMeansTest(),
       ),
-    ).toThrow(/children you've already entered/);
+    ).toThrow(/children you have already entered/);
   });
 
   it('prefers date of birth over the stated age', () => {

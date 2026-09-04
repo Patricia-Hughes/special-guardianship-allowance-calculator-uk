@@ -8,7 +8,7 @@ import { LastUpdated } from '../../../components/ui/LastUpdated';
 import { Disclaimer } from '../../../components/ui/Disclaimer';
 import { AdviceLines } from '../../../components/ui/AdviceLines';
 import { CitationsList } from '../../../components/ui/SourceLink';
-import { JsonLd, articleJsonLd, breadcrumbJsonLd, faqJsonLd } from '../../../lib/jsonLd';
+import { AUTHOR_NAME, JsonLd, articleJsonLd, breadcrumbJsonLd, faqJsonLd } from '../../../lib/jsonLd';
 
 export function generateStaticParams(): Array<{ slug: string }> {
   return contentSlugs('guidance').map((slug) => ({ slug }));
@@ -66,6 +66,7 @@ export default async function GuidancePage({ params }: { params: Promise<{ slug:
 
       <h1>{fm.title}</h1>
       <LastUpdated
+        author={AUTHOR_NAME}
         updated={fm.lastUpdated}
         reviewed={fm.lastReviewed}
         {...(fm.ratesFinancialYear ? { ratesFinancialYear: fm.ratesFinancialYear } : {})}

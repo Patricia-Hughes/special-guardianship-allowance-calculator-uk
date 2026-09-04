@@ -3,7 +3,7 @@ import { CalculatorShell } from '../components/calculator/CalculatorShell';
 import { RateTable } from '../components/ui/RateTable';
 import { Disclaimer } from '../components/ui/Disclaimer';
 import { AdviceLines } from '../components/ui/AdviceLines';
-import { JsonLd, webApplicationJsonLd } from '../lib/jsonLd';
+import { AUTHOR_NAME, JsonLd, webApplicationJsonLd } from '../lib/jsonLd';
 
 export const metadata: Metadata = {
   title: 'Special guardianship allowance calculator, what your council should be paying',
@@ -32,6 +32,12 @@ export default function HomePage() {
         </li>
         <li>Every figure has its source next to it, so you can check it or show someone.</li>
       </ul>
+
+      <p>
+        My name is {AUTHOR_NAME}. I am a special guardian myself, and I built this after I could not
+        work out how my own allowance had been calculated.{' '}
+        <a href="/about">More about me, and where the figures come from</a>.
+      </p>
 
       <Disclaimer compact />
 

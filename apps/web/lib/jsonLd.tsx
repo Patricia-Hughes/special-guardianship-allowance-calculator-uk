@@ -4,6 +4,16 @@ export const SITE_NAME = 'Special Guardianship Allowance Calculator';
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://example.invalid';
 
 /**
+ * The one place the author's name is written down.
+ *
+ * It appears on every guide, in the structured data, and on the About page. A
+ * site that spells its author's name two ways reads as though nobody is really
+ * behind it, which is the opposite of what a byline is for. Imported, never
+ * retyped.
+ */
+export const AUTHOR_NAME = 'Patricia Hughes';
+
+/**
  * The calculator route. Deliberately NOT marked up as a Product, and with no
  * review or rating markup: it is not a product and there are no reviews (§27).
  */
@@ -32,7 +42,9 @@ export function articleJsonLd(opts: {
     description: opts.description,
     datePublished: opts.published,
     dateModified: opts.modified,
-    author: { '@type': 'Organization', name: SITE_NAME },
+    // A person wrote these, not an organisation. Saying otherwise in the
+    // structured data contradicts the byline on the page itself.
+    author: { '@type': 'Person', name: AUTHOR_NAME },
     publisher: { '@type': 'Organization', name: SITE_NAME },
     mainEntityOfPage: `${SITE_URL}/guidance/${opts.slug}`,
     citation: opts.citationLabels,

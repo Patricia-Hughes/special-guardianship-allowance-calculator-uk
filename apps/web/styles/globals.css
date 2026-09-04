@@ -253,6 +253,15 @@ input[type='radio'], input[type='checkbox'] {
   margin-bottom: var(--s5);
 }
 
+/* A figure that carries a sentence on its own, on the About page. The writing
+   guide asks for numbers on their own line, and at reading size a bare "£127 a
+   week." between two paragraphs just looks like a short paragraph. */
+.story-figure {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: var(--s4) 0;
+}
+
 .hint { color: var(--ink-muted); font-size: var(--text-sm); }
 
 /* ── Buttons ────────────────────────────────────────────────────────────── */
