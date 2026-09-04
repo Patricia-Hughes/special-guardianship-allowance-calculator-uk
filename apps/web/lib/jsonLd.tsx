@@ -1,7 +1,19 @@
 /** Structured data — spec §27. */
 
 export const SITE_NAME = 'Special Guardianship Allowance Calculator';
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://example.invalid';
+/**
+ * The canonical origin. Every canonical tag, the sitemap, robots.txt, the Open
+ * Graph tags and the structured data are built from this one value, so it is the
+ * only place the domain is written down.
+ *
+ * No trailing slash: everything here concatenates paths onto it.
+ *
+ * The env var still wins, so a staging deploy can point somewhere else without a
+ * code change. Staging also sets NEXT_PUBLIC_NOINDEX=1, which robots.ts reads.
+ */
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://specialguardianshipallowance.uk'
+).replace(/\/$/, '');
 
 /**
  * The one place the author's name is written down.
