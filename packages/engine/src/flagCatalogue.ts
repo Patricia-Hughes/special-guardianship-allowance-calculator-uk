@@ -239,7 +239,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'info',
     title: 'You are in the few days of April where the rules disagree',
     body: () =>
-      'The government sets these rates for a **tax year running 6 April to 5 April**. Most councils put their increase in from **1 April**.\n\n' +
+      'The government sets these rates for a **tax year running 6 April to 5 April**. Councils normally put their increase in from **1 April**.\n\n' +
       'Between 1 and 5 April the two do not line up. I have shown you the new rate, because that is what councils normally pay from 1 April. But if your council follows the tax year, it may still be paying last year\'s rate for a few more days.\n\n' +
       'It is worth a few pounds, not a few hundred. If you are checking a backdated claim, it is worth getting right.',
     citationId: 'north-tyneside-decision-2025',
@@ -259,7 +259,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     severity: 'info',
     title: 'Your council may have a savings rule',
     body: (c) =>
-      `You told me about savings of ${money(c.savingsCapital)}. Some councils count savings above a threshold. A common pattern is £6,000, then £1 a week for each £250 above it. But there is no national rule and I do not hold your council's.\n\n` +
+      `You told me about savings of ${money(c.savingsCapital)}. Some councils count savings above a threshold, and a council may borrow the rule the benefits system uses: £6,000, then £1 a week for each £250 above it. There is no national rule for special guardianship, and I do not hold your council's.\n\n` +
       'I have not applied any savings rule to your estimate. Ask your council whether it has one.',
     citationId: 'dwp-benefit-rates-2026-27',
     actionUrl: '/guidance/how-the-means-test-works',
@@ -322,7 +322,7 @@ export const FLAG_CATALOGUE: Record<FlagCode, FlagSpec> = {
     title: 'Check whether you can claim Guardian\'s Allowance',
     body: () =>
       'Guardian\'s Allowance is a weekly payment for someone bringing up a child whose parents have died, or where one has died and the other cannot be traced, is serving a long prison sentence, or cannot be found.\n\n' +
-      'It is tax free, it is ignored for means-tested benefits, and it is exempt from the benefit cap. It is widely missed.',
+      'It is tax free, it is ignored for means-tested benefits, and it is exempt from the benefit cap. It is a separate claim, and it is not paid automatically alongside Child Benefit.',
     citationId: 'cb-ga-uprating-order-2026',
     actionUrl: '/guidance/benefits-and-your-allowance',
   },
