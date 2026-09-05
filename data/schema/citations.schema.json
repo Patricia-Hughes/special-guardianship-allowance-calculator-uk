@@ -9,7 +9,6 @@
   "type": "object",
   "required": [
    "label",
-   "url",
    "kind",
    "retrieved"
   ],

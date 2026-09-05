@@ -130,14 +130,17 @@ function legislationIdentifier(url: string): string | undefined {
 }
 
 export function citationNode(c: Citation): Record<string, unknown> {
+  // A source whose address has rotted still exists and is still named, so it
+  // still gets an identity in the graph. It just gets a local one, and no url
+  // property, rather than a link that goes nowhere.
   const base: Record<string, unknown> = {
-    '@id': c.url,
+    '@id': c.url ?? `${SITE_URL}/#source-${c.id}`,
     name: c.label,
-    url: c.url,
+    ...(c.url ? { url: c.url } : {}),
     inLanguage: LANG,
   };
   if (c.kind === 'statute' || c.kind === 'regulation') {
-    const identifier = legislationIdentifier(c.url);
+    const identifier = c.url ? legislationIdentifier(c.url) : undefined;
     return {
       ...base,
       '@type': 'Legislation',

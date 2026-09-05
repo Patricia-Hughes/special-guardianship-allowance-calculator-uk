@@ -15,7 +15,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 interface Citation {
   label: string;
-  url: string;
+  /** Absent where the address has rotted: there is nothing to HEAD. */
+  url?: string;
   kind: string;
   retrieved: string;
   pendingSourceIssue?: string;

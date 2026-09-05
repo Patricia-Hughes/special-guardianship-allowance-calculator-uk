@@ -139,7 +139,13 @@ export interface Citation {
   /** Key into citations.json. */
   id: string;
   label: string;
-  url: string;
+  /**
+   * Absent where the published address has rotted and no replacement has been
+   * found. SourceLink then renders the reference without a link and says the
+   * link is still being sourced, which is the honest state: the source exists
+   * and is named, the address does not. Never a dead link.
+   */
+  url?: string;
   retrieved: IsoDate;
   kind: 'statute' | 'regulation' | 'guidance' | 'case' | 'ombudsman' | 'dataset';
   /** Rendered verbatim in the UI where present — this is content, not a comment. */
