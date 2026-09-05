@@ -1,11 +1,28 @@
-# Annual update runbook
+# Maintenance runbook
 
-For whoever maintains this site. Written so nobody has to read the code again
-every April.
+For whoever maintains this site. Written so nobody has to read the code again.
 
 **The one thing to know:** rates live in `/data`, never in the pages. Change a
 data file and every figure across the site moves at once. The build refuses to
 accept a rate typed into prose, so there is no second place to look.
+
+**The second thing to know:** the zip on the server is output. The repository is
+the source. You never edit the zip. You edit the source and build a new one.
+
+---
+
+## What are you here to do?
+
+| You want to | Go to |
+|---|---|
+| Know what command to run | Section 1 |
+| Clear the red banner on the site | Section 3 |
+| Publish this year's new rates | Section 5 |
+| Set the site up on a new machine, or make a new zip | Section 7 |
+| Change the words on a page | Section 8 |
+| Publish a new guide | Section 8 |
+| Fix a source link that has died | Section 9 |
+| Add or update a council | Section 9 |
 
 ---
 
@@ -82,7 +99,7 @@ This is the check that caught the four dead links already removed from
 `citations.json`. Nothing else on this list can catch link rot, because rot
 happens on somebody else's server.
 
-When it reports a 404, see section 7.
+When it reports a 404, see section 9.
 
 ### Faking the date
 
@@ -414,7 +431,214 @@ directly, which is more likely to work.
 
 ---
 
-## 7. Jobs that are not the April uprating
+## 7. Rebuilding the site from nothing
+
+The zip on your server is **output**. The repository is the **source**. You
+never edit the zip. You edit the source and build a new one.
+
+This is the whole path, from an empty machine to a zip ready to upload. It is
+the same six commands every year, and the same six commands if a laptop dies or
+a new developer starts.
+
+### What you need
+
+Git, Node 20 or newer, and pnpm 10. Nothing else. **No database, no server, no
+API keys, no accounts.** The site is static files.
+
+### The six commands
+
+```
+git clone https://github.com/fantasy-324/new-test-tool.git
+cd new-test-tool
+corepack enable
+pnpm install
+pnpm verify
+pnpm verify:build
+```
+
+`corepack enable` makes Node use the exact pnpm version pinned in
+`package.json`, so you do not have to install pnpm yourself.
+
+The finished site is now in `apps/web/out`. About three minutes end to end,
+most of it `pnpm install`.
+
+### Making the zip
+
+```
+cd apps/web/out
+zip -r ../../../sgo-site.zip .
+```
+
+**The `.htaccess` file must be inside the zip.** It carries the security headers
+and the URL rewriting, and it is hidden, so it is the one file a zip tool
+silently drops. On Linux and macOS the command above includes it. On Windows,
+use 7-Zip and turn on hidden files, then check the archive contains `.htaccess`
+before you upload.
+
+### Uploading
+
+Extract the zip into `public_html`. Put `favicon.ico` at the root, next to
+`index.html`. That is it. Nothing to restart, nothing to configure.
+
+### A fresh clone looks smaller than your folder, and that is correct
+
+Three things are generated and deliberately not stored in the repository:
+
+| Missing after a clone | Made by |
+|---|---|
+| `node_modules/` | `pnpm install` |
+| `apps/web/out/` | `pnpm build` |
+| `packages/engine/src/data/` | `syncdata`, which `prebuild` runs for you |
+
+Never copy `packages/engine/src/data/` by hand. `/data` is the one real copy.
+
+### If the build fails on a fresh clone
+
+Check the Node version first: `node -v` must be 20 or higher. That is the cause
+almost every time. Then delete `node_modules` and `pnpm install` again.
+
+---
+
+## 8. Adding and editing pages
+
+### Where the words live
+
+| What you want to change | File |
+|---|---|
+| One of the 16 guides | `apps/web/content/guidance/<slug>.mdx` |
+| Home page | `apps/web/app/page.tsx` |
+| About page | `apps/web/app/about/page.tsx` |
+| Rates page | `apps/web/app/rates/page.tsx` |
+| Contact, privacy, terms, disclaimer, accessibility | `apps/web/app/<name>/page.tsx` |
+| The warnings shown on a result | `packages/engine` |
+| The letters a carer sends | `packages/letters` |
+
+Guides are the easy ones. They are MDX, which is Markdown, so a writer can edit
+them without touching code.
+
+### Editing something that already exists
+
+```
+pnpm dev             look at your change on http://localhost:3000
+pnpm verify          check it
+pnpm verify:build    build it
+```
+
+Then upload as in section 7. Two small habits:
+
+- Update `lastUpdated` in the frontmatter when you change a guide. The sitemap
+  reads it, so search engines learn the page moved
+- Update `lastReviewed` only when somebody actually re-read the sources
+
+### The house rules the build enforces
+
+You cannot ship a page that breaks these. `check:content` fails the build.
+
+| Rule | Why |
+|---|---|
+| Answer the question in the **first line** under every heading | People scan. An answer three paragraphs down is a hidden answer |
+| No em dashes | House style |
+| No rate typed into prose | Use `<RateTable />` or `<BenefitAmount />`. Typed figures go stale silently |
+| No heading immediately followed by a `<Callout>` | A warning box is not an answer |
+| Every guide carries `## What you can check, and what you have to ask for` | Every page must say plainly where its usefulness stops |
+| Never state law without `<Cite id="..." />` | Every claim names its source |
+
+Paragraphs run one to three sentences. That one is style, not a gate, but the
+site reads badly without it.
+
+### Publishing a new guide
+
+**Step 1.** Create `apps/web/content/guidance/your-slug.mdx`. The filename is
+the URL: this one becomes `/guidance/your-slug`.
+
+**Step 2.** The frontmatter. Every field below except `faq` is required.
+
+```yaml
+---
+title: "Your question as a heading"
+slug: "your-slug"
+description: "One or two sentences. This is the Google result text."
+lastUpdated: "2027-04-12"
+lastReviewed: "2027-04-12"
+reviewEvery: "P6M"
+citations: ["sg-regs-2005-reg5", "sg-regs-2005-reg6"]
+faq:
+  - q: "A question a reader actually asks"
+    a: "The answer, in full sentences."
+---
+```
+
+`slug` must match the filename. `reviewEvery` is an ISO duration: `P6M` is six
+months, `P1Y` is a year. `check:staleness` nags you when a review is overdue.
+
+**Step 3.** Write the body in Markdown. These components are available:
+
+| Component | Does |
+|---|---|
+| `<Cite id="sg-regs-2005-reg5" />` | Prints the source. The id must exist in `citations.json` |
+| `<RateTable />` | The current rates, read from `/data` |
+| `<BenefitAmount />` | A single benefit figure, read from `/data` |
+| `<Callout>` | A warning box |
+| `<CalculatorCTA />` | Link through to the calculator |
+| `<LetterCTA />` | Link through to a letter template |
+| `<AdviceLines />` | The advice organisations block |
+
+**Step 4.** Include the required section, word for word:
+
+```
+## What you can check, and what you have to ask for
+```
+
+The build fails without it. Both halves have to be answered: what the reader can
+work out themselves, and what only their council can tell them.
+
+**Step 5.** `pnpm verify`, then `pnpm verify:build`, then upload.
+
+### There is nothing to register
+
+This is the part that surprises people. Drop the file in the folder and you are
+done. All of these read the folder at build time and pick it up on their own:
+
+- The guides index at `/guidance`
+- `sitemap.xml`
+- The structured data for Google
+- The breadcrumbs
+- The related-pages links at the foot of each guide
+
+No list to edit, no route to add, no menu to update. The header links to the
+guides index, never to individual guides, so the navigation never needs touching
+either.
+
+### Related pages come from your citations
+
+Related links are **derived from shared sources**, not hand-maintained. Two
+guides citing the same regulation link to each other automatically.
+
+So the `citations` list in the frontmatter does two jobs: it sources your claims,
+and it decides what the page links to. Get it right and the internal linking
+builds itself.
+
+### Writing a draft
+
+```yaml
+draft: true
+```
+
+Keeps the page out of the build and out of the sitemap. Remove the line to
+publish.
+
+### Deleting a guide
+
+Delete the file and everything unwires itself the same way it wired up. But if
+the page has been live and anyone has linked to it, add a redirect in
+`apps/web/public/.htaccess` first, or you leave a 404 behind.
+
+Usually the better move is to keep the page and rewrite it. A URL that has been
+indexed is worth more than an empty folder.
+
+---
+
+## 9. Jobs that are not the April uprating
 
 ### A source link has died
 
@@ -508,7 +732,7 @@ note explaining why, not an override.
 
 ---
 
-## 8. What the gates catch
+## 10. What the gates catch
 
 | Gate | Catches |
 |---|---|
@@ -523,7 +747,7 @@ note explaining why, not an override.
 
 ---
 
-## 9. Three things that need a decision, not a copy-paste
+## 11. Three things that need a decision, not a copy-paste
 
 **Wales is still unverified.** `wales.verify: true` in the 2026/27 file. The
 figures come from The Fostering Network reproducing a Welsh Government letter,
@@ -541,7 +765,7 @@ warnings need rewriting, not a number change.
 
 ---
 
-## 10. `watchlist.json`, and how it differs from your alert tool
+## 12. `watchlist.json`, and how it differs from your alert tool
 
 `watchlist.json` is a list of documents you are **waiting for**, each with a date
 to check again. Five items now. `check:staleness` reads it and warns once a date
@@ -552,7 +776,7 @@ not exist yet**. You need both.
 
 ---
 
-## 11. Why there are two safety nets
+## 13. Why there are two safety nets
 
 **Your alert tool** watches other people's sites. It says *"GOV.UK changed this
 page."* That is the early warning.
