@@ -1,6 +1,6 @@
 # Every figure and rule behind the calculator
 
-For final research review. Generated 2026-09-03 from `/data` and
+For final research review. Generated 2026-09-05 from `/data` and
 the engine source, so nothing here can drift from what the site actually does.
 
 ## What to check, and what not to
@@ -499,8 +499,14 @@ Last verified 2026-08-29. Source: [Kinship Zones - kinship allowance pilot (2026
 
 ## 10. Every source
 
-57 in total. **0 still without a URL**, listed first.
+56 in total. **3 still without a URL**, listed first.
 
+
+### Still needing a link
+
+- **LGSCO decision, Southend-on-Sea (19 003 363, 5 October 2020)**
+- **Lincolnshire County Council, Special Guardianship Allowance Assessment Framework**
+- **North Tyneside Council, Decision Record: Foster Care, Special Guardianship, Adoption and Child Arrangement Order Allowance Increases**
 
 ### All sources
 
@@ -529,19 +535,18 @@ Last verified 2026-08-29. Source: [Kinship Zones - kinship allowance pilot (2026
 | Barrett v Kirklees MBC [2010] EWHC 467 (Admin) | case | 2026-09-03 | [link](https://www.bailii.org/ew/cases/EWHC/Admin/2010/467.html) |
 | Leeds City Council, Revised Special Guardianship Support Offer, cover report, 1 March 2024 | guidance | 2026-08-31 | [link](https://democracy.leeds.gov.uk/documents/s254642/Special%20Guardianship%20Order%20Support%20Cover%20Report%20010324.pdf) |
 | R (B) v Lewisham LBC [2008] EWHC 738 (Admin) | case | 2026-09-03 | [link](https://www.bailii.org/ew/cases/EWHC/Admin/2008/738.html) |
-| LGSCO decision, fostering (20 005 985) | ombudsman | 2026-08-31 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/fostering/20-005-985) |
 | LGSCO decision, friends and family carers (22 011 906) | ombudsman | 2026-08-31 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/22-011-906) |
 | LGSCO decision, friends and family carers (22 018 116) | ombudsman | 2026-08-31 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/22-018-116) |
 | LGSCO decision, Devon County Council (23 000 973, 25 January 2024) | ombudsman | 2026-08-31 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/23-000-973) |
 | LGSCO decision, Devon County Council (24 003 172), not upheld | ombudsman | 2026-08-31 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/24-003-172) |
 | LGSCO public report, North Tyneside Council (17 002 928, 27 February 2018) | ombudsman | 2026-09-01 | [link](https://web.archive.org/web/20231216202817/https://www.lgo.org.uk/assets/attach/4322/REPORT-17002928-N-Tyneside.pdf) |
 | LGSCO decision, Rochdale MBC (17 010 167, May 2019), council's judicial review challenge dismissed | ombudsman | 2026-09-01 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/17-010-167) |
-| LGSCO decision, Southend-on-Sea (19 003 363, 5 October 2020) | ombudsman | 2026-08-31 | [link](https://www.lgo.org.uk/decisions/children-s-care-services/friends-and-family-carers/19-003-363) |
-| Lincolnshire County Council, Special Guardianship Allowance Assessment Framework | guidance | 2026-08-29 | [link](https://www.lincolnshire.gov.uk/directory-record/82363/special-guardianship-allowance-assessment-framework) |
+| LGSCO decision, Southend-on-Sea (19 003 363, 5 October 2020) | ombudsman | 2026-08-31 | **none** |
+| Lincolnshire County Council, Special Guardianship Allowance Assessment Framework | guidance | 2026-08-29 | **none** |
 | R (TT) v Merton LBC [2012] EWHC 2055 (Admin) | case | 2026-09-03 | [link](https://caselaw.nationalarchives.gov.uk/ewhc/admin/2012/2055) |
 | Department of Health (Northern Ireland), Foster care allowances, Model Scheme 2024-25 | dataset | 2026-09-01 | [link](https://www.health-ni.gov.uk/sites/default/files/publications/health/model-scheme-2024-25.pdf) |
 | Department of Health (Northern Ireland), Model Scheme 2025-26, Section 1, Foster Care Allowances | guidance | 2026-09-03 | [link](https://www.health-ni.gov.uk/sites/default/files/2026-05/Foster%20care%20allowances%202025-26.pdf) |
-| North Tyneside Council, Decision Record: Foster Care, Special Guardianship, Adoption and Child Arrangement Order Allowance Increases | guidance | 2026-08-29 | [link](https://northtyneside.gov.uk/sites/default/files/web-page-related-files/20250321%20-%20Decision%20Record%20-%20Fostering%20Allowance.pdf) |
+| North Tyneside Council, Decision Record: Foster Care, Special Guardianship, Adoption and Child Arrangement Order Allowance Increases | guidance | 2026-08-29 | **none** |
 | UK Parliament written question 14259 (National Minimum Allowance uplifts) | dataset | 2026-08-29 | [link](https://questions-statements.parliament.uk/written-questions/detail/2024-11-13/14259) |
 | Special Guardianship Regulations 2005, reg 10 | regulation | 2026-09-03 | [link](https://www.legislation.gov.uk/uksi/2005/1109/regulation/10) |
 | Special Guardianship Regulations 2005, reg 11 | regulation | 2026-09-03 | [link](https://www.legislation.gov.uk/uksi/2005/1109/regulation/11) |
@@ -639,4 +644,121 @@ affects their figure.
    stable across every sourced year, and a change would fail a data gate.
 6. **The capital rule is off by default.** It runs only where a council's own
    recorded policy enables it.
+
+
+---
+
+## 13. For a developer: where the logic lives
+
+Sections 1 to 12 say what the calculator does. This one says where.
+
+**The engine is pure TypeScript.** No DOM, no network, integer pence
+arithmetic throughout. It is a separate package from the website on purpose, so
+it can be tested on its own and embedded elsewhere.
+
+**Money is never a float.** Everything is whole pence, as integers. `money.ts`
+owns that, and a rounding rule applied in the wrong place is the easiest way to
+produce a figure that is quietly wrong.
+
+### One calculation, start to finish
+
+Entry point: `calculate()` in `packages/engine/src/engine.ts`.
+
+| # | What happens | File | Function |
+|---|---|---|---|
+| 1 | Validate the input. Anything malformed is rejected here, never later | `schema.ts` | `parseCalculatorInput` |
+| 2 | Pick the rate table whose date range contains the date being calculated | `dates.ts` | `selectRateTable` |
+| 3 | Route by nation. Scotland has no special guardianship in law, so it leaves here | `regimes/scotland.ts` | `scotlandPath` |
+| 4 | Route to the Kinship Zones pilot, where eligible. Full fostering rate, no means test | `regimes/kinshipZone.ts` | `kinshipZonePath` |
+| 5 | Everything else: England, Wales and Northern Ireland | `regimes/sgo.ts` | `sgoPath` |
+| 6 | Per child, find the age band, then the national rate for nation and region | `rates.ts` | `resolveAgeBand` |
+| 7 | Look the rate up, and record the citation it came from | `rates.ts` | `lookupRate` |
+| 8 | Add the warnings that are true of every result, regardless of the numbers | `standingFlags.ts` | `standingFlags` |
+| 9 | Add the warnings that come from the council's own recorded policy | `councilPolicy.ts` | `councilPolicyFlags` |
+| 10 | Run the means test, but only if the carer gave finances. Order matters: the 20% disregard comes off income first | `meansTest.ts` | `runMeansTest` |
+| 11 | Apply the taper to disposable income | `meansTest.ts` | `applyTaper` |
+| 12 | Apply the regulation 7 floor, on the household total, inside the 24 month window | `resolve.ts` | `withinReg7Window` |
+| 13 | Order the warnings and remove duplicates | `flags.ts` | `sortFlags` |
+| 14 | Assemble the result | `result.ts` | `finalise` |
+| 15 | The last gate. Every rule in section 6 is asserted here. A violation throws instead of showing a figure | `guardrails.ts` | `assertGuardrails` |
+
+This table is generated and checked. If somebody renames a file or deletes a
+function, `pnpm export:facts` fails until the map is corrected.
+
+### Every file in the engine
+
+| File | Purpose |
+|---|---|
+| `backdating.ts` | Backdating module, spec §16. |
+| `councilPolicy.ts` | What we hold about an individual council, and what it is safe to say. |
+| `dates.ts` | Dates and financial years, spec §11 [HARD]. |
+| `deps.ts` | The reference data the engine calculates against. |
+| `engine.ts` | The calculation entry point, spec §13. |
+| `errors.ts` | Engine error taxonomy. |
+| `featureFlags.ts` | Feature flags and rollout — spec §39. |
+| `flagCatalogue.ts` | The 34 warnings, spec §17. |
+| `flagTypes.ts` | What a warning is, separately from what the warnings say. |
+| `flags.ts` | Assembling and ordering the warnings, spec §17. |
+| `guardrails.ts` | Guardrails, spec §15. |
+| `index.ts` | @sgo/engine — the Special Guardianship allowance calculation engine. |
+| `meansTest.ts` | Means test module, spec §14. |
+| `money.ts` | Money handling, spec §10 [HARD]. |
+| `rates.ts` | Looking up what a nation, region and age band are worth. |
+| `referenceData.ts` | Reference data access. |
+| `regimes/kinshipZone.ts` | The Kinship Zones pilot, spec §13.5. |
+| `regimes/scotland.ts` | Scotland, spec §13.4. |
+| `regimes/sgo.ts` | England, Wales and Northern Ireland, spec §13. |
+| `resolve.ts` | Working out where a carer stands, from whichever answer they gave. |
+| `result.ts` | Assembling the final result, and the last gate before it leaves the engine. |
+| `schema.ts` | Zod schemas, spec §6 and the validation table at §20.1. |
+| `standingFlags.ts` | The flags that are true of an SGO result regardless of the numbers. |
+| `types.ts` | Domain types — spec §7. Vocabulary is defined in spec §3 and is not interchangeable. |
+
+### The letters
+
+| File | Purpose |
+|---|---|
+| `index.ts` | @sgo/letters, spec §18. |
+| `templates.ts` | The nine letters, spec §18. |
+| `types.ts` | The shape of a letter and what it needs to fill itself in. |
+
+### Where the numbers come from
+
+Nothing above contains a figure. Every rate, benefit amount and council policy
+is read from `/data` at build time.
+
+```
+/data/*.json  ──syncdata──▶  packages/engine/src/data/  ──imported by──▶  referenceData.ts
+```
+
+`/data` is the only real copy. `packages/engine/src/data/` is generated and
+gitignored, and `prebuild`, `pretypecheck` and `pretest:unit` all regenerate
+it. Never edit it by hand.
+
+To add a new financial year you edit `/data` and register the year in
+`referenceData.ts`, newest first. That is the whole change. See the maintenance
+runbook.
+
+### The two things most likely to be got wrong
+
+**The means test order.** The 20% disregard comes off income BEFORE expenditure
+is subtracted. Inverting it roughly doubles the answer. A property test exists
+solely to catch that, and section 4 shows both arithmetics side by side.
+
+**The rate table order.** `RATE_TABLES` in `referenceData.ts` must be newest
+first, because `selectRateTable` takes the first table whose range contains the
+date. Put a year in the wrong place and old carers silently get new rates.
+
+### How to be sure a change is safe
+
+```
+pnpm test:unit       the engine's own tests
+pnpm verify          everything that can be checked without a build
+pnpm verify:build    build, bundle budget, structured data
+```
+
+The guardrails in `guardrails.ts` are the real safety net. They run on every
+result, in production, and throw rather than show a figure that breaks a rule.
+A change that makes the calculator wrong in a way the tests miss will usually
+still trip one of them.
 

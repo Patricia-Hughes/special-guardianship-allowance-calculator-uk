@@ -13,7 +13,7 @@
  * Run: pnpm export:facts
  */
 
-import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -405,6 +405,153 @@ affects their figure.
    stable across every sourced year, and a change would fail a data gate.
 6. **The capital rule is off by default.** It runs only where a council's own
    recorded policy enables it.
+`);
+
+// ─── Where the logic lives ─────────────────────────────────────────────────
+//
+// A developer inheriting this needs the map, not just the rules. Both halves
+// below are CHECKED against the source: a renamed file or a deleted symbol
+// fails this export, so the map cannot rot into a description of code that no
+// longer exists.
+
+const engineSrc = join(root, 'packages', 'engine', 'src');
+const lettersSrc = join(root, 'packages', 'letters', 'src');
+
+/** The first line of a file's top doc comment, which is its purpose. */
+function purposeOf(abs: string): string {
+  const text = readFileSync(abs, 'utf8');
+  // Only the comment the file OPENS with. Reaching further in picks up a note
+  // about one function and presents it as the purpose of the whole file.
+  if (!text.startsWith('/**')) return '(no doc comment)';
+  const close = text.indexOf('*/');
+  if (close === -1) return '(no doc comment)';
+  for (const raw of text.slice(3, close).split('\n')) {
+    const line = raw.replace(/^\s*\*?\s?/, '').trim();
+    if (line) return line;
+  }
+  return '(no doc comment)';
+}
+
+/** Every step of a calculation, in the order it happens. */
+const PIPELINE: Array<{ step: string; file: string; symbol: string }> = [
+  { step: 'Validate the input. Anything malformed is rejected here, never later', file: 'schema.ts', symbol: 'parseCalculatorInput' },
+  { step: 'Pick the rate table whose date range contains the date being calculated', file: 'dates.ts', symbol: 'selectRateTable' },
+  { step: 'Route by nation. Scotland has no special guardianship in law, so it leaves here', file: 'regimes/scotland.ts', symbol: 'scotlandPath' },
+  { step: 'Route to the Kinship Zones pilot, where eligible. Full fostering rate, no means test', file: 'regimes/kinshipZone.ts', symbol: 'kinshipZonePath' },
+  { step: 'Everything else: England, Wales and Northern Ireland', file: 'regimes/sgo.ts', symbol: 'sgoPath' },
+  { step: 'Per child, find the age band, then the national rate for nation and region', file: 'rates.ts', symbol: 'resolveAgeBand' },
+  { step: 'Look the rate up, and record the citation it came from', file: 'rates.ts', symbol: 'lookupRate' },
+  { step: 'Add the warnings that are true of every result, regardless of the numbers', file: 'standingFlags.ts', symbol: 'standingFlags' },
+  { step: "Add the warnings that come from the council's own recorded policy", file: 'councilPolicy.ts', symbol: 'councilPolicyFlags' },
+  { step: 'Run the means test, but only if the carer gave finances. Order matters: the 20% disregard comes off income first', file: 'meansTest.ts', symbol: 'runMeansTest' },
+  { step: 'Apply the taper to disposable income', file: 'meansTest.ts', symbol: 'applyTaper' },
+  { step: 'Apply the regulation 7 floor, on the household total, inside the 24 month window', file: 'resolve.ts', symbol: 'withinReg7Window' },
+  { step: 'Order the warnings and remove duplicates', file: 'flags.ts', symbol: 'sortFlags' },
+  { step: 'Assemble the result', file: 'result.ts', symbol: 'finalise' },
+  { step: 'The last gate. Every rule in section 6 is asserted here. A violation throws instead of showing a figure', file: 'guardrails.ts', symbol: 'assertGuardrails' },
+];
+
+const missing = PIPELINE.filter((s) => {
+  const abs = join(engineSrc, s.file);
+  if (!existsSync(abs)) return true;
+  return !new RegExp(`\\b${s.symbol}\\b`).test(readFileSync(abs, 'utf8'));
+});
+if (missing.length > 0) {
+  console.error('export-facts-pack: the pipeline map is out of date. Fix scripts/export-facts-pack.mts:');
+  for (const m of missing) console.error(`  ${m.file} no longer defines ${m.symbol}`);
+  process.exit(1);
+}
+
+p(`\n---\n\n## 13. For a developer: where the logic lives
+
+Sections 1 to 12 say what the calculator does. This one says where.
+
+**The engine is pure TypeScript.** No DOM, no network, integer pence
+arithmetic throughout. It is a separate package from the website on purpose, so
+it can be tested on its own and embedded elsewhere.
+
+**Money is never a float.** Everything is whole pence, as integers. \`money.ts\`
+owns that, and a rounding rule applied in the wrong place is the easiest way to
+produce a figure that is quietly wrong.
+
+### One calculation, start to finish
+
+Entry point: \`calculate()\` in \`packages/engine/src/engine.ts\`.
+
+| # | What happens | File | Function |
+|---|---|---|---|`);
+
+PIPELINE.forEach((s, i) => {
+  p(`| ${i + 1} | ${s.step} | \`${s.file}\` | \`${s.symbol}\` |`);
+});
+
+p(`
+This table is generated and checked. If somebody renames a file or deletes a
+function, \`pnpm export:facts\` fails until the map is corrected.
+
+### Every file in the engine
+
+| File | Purpose |
+|---|---|`);
+
+const engineFiles = [
+  ...readdirSync(engineSrc).filter((f) => f.endsWith('.ts')).map((f) => f),
+  ...readdirSync(join(engineSrc, 'regimes')).filter((f) => f.endsWith('.ts')).map((f) => `regimes/${f}`),
+].sort();
+
+for (const f of engineFiles) {
+  p(`| \`${f}\` | ${purposeOf(join(engineSrc, f))} |`);
+}
+
+p(`
+### The letters
+
+| File | Purpose |
+|---|---|`);
+for (const f of readdirSync(lettersSrc).filter((f) => f.endsWith('.ts')).sort()) {
+  p(`| \`${f}\` | ${purposeOf(join(lettersSrc, f))} |`);
+}
+
+p(`
+### Where the numbers come from
+
+Nothing above contains a figure. Every rate, benefit amount and council policy
+is read from \`/data\` at build time.
+
+\`\`\`
+/data/*.json  ──syncdata──▶  packages/engine/src/data/  ──imported by──▶  referenceData.ts
+\`\`\`
+
+\`/data\` is the only real copy. \`packages/engine/src/data/\` is generated and
+gitignored, and \`prebuild\`, \`pretypecheck\` and \`pretest:unit\` all regenerate
+it. Never edit it by hand.
+
+To add a new financial year you edit \`/data\` and register the year in
+\`referenceData.ts\`, newest first. That is the whole change. See the maintenance
+runbook.
+
+### The two things most likely to be got wrong
+
+**The means test order.** The 20% disregard comes off income BEFORE expenditure
+is subtracted. Inverting it roughly doubles the answer. A property test exists
+solely to catch that, and section 4 shows both arithmetics side by side.
+
+**The rate table order.** \`RATE_TABLES\` in \`referenceData.ts\` must be newest
+first, because \`selectRateTable\` takes the first table whose range contains the
+date. Put a year in the wrong place and old carers silently get new rates.
+
+### How to be sure a change is safe
+
+\`\`\`
+pnpm test:unit       the engine's own tests
+pnpm verify          everything that can be checked without a build
+pnpm verify:build    build, bundle budget, structured data
+\`\`\`
+
+The guardrails in \`guardrails.ts\` are the real safety net. They run on every
+result, in production, and throw rather than show a figure that breaks a rule.
+A change that makes the calculator wrong in a way the tests miss will usually
+still trip one of them.
 `);
 
 writeFileSync(outFile, parts.join('\n') + '\n');
