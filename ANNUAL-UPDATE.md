@@ -19,11 +19,112 @@ Every February, when England announces:
 4. `pnpm verify && pnpm verify:build`
 5. Rebuild, upload `apps/web/out`
 
-Full detail in section 3.
+Full detail in section 5. Every command is in section 1.
 
 ---
 
-## 1. How the site warns you
+## 1. Every command, and when to run it
+
+### The two you actually have to remember
+
+```
+pnpm verify          before you commit
+pnpm verify:build    before you upload
+```
+
+`verify` checks the words and the numbers. `verify:build` builds the site and
+then checks the build. If both pass, the site is shippable.
+
+### Getting started
+
+```
+pnpm install         first checkout, and after any lockfile change
+pnpm dev             preview on http://localhost:3000, reloads as you edit
+```
+
+Node 20 or newer, pnpm 10. The version is pinned in `package.json` under
+`packageManager`, so `corepack enable` will pick it up for you.
+
+### Everything, in one table
+
+| Command | What it does | When to run it |
+|---|---|---|
+| `pnpm install` | Installs dependencies | First checkout, lockfile changes |
+| `pnpm dev` | Local preview, live reload | While editing |
+| `pnpm verify` | typecheck, unit tests, data gates, content, headers | Before every commit |
+| `pnpm verify:build` | Builds, then bundle budget and structured data | Before every upload |
+| `pnpm build` | Static export into `apps/web/out` and nothing else | Rarely on its own |
+| `pnpm typecheck` | TypeScript, no emit | Inside `verify` |
+| `pnpm lint` | ESLint | By hand. Not inside `verify` |
+| `pnpm test:unit` | The engine and letter unit tests | Inside `verify` |
+| `pnpm test:e2e` | Playwright, desktop and mobile | Before a release |
+| `pnpm test:a11y` | The accessibility subset of the above | Before a release |
+| `pnpm validate:data` | Rate sanity: falling rates, mad values, missing sources | Inside `verify` |
+| `pnpm check:staleness` | Rate expiry, council review dates, watchlist dates | Inside `verify` |
+| `pnpm check:content` | A rate typed into prose, an em dash, an unanswered heading | Inside `verify` |
+| `pnpm check:headers` | The security headers are still in `.htaccess` | Inside `verify` |
+| `pnpm check:schema` | Every structured-data reference resolves | Inside `verify:build` |
+| `pnpm check:bundle` | JavaScript size has not crept up | Inside `verify:build` |
+| **`pnpm check:citations`** | **HEADs every source URL on the site and reports dead ones** | **Monthly, by hand. Nothing runs it for you** |
+
+### The one command nothing runs for you
+
+```
+pnpm check:citations
+```
+
+Run it **once a month**. It opens all 53 source links on the site and tells you
+which ones have died. It needs internet, it takes a minute, and it **warns
+rather than fails**, on purpose: a government page moving must not block a
+deploy that fixes something else.
+
+This is the check that caught the four dead links already removed from
+`citations.json`. Nothing else on this list can catch link rot, because rot
+happens on somebody else's server.
+
+When it reports a 404, see section 7.
+
+### Faking the date
+
+```
+SGO_TODAY=2027-04-12 pnpm check:staleness
+```
+
+`SGO_TODAY` overrides today's date for `check:staleness` and `check:content`
+only. It changes nothing on the built site. Use it to rehearse next April
+before it arrives, or to confirm a fix works.
+
+### Setting the domain
+
+The domain is baked into the schema, the sitemap, `robots.txt` and every
+canonical tag from one place, `apps/web/lib/jsonLd.tsx`:
+
+```
+NEXT_PUBLIC_SITE_URL=https://specialguardianshipallowance.uk pnpm verify:build
+```
+
+It already defaults to that address, so you only need the variable if the
+domain ever changes. Set it once, in the environment, not in twenty files.
+
+### Export scripts, for handing work to somebody else
+
+None of these change the site. They read it and write a document.
+
+| Command | Produces |
+|---|---|
+| `pnpm export:writer` | Every visible word, taken from the built site |
+| `pnpm export:content` | The copy plus the source behind each claim, risk-marked |
+| `pnpm export:content-bundle` | Everything, calculator labels included |
+| `pnpm export:facts` | Every number, rule and assumption the calculator runs on |
+| `pnpm export:review` | The warnings and the letters, in full sentences |
+| `pnpm export:brief` | The site and the research in one file |
+
+`export:facts` is the useful one for a developer. It is generated from `/data`
+and the engine source, so it cannot drift from what ships.
+
+---
+
+## 2. How the site warns you
 
 You do not have to remember the deadline. Two things nag you.
 
@@ -60,11 +161,11 @@ If the rates expire and nobody rebuilds, a **red banner** appears at the top of
 every page. It checks the reader's own clock, so it works even on a site nobody
 has rebuilt for a year.
 
-**The next one appears on 1 April 2027.** Section 1a explains how to clear it.
+**The next one appears on 1 April 2027.** Section 3 explains how to clear it.
 
 ---
 
-## 1a. The red banner, and how to clear it
+## 3. The red banner, and how to clear it
 
 ### What the reader sees
 
@@ -93,7 +194,7 @@ set and no line to delete.
 ### How to clear it
 
 Publish the new financial year. That is the whole fix, and it is the April
-routine in section 3:
+routine in section 5:
 
 1. `cp data/rates.2026-27.json data/rates.2027-28.json`
 2. Enter the new figures, and set `effectiveTo` to `"2028-03-31"`
@@ -146,7 +247,7 @@ claim. Publish when the real numbers land, and it clears the same day.
 
 ---
 
-## 2. What to monitor
+## 4. What to monitor
 
 Put these in your change-alert tool.
 
@@ -169,7 +270,7 @@ them change after publication. Watching them only trains you to ignore alerts.
 
 ---
 
-## 3. The April routine
+## 5. The April routine
 
 ### Step 1. Copy last year's rates file
 
@@ -179,13 +280,13 @@ cp data/rates.2026-27.json data/rates.2027-28.json
 
 ### Step 2. Get the new figures
 
-Open each source and read the table. **All four are in section 4 below with the
+Open each source and read the table. **All four are in section 6 below with the
 URL pattern for finding next year's.**
 
 - England: `https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering`
 - Scotland: `https://www.gov.scot/publications/scottish-recommended-allowance-for-foster-and-kinship-carers-information-for-carers-and-professionals/`
 - Wales: `https://www.thefosteringnetwork.org.uk/policy-and-campaigns/empowering-children-and-young-people/allowances/`
-- Northern Ireland: see section 4, the URL changes every year
+- Northern Ireland: see section 6, the URL changes every year
 
 ### Step 3. Edit the new file
 
@@ -256,7 +357,7 @@ You do **not** need to sync data into the engine by hand. `prebuild`,
 
 ---
 
-## 4. Finding next year's URL
+## 6. Finding next year's URL
 
 Two sources put **the year inside the address**. Your alert tool will never fire
 on them, because the old file stays exactly as it was and the new one appears
@@ -313,7 +414,101 @@ directly, which is more likely to work.
 
 ---
 
-## 5. What the gates catch
+## 7. Jobs that are not the April uprating
+
+### A source link has died
+
+`check:citations` reports a 404. Do this, in order:
+
+1. **Look for the same document at a new address.** Government pages move, they
+   rarely vanish. Search the department's own site for the title.
+2. **Found it** → update `url` in `data/citations.json` and set `retrieved` to
+   today.
+3. **Cannot find it** → **delete the `url` line entirely and keep the entry.**
+   Add a `note` recording the dead address and the date you checked.
+
+Deleting the URL is not the same as deleting the source. The site prints the
+reference and says it is still sourcing a public link. The claim keeps its
+attribution and the reader can see what it rests on.
+
+**Never paste a link you have not opened, and never swap in a different
+document that looks similar.** Every factual claim on this site names its
+source, and a wrong source is worse than an honest gap.
+
+### Adding a new source
+
+One entry in `data/citations.json`, keyed by a slug you invent:
+
+```json
+"dfe-nma-2027-28": {
+  "label": "DfE National Minimum Allowance for foster carers, 2027 to 2028",
+  "url": "https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
+  "kind": "dataset",
+  "retrieved": "2027-02-14"
+}
+```
+
+`kind` is one of `statute`, `regulation`, `guidance`, `dataset`, `case` or
+`ombudsman`. `retrieved` is the day **you** opened it, not the day it was
+published.
+
+Then reference the slug from wherever the claim lives. `validate:data` fails the
+build if a `sourceId` names a citation that does not exist, so a typo cannot ship.
+
+### Adding or updating a council
+
+`data/la-overrides.json`, in the `authorities` array. The rule that matters is
+at the top of the file:
+
+> An entry may only be used in a user-facing calculation or page when
+> `publishable === true`, which requires a non-empty, dated `policySourceUrl`
+> (and, where a `lawfulnessFlag` is present, a non-empty `sourceUrl` and
+> `decisionDate`). CI enforces this.
+
+So a council you have heard something about, but cannot link to, stays
+`publishable: false`. It sits in the file as a record and shows nobody anything.
+
+Two fields carry different meanings and are easy to confuse:
+
+- `corePolicy` is what the council **says** it does
+- `lawfulnessFlag` is whether that **survived scrutiny**, with the Ombudsman
+  decision that says so
+
+Set `verifiedOn` to the day you read the policy. `check:staleness` warns once
+that is over a year old.
+
+### Adding something you are waiting for
+
+`data/watchlist.json`, in the `items` array. Use it for a document that does not
+exist yet, or one you cannot find. Six fields: `id`, `what`, `why`, `url`,
+`checkAfter` and `openItem`.
+
+Set `checkAfter` and `check:staleness` nags you once that date passes, so a
+known gap cannot quietly rot in somebody's head. Five items in there now.
+
+### Correcting one figure mid-year
+
+Edit the figure in the relevant `data/rates.YYYY-YY.json` and bump `dataVersion`.
+Do not create a new file: a new file means a new period, and this is a
+correction to an existing one.
+
+If `validate:data` complains about a figure you are sure is right, it wants a
+note explaining why, not an override.
+
+### Things never to do
+
+| Do not | Because |
+|---|---|
+| Type a rate into a page | The build refuses it. Rates live in `/data` only |
+| Add a dismiss button to the stale banner | It is only ever showing because the figures expired |
+| Work out a missing rate from an uplift percentage | The rounding rules are not published. A wrong historic rate produces a wrong arrears claim |
+| Copy `packages/engine/src/data/` by hand | It is generated and gitignored. `prebuild`, `pretypecheck` and `pretest:unit` all run `syncdata` |
+| Add analytics | A build gate blocks it. This audience did not consent to being measured |
+| Use an em dash | A build gate blocks it. House style |
+
+---
+
+## 8. What the gates catch
 
 | Gate | Catches |
 |---|---|
@@ -328,7 +523,7 @@ note explaining why, not an override.
 
 ---
 
-## 6. Three things that need a decision, not a copy-paste
+## 9. Three things that need a decision, not a copy-paste
 
 **Wales is still unverified.** `wales.verify: true` in the 2026/27 file. The
 figures come from The Fostering Network reproducing a Welsh Government letter,
@@ -346,7 +541,7 @@ warnings need rewriting, not a number change.
 
 ---
 
-## 7. `watchlist.json`, and how it differs from your alert tool
+## 10. `watchlist.json`, and how it differs from your alert tool
 
 `watchlist.json` is a list of documents you are **waiting for**, each with a date
 to check again. Five items now. `check:staleness` reads it and warns once a date
@@ -357,7 +552,7 @@ not exist yet**. You need both.
 
 ---
 
-## 8. Why there are two safety nets
+## 11. Why there are two safety nets
 
 **Your alert tool** watches other people's sites. It says *"GOV.UK changed this
 page."* That is the early warning.
