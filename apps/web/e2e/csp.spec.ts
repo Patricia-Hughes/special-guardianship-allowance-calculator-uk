@@ -43,8 +43,13 @@ test('@csp the security headers are actually served', async ({ request }) => {
   expect(csp).toContain("default-src 'self'");
   expect(csp).toContain("frame-ancestors 'none'");
   expect(csp).toContain("form-action 'none'");
-  // connect-src must stay pinned to the one outbound host we allow [R8].
+  // connect-src must stay pinned to the hosts we allow [R8]: the postcode
+  // lookup, and Google Analytics, which only ever loads after a yes.
   expect(csp).toContain("connect-src 'self' https://api.postcodes.io");
+  expect(csp).toContain('https://www.google-analytics.com');
+  // The tag itself has to be loadable, or consent buys the reader nothing and
+  // the privacy notice describes something that never happens.
+  expect(csp).toContain("script-src 'self' 'unsafe-inline' https://www.googletagmanager.com");
   expect(res.headers()['x-frame-options']).toBe('DENY');
   expect(res.headers()['x-content-type-options']).toBe('nosniff');
   expect(res.headers()['referrer-policy']).toBe('no-referrer');

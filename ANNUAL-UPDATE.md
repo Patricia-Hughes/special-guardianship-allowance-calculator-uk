@@ -160,6 +160,34 @@ NEXT_PUBLIC_SITE_URL=https://specialguardianshipallowance.uk pnpm verify:build
 It already defaults to that address, so you only need the variable if the
 domain ever changes. Set it once, in the environment, not in twenty files.
 
+### Setting the Google Analytics ID
+
+Analytics are off unless a measurement ID is supplied **at build time**:
+
+```
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX pnpm verify:build
+```
+
+**This has to be on every build.** Forget it and you ship a site with no
+analytics, no consent banner, and a privacy notice that correctly says so. The
+site is never wrong, it just quietly stops counting. Put the variable in your
+shell profile or your CI settings so it cannot be forgotten.
+
+| With the ID set | Without it |
+|---|---|
+| Consent banner appears | No banner |
+| Google Analytics loads, but only after the reader presses yes | No tag at all |
+| Privacy notice describes analytics and offers an on/off control | Privacy notice says the site runs no analytics |
+
+Both are correct and both are tested. The privacy notice is generated from the
+same flag as the behaviour, so it cannot describe something the build does not
+do.
+
+**To turn analytics off for good:** stop setting the variable, then remove the
+Google hosts from `apps/web/public/_headers`, `apps/web/public/.htaccess` and
+`scripts/check-security-headers.ts` in one change. Leaving them behind is not
+dangerous, but a policy wider than the site needs is a policy doing less work.
+
 ### Export scripts, for handing work to somebody else
 
 None of these change the site. They read it and write a document.

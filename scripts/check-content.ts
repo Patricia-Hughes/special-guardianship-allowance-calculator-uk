@@ -287,8 +287,14 @@ for (const file of [
 // than the numbers would be, and it is only worth making if it cannot quietly
 // stop being true. So it is a gate, not a note in a file.
 //
-// If analytics are ever wanted, the honest route is to delete this block in the
-// same change that updates the privacy notice, so the two can never drift.
+// CHANGED 5 September 2026, on the site owner's decision, and the privacy
+// notice changed in the same commit as this comment says it must.
+//
+// The gate is narrowed rather than deleted. Analytics now live in exactly three
+// files, listed below, where they are behind consent and can be reviewed in one
+// sitting. Everywhere else the ban still stands, so a tracker pasted into a
+// guide, a component or the layout still fails the build. Deleting the gate
+// would have given up that protection to buy nothing.
 const TRACKERS =
   /\b(gtag|googletagmanager|google-analytics|dataLayer|plausible\.io|matomo|piwik|fathom|posthog|mixpanel|hotjar|clarity\.ms|doubleclick|facebook\.net|sendBeacon)\b/i;
 for (const file of [
@@ -297,8 +303,15 @@ for (const file of [
   ...walkFiles(join(root, 'apps', 'web', 'lib')),
 ]) {
   const rel = relative(root, file);
-  // The privacy notice is the one place allowed to say the word.
-  if (rel.includes(join('app', 'privacy'))) continue;
+  // The four places allowed to mention it: the notice that discloses it, the
+  // module that loads it, and the two components that ask and re-ask consent.
+  const ALLOWED = [
+    join('app', 'privacy'),
+    join('lib', 'analytics.ts'),
+    join('components', 'ui', 'ConsentBanner.tsx'),
+    join('components', 'ui', 'ConsentControls.tsx'),
+  ];
+  if (ALLOWED.some((a) => rel.includes(a))) continue;
   readFileSync(file, 'utf8')
     .split('\n')
     .forEach((line, i) => {
@@ -307,9 +320,11 @@ for (const file of [
       if (!hit) return;
       failures.push(
         `${rel}:${i + 1} looks like visitor tracking ("${hit[0]}").\n` +
-          '      This site measures nothing about the people who use it, and that is a decision\n' +
-          '      recorded in the privacy notice. If it is being changed on purpose, change the\n' +
-          '      privacy notice and this gate in the same commit.',
+          '      Analytics on this site live in lib/analytics.ts and the two consent components,\n' +
+          '      behind an explicit yes from the reader. A tracker anywhere else runs before\n' +
+          '      consent, which is the thing the consent banner exists to prevent. Route it\n' +
+          '      through lib/analytics.ts, or if this is a new third party, update the privacy\n' +
+          '      notice and this gate in the same commit.',
       );
     });
 }

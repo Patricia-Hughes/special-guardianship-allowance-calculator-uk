@@ -564,3 +564,41 @@ summary {
   margin: var(--s5) 0;
 }
 .panel > :first-child { margin-top: 0; }
+
+/* ── Cookie consent ─────────────────────────────────────────────────────── */
+/*
+ * Fixed to the bottom rather than pushing the page down, because it appears on
+ * the calculator and moving a form under someone's cursor is worse than
+ * covering the footer. Both buttons are full size: a reject option in small
+ * grey text is not a free choice.
+ */
+.consent {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 40;
+  background: var(--brand);
+  color: var(--ink-inverse);
+  border-top: 4px solid var(--brand-bright);
+  padding: var(--s4) 0;
+}
+.consent__inner { display: grid; gap: var(--s4); }
+.consent__text p { margin: 0 0 var(--s2); color: var(--ink-inverse); max-width: 60ch; }
+.consent__text p:last-child { margin-bottom: 0; }
+.consent__note { font-size: var(--text-sm); }
+.consent a { color: var(--ink-inverse); }
+.consent__actions { display: flex; flex-wrap: wrap; gap: var(--s3); }
+.consent__actions .btn { flex: 1 1 14rem; }
+
+@media (min-width: 48rem) {
+  .consent__inner { grid-template-columns: 1fr auto; align-items: center; }
+  .consent__actions .btn { flex: 0 0 auto; }
+}
+
+.consent-controls {
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: var(--s4) var(--s5);
+  margin: var(--s5) 0;
+}
+.consent-controls p:first-child { margin-top: 0; }
+.consent-controls .hint { margin-bottom: 0; }

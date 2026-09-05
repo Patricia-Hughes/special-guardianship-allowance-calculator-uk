@@ -22,9 +22,15 @@
 #   - The one dangerouslySetInnerHTML is build-time JSON-LD from our own data,
 #     with `<` escaped.
 # The other directives still do real work: no framing, no form posts, no
-# base-uri hijack, and connect-src limited to the postcode lookup.
+# base-uri hijack, and connect-src limited to two known destinations.
+#
+# The googletagmanager and google-analytics entries are here because the site
+# runs Google Analytics behind a consent banner. Nothing loads from them until
+# the reader presses yes. If analytics is ever removed, remove these from this
+# file, from .htaccess, and from scripts/check-security-headers.ts in the same
+# change: a policy wider than the site needs is a policy doing less work.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.postcodes.io; frame-ancestors 'none'; base-uri 'self'; form-action 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://api.postcodes.io https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'none'
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer

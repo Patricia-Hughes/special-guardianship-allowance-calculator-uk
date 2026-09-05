@@ -3,6 +3,7 @@ import '../styles/globals.css';
 import '../styles/print.css';
 import { SITE_NAME, SITE_URL } from '../lib/jsonLd';
 import { RatesStaleBanner } from '../components/ui/RatesStaleBanner';
+import { ConsentBanner } from '../components/ui/ConsentBanner';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -78,6 +79,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </nav>
           </div>
         </footer>
+
+        <ConsentBanner />
       </body>
     </html>
   );

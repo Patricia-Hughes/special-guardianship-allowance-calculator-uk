@@ -62,9 +62,18 @@ for (const { label, path, parse } of sources) {
   parsed.push({ label, headers: parse(readFileSync(path, 'utf8')) });
 }
 
+// The Google hosts are here because the site runs Google Analytics behind
+// consent. They are the only third party besides the postcode lookup, and they
+// earn their place only while analytics is wanted: if it is ever removed, take
+// them out of both header files and out of this constant in the same change,
+// or the policy stays wider than the site needs.
 const CSP =
-  "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; " +
-  "img-src 'self' data:; connect-src 'self' https://api.postcodes.io; " +
+  "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; " +
+  "style-src 'self' 'unsafe-inline'; " +
+  "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com; " +
+  "connect-src 'self' https://api.postcodes.io https://www.google-analytics.com " +
+  "https://*.google-analytics.com https://*.analytics.google.com " +
+  "https://www.googletagmanager.com; " +
   "frame-ancestors 'none'; base-uri 'self'; form-action 'none'";
 
 const REQUIRED: Array<[string, string]> = [
@@ -154,7 +163,16 @@ const FORBIDDEN_IN_HTACCESS = [
 }
 
 // connect-src must not have quietly grown a new host, in either file.
-const allowedHosts = new Set(["'self'", 'https://api.postcodes.io']);
+// Every host the browser may talk to: the postcode lookup, and Google
+// Analytics. [R8] still holds. Nothing a carer types reaches either of them.
+const allowedHosts = new Set([
+  "'self'",
+  'https://api.postcodes.io',
+  'https://www.google-analytics.com',
+  'https://*.google-analytics.com',
+  'https://*.analytics.google.com',
+  'https://www.googletagmanager.com',
+]);
 for (const { label, headers } of parsed) {
   const connectSrc = /connect-src ([^;]+);/.exec(headers.get('Content-Security-Policy') ?? '')?.[1] ?? '';
   for (const host of connectSrc.trim().split(/\s+/)) {
@@ -171,6 +189,6 @@ for (const { label, headers } of parsed) {
 
 console.log(
   `check-security-headers: all ${REQUIRED.length} required headers present and identical ` +
-    `across ${parsed.map((p) => p.label).join(' and ')}; connect-src unchanged; ` +
+    `across ${parsed.map((p) => p.label).join(' and ')}; connect-src holds only approved hosts; ` +
     '.htaccess uses no directive Apache forbids there.',
 );

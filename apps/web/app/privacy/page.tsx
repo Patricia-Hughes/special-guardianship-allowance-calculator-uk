@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { JsonLd, pageGraph } from '../../lib/jsonLd';
+import { ANALYTICS_CONFIGURED } from '../../lib/analytics';
+import { ConsentControls } from '../../components/ui/ConsentControls';
 
 export const metadata: Metadata = {
   title: 'Privacy notice',
@@ -19,12 +21,22 @@ export default function PrivacyPage() {
         })}
       />
       <h1>Privacy notice</h1>
-      <p className="big">
-        <strong>
-          I do not collect, store or process any personal information about you or your child.
-        </strong>{' '}
-        That is not a policy promise. It is how the site is built.
-      </p>
+      {ANALYTICS_CONFIGURED ? (
+        <p className="big">
+          <strong>
+            Nothing you type into this calculator is ever sent anywhere, to me or to anybody else.
+          </strong>{' '}
+          That is not a policy promise. It is how the site is built. The one thing that leaves your
+          browser is a count of which pages you looked at, and only if you agree to it.
+        </p>
+      ) : (
+        <p className="big">
+          <strong>
+            I do not collect, store or process any personal information about you or your child.
+          </strong>{' '}
+          That is not a policy promise. It is how the site is built.
+        </p>
+      )}
 
       <h2>How the calculator works</h2>
       <p>
@@ -52,18 +64,80 @@ export default function PrivacyPage() {
         <li>You never have to use it. Choosing your council or region from the list works just as well.</li>
       </ul>
 
-      <h2>Cookies</h2>
-      <p>I do not set any cookies. There is no cookie banner because there is nothing to consent to.</p>
+      {ANALYTICS_CONFIGURED ? (
+        <>
+          <h2>Cookies</h2>
+          <p>
+            I set no cookies at all unless you agree to analytics. Until you answer the question at
+            the bottom of the screen, nothing is stored and nothing is counted.
+          </p>
+          <p>
+            If you say yes, Google Analytics sets its own cookies on your device to recognise a
+            returning visit. If you say no, it never loads and no cookie is set. Your answer is
+            remembered in your own browser, which is the one thing kept either way, and it is not
+            sent anywhere.
+          </p>
 
-      <h2>Analytics</h2>
-      <p>
-        I do not run analytics on this site. Nothing counts your visit, nothing follows you between pages, and nothing is sent anywhere when you use the calculator.
-      </p>
-      <p>
-        That is a decision rather than an oversight, taken in August 2026 and checked
-        automatically every time this site is built. If it ever changes, it will be a cookieless
-        tool that never records anything you type, and this page will say so before it happens.
-      </p>
+          <h2>Analytics</h2>
+          <p>
+            <strong>Only if you agree.</strong> I use Google Analytics to see which pages people
+            find useful and which ones they leave. It is the only third party on this site apart
+            from the postcode lookup above.
+          </p>
+          <p>What Google receives when you have agreed:</p>
+          <ul>
+            <li>Which pages you looked at, and in what order.</li>
+            <li>Roughly where in the world you are, worked out from your IP address.</li>
+            <li>What kind of device and browser you used.</li>
+          </ul>
+          <p>What it never receives, whichever you choose:</p>
+          <ul>
+            <li>
+              Anything you type into the calculator. Your child&apos;s age, your income, your
+              savings and your benefits stay in your browser, exactly as described above.
+            </li>
+            <li>
+              The details inside a shared result link. Those addresses carry ages and a council, so
+              the site deliberately reports only the plain page address to Google, with everything
+              after the question mark removed.
+            </li>
+            <li>Your full postcode, which never leaves your browser at all.</li>
+          </ul>
+          <p>
+            Advertising features and Google Signals are switched off, so nothing here feeds ad
+            targeting. Google is the data controller for what it receives, and its own notice
+            explains what it does with it:{' '}
+            <a href="https://policies.google.com/privacy">policies.google.com/privacy</a>.
+          </p>
+          <p>
+            Saying no changes nothing about how the site works. There is no feature behind the
+            question and no reminder if you decline.
+          </p>
+
+          <h2>Changing your mind</h2>
+          <p>
+            You can turn analytics on or off here, at any time, as easily as you first answered.
+            The choice is stored on this device, so a different browser or a private window will
+            ask you again.
+          </p>
+          <ConsentControls />
+        </>
+      ) : (
+        <>
+          <h2>Cookies</h2>
+          <p>I do not set any cookies. There is no cookie banner because there is nothing to consent to.</p>
+
+          <h2>Analytics</h2>
+          <p>
+            I do not run analytics on this site. Nothing counts your visit, nothing follows you between pages, and nothing is sent anywhere when you use the calculator.
+          </p>
+          <p>
+            That is a decision rather than an oversight, taken in August 2026 and checked
+            automatically every time this site is built. If it ever changes, this page will say so
+            before it happens.
+          </p>
+        </>
+      )}
 
       <h2>Sharing a result</h2>
       <p>
@@ -81,8 +155,18 @@ export default function PrivacyPage() {
       <h2>Your rights</h2>
       <p>
         Data protection law gives you rights over personal data an organisation holds about you.
-        Since I hold none, there is nothing for me to give you access to, correct, or delete. If you
-        think that is wrong, please <a href="/contact">get in touch</a> and I will look into it.
+        I hold none, so there is nothing for me to give you access to, correct, or delete.
+      </p>
+      {ANALYTICS_CONFIGURED && (
+        <p>
+          If you agreed to analytics, Google holds what is described above. You can stop any further
+          collection here at any time, and Google&apos;s own notice explains how to ask it about
+          what it already has.
+        </p>
+      )}
+      <p>
+        If you think any of this is wrong, please <a href="/contact">get in touch</a> and I will
+        look into it.
       </p>
     </>
   );
