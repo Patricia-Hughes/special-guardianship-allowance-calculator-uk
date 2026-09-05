@@ -160,18 +160,26 @@ NEXT_PUBLIC_SITE_URL=https://specialguardianshipallowance.uk pnpm verify:build
 It already defaults to that address, so you only need the variable if the
 domain ever changes. Set it once, in the environment, not in twenty files.
 
-### Setting the Google Analytics ID
+### The Google Analytics ID
 
-Analytics are off unless a measurement ID is supplied **at build time**:
+Already set, and nothing to remember. It lives in `apps/web/.env.production`,
+which is committed:
 
 ```
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX pnpm verify:build
+NEXT_PUBLIC_GA_ID=G-M4VRDKT4YE
 ```
 
-**This has to be on every build.** Forget it and you ship a site with no
-analytics, no consent banner, and a privacy notice that correctly says so. The
-site is never wrong, it just quietly stops counting. Put the variable in your
-shell profile or your CI settings so it cannot be forgotten.
+Every build picks it up. `pnpm build` is enough.
+
+It is committed on purpose. A GA4 measurement ID is not a secret: it ships
+inside the page and anyone can read it in view-source. Keeping it in the repo
+removes the only failure mode that matters, which is a release built without
+it. That build is not broken, it just quietly stops counting, and the privacy
+notice correctly stops mentioning analytics, so nothing on screen tells you the
+release was wrong.
+
+**Never put a real secret in that file.** A `NEXT_PUBLIC_` name is a promise
+that the value is public.
 
 | With the ID set | Without it |
 |---|---|
@@ -183,10 +191,32 @@ Both are correct and both are tested. The privacy notice is generated from the
 same flag as the behaviour, so it cannot describe something the build does not
 do.
 
-**To turn analytics off for good:** stop setting the variable, then remove the
-Google hosts from `apps/web/public/_headers`, `apps/web/public/.htaccess` and
+**To turn analytics off for good:** delete the line from
+`apps/web/.env.production`, then remove the Google hosts from
+`apps/web/public/_headers`, `apps/web/public/.htaccess` and
 `scripts/check-security-headers.ts` in one change. Leaving them behind is not
 dangerous, but a policy wider than the site needs is a policy doing less work.
+
+### One address, not four
+
+The server sends every visitor to **`https://specialguardianshipallowance.uk`**,
+with no `www`. The rules are in `apps/web/public/.htaccess`, near the top of the
+rewrite block, and mirrored in `_redirects` for hosts that read that instead.
+
+| Someone types | They land on | Redirects |
+|---|---|---|
+| `http://www.specialguardianshipallowance.uk` | the canonical address | 1 |
+| `https://www.specialguardianshipallowance.uk` | the canonical address | 1 |
+| `http://specialguardianshipallowance.uk` | the canonical address | 1 |
+| `https://specialguardianshipallowance.uk` | itself | 0 |
+
+The `www` is stripped and `https` forced in the same hop, which is why that rule
+comes first.
+
+The second rule tests `X-Forwarded-Proto` as well as `%{HTTPS}`. That is not
+decoration: on a host that terminates SSL at a proxy, `%{HTTPS}` is never `on`,
+and a rule testing only that sends an already-secure request to itself forever.
+If you ever rewrite these rules, keep that condition.
 
 ### Export scripts, for handing work to somebody else
 

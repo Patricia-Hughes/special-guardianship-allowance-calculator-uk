@@ -7,6 +7,12 @@ coverage/
 *.tsbuildinfo
 .env*
 !.env.example
+# Narrow exception. This file holds NEXT_PUBLIC_ values only, which are compiled
+# into the pages and readable by anyone who views source, so there is nothing in
+# it to leak. It is committed because a release built without it silently stops
+# counting visits and nothing on screen says so. Never put a secret in it: a
+# NEXT_PUBLIC_ name is a promise that the value is public.
+!apps/web/.env.production
 playwright-report/
 test-results/
 .DS_Store

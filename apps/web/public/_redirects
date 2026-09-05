@@ -1,3 +1,13 @@
 # Netlify / Cloudflare Pages redirects.
+#
+# The Apache equivalent lives in .htaccess, which is what Hostinger and most
+# shared hosts actually read. Keep the two in step.
+
+# One address, not four. Canonical is https, no www, matching every canonical
+# tag the build emits. The ! forces the rule even where a file would match.
+http://www.specialguardianshipallowance.uk/*   https://specialguardianshipallowance.uk/:splat  301!
+https://www.specialguardianshipallowance.uk/*  https://specialguardianshipallowance.uk/:splat  301!
+http://specialguardianshipallowance.uk/*       https://specialguardianshipallowance.uk/:splat  301!
+
 # Canonical URLs have no trailing slash (§27), so strip duplicates.
 /*/  /:splat  301
