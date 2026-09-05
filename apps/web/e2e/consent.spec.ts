@@ -86,6 +86,11 @@ test('@consent the answer can be changed on the privacy page', async ({ page }) 
 
 test('@consent the privacy notice matches what the build actually does', async ({ page }) => {
   await page.goto('/');
+  // The banner is drawn by an effect, so asking before hydration reports it
+  // absent and sends this test down the no-analytics branch. Every other test
+  // here already waits; this one did not, and flaked once in a full parallel
+  // run because of it.
+  await page.waitForLoadState('networkidle');
   const hasBanner = await banner(page).isVisible();
   await page.goto('/privacy');
 

@@ -210,13 +210,28 @@ rewrite block, and mirrored in `_redirects` for hosts that read that instead.
 | `http://specialguardianshipallowance.uk` | the canonical address | 1 |
 | `https://specialguardianshipallowance.uk` | itself | 0 |
 
-The `www` is stripped and `https` forced in the same hop, which is why that rule
-comes first.
+**The work is split, on purpose.**
 
-The second rule tests `X-Forwarded-Proto` as well as `%{HTTPS}`. That is not
-decoration: on a host that terminates SSL at a proxy, `%{HTTPS}` is never `on`,
-and a rule testing only that sends an already-secure request to itself forever.
-If you ever rewrite these rules, keep that condition.
+| Half | Done by |
+|---|---|
+| Dropping the `www` | the rule in `.htaccess` |
+| Sending `http` to `https` | **Hostinger's "Force HTTPS" switch** |
+
+`.htaccess` deliberately does **not** force https. Doing so means detecting
+whether the current request is already secure, and on a host that terminates
+SSL at a proxy `%{HTTPS}` is never `on`, so a rule testing it sends an
+already-secure request to itself, forever, and the site is down. The host knows
+its own infrastructure; this file does not.
+
+The `www` rule is safe because it writes `https://` into its own target and
+tests nothing about the current scheme.
+
+**So: "Force HTTPS" must stay ON in hPanel.** If it is ever switched off, plain
+`http` on the apex stops redirecting. Switch it back on rather than adding a
+rule to `.htaccess`.
+
+`_redirects` does carry the http-to-https line, because Netlify and Cloudflare
+Pages have no such switch to defer to.
 
 ### Export scripts, for handing work to somebody else
 

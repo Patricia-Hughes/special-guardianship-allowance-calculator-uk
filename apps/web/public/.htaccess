@@ -56,26 +56,26 @@
 
   # One address, not four. http and https, with and without www, are four
   # different sites to a search engine, and splitting the same pages across
-  # them splits whatever ranking they earn.
+  # them splits whatever ranking they earn. The canonical form is https with
+  # no www, which is what jsonLd.tsx, the sitemap and every canonical tag
+  # already declare.
   #
-  # The canonical form is https, no www, which is what jsonLd.tsx, the sitemap
-  # and every canonical tag already declare. These two rules make the server
-  # agree with them.
+  # This rule owns the www half. It writes https:// into its own target, so it
+  # never has to work out whether the CURRENT request is secure, and a rule
+  # that tests nothing cannot get the test wrong.
   #
-  # www is dropped and https forced in the SAME hop, which is why this rule
-  # comes first: http://www.example.uk/x reaches https://example.uk/x in one
-  # 301 rather than two.
+  # DELIBERATELY NOT HERE: forcing http to https. That is the host's job, set
+  # by the "Force HTTPS" switch in the hosting panel. Doing it here means
+  # detecting the current scheme, and on a host that terminates TLS at a proxy
+  # %{HTTPS} is never "on", so a rule testing it sends an already-secure
+  # request to itself, forever. The host knows its own infrastructure and this
+  # file does not, so the host does that half. Both halves still cost one
+  # redirect each, never two for the same visitor.
+  #
+  # If Force HTTPS is ever switched off, plain http on the apex stops
+  # redirecting. Switch it back on rather than adding a rule here.
   RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
   RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
-
-  # Then plain http on the apex. The X-Forwarded-Proto test is not optional:
-  # on a host that terminates TLS at a proxy, %{HTTPS} is never "on", and a
-  # rule testing only that redirects an already-secure request to itself,
-  # forever. Hostinger sets the header, so this is the condition that stops
-  # the loop.
-  RewriteCond %{HTTPS} !=on
-  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
   # Canonical URLs carry no trailing slash (§27). Strip it, once, with a 301.
   RewriteCond %{REQUEST_URI} !^/$

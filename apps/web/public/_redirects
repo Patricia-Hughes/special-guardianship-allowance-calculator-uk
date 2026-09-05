@@ -5,6 +5,10 @@
 
 # One address, not four. Canonical is https, no www, matching every canonical
 # tag the build emits. The ! forces the rule even where a file would match.
+#
+# Unlike .htaccess this file DOES carry the http-to-https line, because Netlify
+# and Cloudflare Pages have no "Force HTTPS" switch to defer to and their
+# matching is on the literal address, not on a scheme test that can misfire.
 http://www.specialguardianshipallowance.uk/*   https://specialguardianshipallowance.uk/:splat  301!
 https://www.specialguardianshipallowance.uk/*  https://specialguardianshipallowance.uk/:splat  301!
 http://specialguardianshipallowance.uk/*       https://specialguardianshipallowance.uk/:splat  301!
