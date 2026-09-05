@@ -23,12 +23,47 @@ the source. You never edit the zip. You edit the source and build a new one.
 | Publish a new guide | Section 8 |
 | Fix a source link that has died | Section 9 |
 | Add or update a council | Section 9 |
+| Know what to do this month | Just below |
 
 ---
 
-## Quick version
+## The two routines
 
-Every February, when England announces:
+Only two things happen on a schedule. One is monthly and takes two minutes. One
+is annual and takes an afternoon.
+
+### Every month: check the source links
+
+```
+pnpm check:citations
+```
+
+That is the whole job. It opens all 53 source links on the site and tells you
+which ones have died.
+
+**Nothing runs this for you.** Every other check on this site runs inside
+`pnpm verify`, so the build stops you before you ship a mistake. This one
+cannot: link rot happens on somebody else's server, weeks after you last
+touched the site, and no build can notice it.
+
+Three things to know:
+
+- It needs internet, and takes about a minute
+- It **warns, it does not fail**. On purpose: a government page moving must not
+  block a deploy that fixes something else
+- A dead link is not an emergency, but it is not nothing either. Every claim on
+  this site names its source, so a dead source is a claim the reader cannot
+  check
+
+**When it reports a 404, go to section 9.** The short version is: find the
+document at its new address if you can, and if you cannot, delete the `url`
+line but **keep the citation entry**. The site then prints the reference and
+says it is still sourcing a public link. Never paste a link you have not
+opened, and never swap in a different document that looks similar.
+
+Put it in a calendar. First Monday of the month is as good as any.
+
+### Every February, when England announces the new rates
 
 1. Copy last year's rates file, edit the numbers
 2. Add the new source to `data/citations.json`
@@ -37,6 +72,12 @@ Every February, when England announces:
 5. Rebuild, upload `apps/web/out`
 
 Full detail in section 5. Every command is in section 1.
+
+### Everything else is event-driven
+
+Your change-alert tool tells you when a source page moves (section 4).
+`check:staleness` tells you when the rates expire or a council needs
+re-reading. You do not have to remember either.
 
 ---
 
@@ -90,16 +131,12 @@ Node 20 or newer, pnpm 10. The version is pinned in `package.json` under
 pnpm check:citations
 ```
 
-Run it **once a month**. It opens all 53 source links on the site and tells you
-which ones have died. It needs internet, it takes a minute, and it **warns
-rather than fails**, on purpose: a government page moving must not block a
-deploy that fixes something else.
+Run it **once a month**. It is the only scheduled job on this site apart from
+the April uprating, and it is the check that caught the four dead links already
+removed from `citations.json`.
 
-This is the check that caught the four dead links already removed from
-`citations.json`. Nothing else on this list can catch link rot, because rot
-happens on somebody else's server.
-
-When it reports a 404, see section 9.
+Full instructions are in **The two routines** at the top of this file. What to
+do about a 404 is in section 9.
 
 ### Faking the date
 
