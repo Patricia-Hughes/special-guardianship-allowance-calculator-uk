@@ -214,6 +214,37 @@ A property test exists solely to catch that inversion.
 6. **The taper**, converting disposable income into the contribution the council
    expects, then converted to a weekly figure as monthly x 12 / 52.
 
+### The model is flat at both ends, and that is not a bug
+
+Reported once as "I changed the numbers and the answer did not move". The
+arithmetic was right; the shape of the model is what surprises people.
+
+For one 9-year-old in the rest of England on 2026/27 rates, sweeping take-home
+pay and leaving everything else at zero:
+
+| Take-home per month | Allowance per week |
+|---|---|
+| £0 to £1,200 | £201.00, unchanged |
+| £1,400 | £197.10 |
+| £1,800 | £123.25 |
+| £2,200 | £49.41 |
+| £2,500 and above | £0.00, unchanged |
+
+**Below the band** the disregard and the living-costs allowance absorb the whole
+income, disposable income is zero, and nothing is deducted. **Above it** the
+assessed contribution already exceeds the maximum, so the allowance is zero and
+stays zero however much the other boxes change.
+
+Both ends are correct. What was wrong was the result page printing the figure
+without saying which case it was in, so \`EstimateCard.tsx\` now names it: nothing
+taken off, the amount taken off, or why nothing is left. Three e2e tests hold
+those sentences.
+
+**Savings alone never moves the figure** either. The capital rule is off unless a
+council's own recorded policy switches it on, because no national savings rule
+exists to apply. \`CAPITAL_RULE_MAY_APPLY\` warns the reader when savings are above
+the model threshold.
+
 ### The three numbers in the model
 
 | Figure | Value | Status |
