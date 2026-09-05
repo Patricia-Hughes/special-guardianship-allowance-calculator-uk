@@ -407,21 +407,21 @@ affects their figure.
    recorded policy enables it.
 `);
 
-// ─── Where the logic lives ─────────────────────────────────────────────────
+// ─── How it all works ──────────────────────────────────────────────────────
 //
-// A developer inheriting this needs the map, not just the rules. Both halves
-// below are CHECKED against the source: a renamed file or a deleted symbol
-// fails this export, so the map cannot rot into a description of code that no
-// longer exists.
+// A developer inheriting this needs the map, not just the rules. Everything
+// below is READ FROM THE SOURCE: the file list, what each file exports, what
+// it imports, who imports it, and where the website plugs in. A renamed file
+// or a deleted symbol fails this export, so the map cannot rot into a
+// description of code that no longer exists.
 
 const engineSrc = join(root, 'packages', 'engine', 'src');
 const lettersSrc = join(root, 'packages', 'letters', 'src');
+const webDir = join(root, 'apps', 'web');
 
-/** The first line of a file's top doc comment, which is its purpose. */
+/** The first line of the comment a file OPENS with, which is its purpose. */
 function purposeOf(abs: string): string {
   const text = readFileSync(abs, 'utf8');
-  // Only the comment the file OPENS with. Reaching further in picks up a note
-  // about one function and presents it as the purpose of the whole file.
   if (!text.startsWith('/**')) return '(no doc comment)';
   const close = text.indexOf('*/');
   if (close === -1) return '(no doc comment)';
@@ -432,6 +432,54 @@ function purposeOf(abs: string): string {
   return '(no doc comment)';
 }
 
+/** Every name a file exports, in source order. */
+function exportsOf(abs: string): string[] {
+  const text = readFileSync(abs, 'utf8');
+  const names = new Set<string>();
+  for (const m of text.matchAll(
+    /^export\s+(?:async\s+)?(?:function|const|class|interface|type|enum)\s+([A-Za-z0-9_]+)/gm,
+  )) {
+    names.add(m[1]);
+  }
+  for (const m of text.matchAll(/^export\s+(?:type\s+)?\{([^}]+)\}/gm)) {
+    for (const raw of m[1].split(',')) {
+      const name = raw.trim().replace(/^type\s+/, '').split(/\s+as\s+/)[0].trim();
+      if (name) names.add(name);
+    }
+  }
+  return [...names].sort();
+}
+
+/** The other files in the same package that a file imports. */
+function importsOf(abs: string): string[] {
+  const text = readFileSync(abs, 'utf8');
+  const found = new Set<string>();
+  for (const m of text.matchAll(/from\s+'(\.{1,2}\/[A-Za-z0-9/_-]+)\.js'/g)) {
+    found.add(m[1].replace(/^\.\.\//, '').replace(/^\.\//, ''));
+  }
+  return [...found].sort();
+}
+
+const engineFiles = [
+  ...readdirSync(engineSrc).filter((f) => f.endsWith('.ts')),
+  ...readdirSync(join(engineSrc, 'regimes'))
+    .filter((f) => f.endsWith('.ts'))
+    .map((f) => `regimes/${f}`),
+].sort();
+
+const letterFiles = readdirSync(lettersSrc)
+  .filter((f) => f.endsWith('.ts'))
+  .sort();
+
+/** file stem -> the files that import it. */
+const usedBy = new Map<string, string[]>();
+for (const f of engineFiles) {
+  for (const dep of importsOf(join(engineSrc, f))) {
+    const stem = dep.replace(/^regimes\//, 'regimes/');
+    usedBy.set(stem, [...(usedBy.get(stem) ?? []), f.replace(/\.ts$/, '')]);
+  }
+}
+
 /** Every step of a calculation, in the order it happens. */
 const PIPELINE: Array<{ step: string; file: string; symbol: string }> = [
   { step: 'Validate the input. Anything malformed is rejected here, never later', file: 'schema.ts', symbol: 'parseCalculatorInput' },
@@ -439,11 +487,11 @@ const PIPELINE: Array<{ step: string; file: string; symbol: string }> = [
   { step: 'Route by nation. Scotland has no special guardianship in law, so it leaves here', file: 'regimes/scotland.ts', symbol: 'scotlandPath' },
   { step: 'Route to the Kinship Zones pilot, where eligible. Full fostering rate, no means test', file: 'regimes/kinshipZone.ts', symbol: 'kinshipZonePath' },
   { step: 'Everything else: England, Wales and Northern Ireland', file: 'regimes/sgo.ts', symbol: 'sgoPath' },
-  { step: 'Per child, find the age band, then the national rate for nation and region', file: 'rates.ts', symbol: 'resolveAgeBand' },
-  { step: 'Look the rate up, and record the citation it came from', file: 'rates.ts', symbol: 'lookupRate' },
-  { step: 'Add the warnings that are true of every result, regardless of the numbers', file: 'standingFlags.ts', symbol: 'standingFlags' },
+  { step: 'Per child, find the age band from date of birth or stated age', file: 'rates.ts', symbol: 'resolveAgeBand' },
+  { step: 'Look up the rate for that nation, region and band, and record the citation it came from', file: 'rates.ts', symbol: 'lookupRate' },
+  { step: 'Add the warnings that are true of every result, whatever the numbers', file: 'standingFlags.ts', symbol: 'standingFlags' },
   { step: "Add the warnings that come from the council's own recorded policy", file: 'councilPolicy.ts', symbol: 'councilPolicyFlags' },
-  { step: 'Run the means test, but only if the carer gave finances. Order matters: the 20% disregard comes off income first', file: 'meansTest.ts', symbol: 'runMeansTest' },
+  { step: 'Run the means test, but only if the carer gave finances. The 20% disregard comes off income FIRST', file: 'meansTest.ts', symbol: 'runMeansTest' },
   { step: 'Apply the taper to disposable income', file: 'meansTest.ts', symbol: 'applyTaper' },
   { step: 'Apply the regulation 7 floor, on the household total, inside the 24 month window', file: 'resolve.ts', symbol: 'withinReg7Window' },
   { step: 'Order the warnings and remove duplicates', file: 'flags.ts', symbol: 'sortFlags' },
@@ -462,19 +510,32 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
-p(`\n---\n\n## 13. For a developer: where the logic lives
+p(`\n---\n\n## 13. For a developer: how it all works
 
-Sections 1 to 12 say what the calculator does. This one says where.
+Sections 1 to 12 say what the calculator does. This section says how, and where.
 
-**The engine is pure TypeScript.** No DOM, no network, integer pence
-arithmetic throughout. It is a separate package from the website on purpose, so
-it can be tested on its own and embedded elsewhere.
+Everything below is read from the source when this file is generated, so it
+cannot describe code that no longer exists.
 
-**Money is never a float.** Everything is whole pence, as integers. \`money.ts\`
-owns that, and a rounding rule applied in the wrong place is the easiest way to
-produce a figure that is quietly wrong.
+### 13.1 The shape of the whole thing
 
-### One calculation, start to finish
+Four parts. Only the first one calculates anything.
+
+| Part | What it is |
+|---|---|
+| \`packages/engine\` | The calculator. Pure TypeScript: no DOM, no network, no dates from the system clock unless you pass them in |
+| \`packages/letters\` | The letters a carer sends their council. Takes a result, returns text |
+| \`apps/web\` | The website. Next.js, exported as static HTML. Calls the engine, never does arithmetic itself |
+| \`/data\` | Every figure. Rates, benefits, councils, sources. No number lives in code |
+
+The engine is a separate package on purpose. It can be tested on its own, and
+an advice charity could embed it without taking the website.
+
+**Money is never a float.** Everything is whole pence as integers, and
+\`money.ts\` brands the type so a raw \`number\` is a compile error. Rounding in the
+wrong place is the easiest way to produce a figure that is quietly wrong.
+
+### 13.2 One calculation, start to finish
 
 Entry point: \`calculate()\` in \`packages/engine/src/engine.ts\`.
 
@@ -486,72 +547,216 @@ PIPELINE.forEach((s, i) => {
 });
 
 p(`
-This table is generated and checked. If somebody renames a file or deletes a
-function, \`pnpm export:facts\` fails until the map is corrected.
+This table is checked, not typed. Rename a file or delete a function and
+\`pnpm export:facts\` refuses to run until the map is corrected.
 
-### Every file in the engine
+### 13.3 Every engine file: what it does, what it exports, what it needs
 
-| File | Purpose |
-|---|---|`);
-
-const engineFiles = [
-  ...readdirSync(engineSrc).filter((f) => f.endsWith('.ts')).map((f) => f),
-  ...readdirSync(join(engineSrc, 'regimes')).filter((f) => f.endsWith('.ts')).map((f) => `regimes/${f}`),
-].sort();
+Read this as a dependency list. A file can only be understood alongside the
+files in its **Imports** column, and can only be changed with care if its
+**Used by** column is long.
+`);
 
 for (const f of engineFiles) {
-  p(`| \`${f}\` | ${purposeOf(join(engineSrc, f))} |`);
+  const abs = join(engineSrc, f);
+  const stem = f.replace(/\.ts$/, '');
+  const ex = exportsOf(abs);
+  const im = importsOf(abs);
+  const by = (usedBy.get(stem) ?? []).sort();
+  p(`\n#### \`${f}\`\n`);
+  p(`${purposeOf(abs)}\n`);
+  p(`- **Exports:** ${ex.length > 0 ? ex.map((n) => `\`${n}\``).join(', ') : 'nothing'}`);
+  p(`- **Imports:** ${im.length > 0 ? im.map((n) => `\`${n}\``).join(', ') : 'nothing. This file is a leaf'}`);
+  p(`- **Used by:** ${by.length > 0 ? by.map((n) => `\`${n}\``).join(', ') : 'nothing inside the engine'}`);
+}
+
+p(`\n### 13.4 How the files connect
+
+The same information as a single table, for when you want to see the shape
+rather than one file at a time.
+
+| File | Imports | Used by |
+|---|---|---|`);
+for (const f of engineFiles) {
+  const stem = f.replace(/\.ts$/, '');
+  const im = importsOf(join(engineSrc, f));
+  const by = (usedBy.get(stem) ?? []).sort();
+  p(`| \`${f}\` | ${im.length > 0 ? im.join(', ') : '(none)'} | ${by.length > 0 ? by.join(', ') : '(none)'} |`);
 }
 
 p(`
-### The letters
+**Reading it.** \`types.ts\`, \`errors.ts\` and \`money.ts\` sit at the bottom, and
+almost everything depends on them, so a change there reaches the whole engine.
+Test it hard.
 
-| File | Purpose |
-|---|---|`);
-for (const f of readdirSync(lettersSrc).filter((f) => f.endsWith('.ts')).sort()) {
-  p(`| \`${f}\` | ${purposeOf(join(lettersSrc, f))} |`);
+At the other end, \`engine.ts\` is used only by \`index.ts\`, and the three files in
+\`regimes/\` only by \`engine.ts\`. Nothing else depends on them, so a new route for
+a new nation or scheme goes there without disturbing anything underneath.
+
+A file with a long **Used by** column is load-bearing. A file with an empty one
+can be changed freely.
+
+### 13.5 The letters
+`);
+
+for (const f of letterFiles) {
+  const abs = join(lettersSrc, f);
+  p(`\n#### \`${f}\`\n`);
+  p(`${purposeOf(abs)}\n`);
+  const ex = exportsOf(abs);
+  p(`- **Exports:** ${ex.length > 0 ? ex.map((n) => `\`${n}\``).join(', ') : 'nothing'}`);
 }
 
-p(`
-### Where the numbers come from
+// ─── Where the website plugs in ────────────────────────────────────────────
 
-Nothing above contains a figure. Every rate, benefit amount and council policy
-is read from \`/data\` at build time.
+function walk(dir: string, acc: string[] = []): string[] {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name === 'node_modules' || entry.name === '.next' || entry.name === 'out') continue;
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) walk(full, acc);
+    else if (/\.tsx?$/.test(entry.name)) acc.push(full);
+  }
+  return acc;
+}
+
+const webFiles = walk(webDir).filter((f) => !f.includes('/e2e/') && !f.includes('__tests__'));
+const consumers = webFiles
+  .filter((f) => /@sgo\/(engine|letters)/.test(readFileSync(f, 'utf8')))
+  .map((f) => f.slice(webDir.length + 1))
+  .sort();
+
+const callSites = webFiles
+  .filter((f) => /\bcalculate\(/.test(readFileSync(f, 'utf8')))
+  .map((f) => f.slice(webDir.length + 1))
+  .sort();
+
+p(`\n### 13.6 Where the website plugs in
+
+The website never calculates. It collects answers, hands them to the engine, and
+renders what comes back.
+
+**\`calculate()\` is called in ${callSites.length} place${callSites.length === 1 ? '' : 's'}:**
+${callSites.map((f) => `- \`apps/web/${f}\``).join('\n')}
+
+Everything else reads the result. ${consumers.length} files in \`apps/web\` import
+from \`@sgo/engine\` or \`@sgo/letters\`:
+
+${consumers.map((f) => `- \`apps/web/${f}\``).join('\n')}
+
+**The flow through the interface:**
+
+\`\`\`
+steps/*.tsx  ──answers──▶  formState.ts  ──built input──▶  CalculatorShell.tsx
+                                                                   │
+                                                            calculate()
+                                                                   │
+                                                                   ▼
+                                              ResultsPanel.tsx and the panels beside it
+\`\`\`
+
+Add a question to the form and you touch \`steps/\`, \`formState.ts\` and the input
+schema in \`schema.ts\`. Change what a result shows and you touch only
+\`components/results/\`.
+
+### 13.7 Where the numbers come from
+
+Nothing in the engine contains a figure. Every rate, benefit amount and council
+policy is read from \`/data\`.
 
 \`\`\`
 /data/*.json  ──syncdata──▶  packages/engine/src/data/  ──imported by──▶  referenceData.ts
+                                                                              │
+                                                                     RATE_TABLES, BENEFIT_TABLES
+                                                                              │
+                                                                       selectRateTable()
 \`\`\`
 
 \`/data\` is the only real copy. \`packages/engine/src/data/\` is generated and
-gitignored, and \`prebuild\`, \`pretypecheck\` and \`pretest:unit\` all regenerate
-it. Never edit it by hand.
+gitignored, and \`prebuild\`, \`pretypecheck\` and \`pretest:unit\` all regenerate it.
+Never edit it by hand, and never commit it.
 
-To add a new financial year you edit \`/data\` and register the year in
-\`referenceData.ts\`, newest first. That is the whole change. See the maintenance
-runbook.
+To add a financial year: put the file in \`/data\`, then register it in
+\`referenceData.ts\`, **newest first**. That is the whole change.
 
-### The two things most likely to be got wrong
+### 13.8 Every command
+
+**The two that matter:**
+
+\`\`\`
+pnpm verify          before you commit
+pnpm verify:build    before you upload
+\`\`\`
+
+| Command | What it does | When |
+|---|---|---|
+| \`pnpm install\` | Installs dependencies. Node 20+, pnpm 10 | First checkout, lockfile changes |
+| \`pnpm dev\` | Local preview on localhost:3000 | While editing |
+| \`pnpm verify\` | typecheck, unit tests, data gates, content, headers | Before every commit |
+| \`pnpm verify:build\` | Build, then bundle budget and structured data | Before every upload |
+| \`pnpm build\` | Static export into \`apps/web/out\` | Rarely alone |
+| \`pnpm typecheck\` | TypeScript, no emit | Inside \`verify\` |
+| \`pnpm lint\` | ESLint | By hand |
+| \`pnpm test:unit\` | The engine and letters tests | Inside \`verify\` |
+| \`pnpm test:e2e\` | Playwright, desktop and mobile | Before a release |
+| \`pnpm test:a11y\` | The accessibility subset | Before a release |
+| \`pnpm validate:data\` | Falling rates, mad values, missing sources | Inside \`verify\` |
+| \`pnpm check:staleness\` | Rate expiry, council review dates, watchlist | Inside \`verify\` |
+| \`pnpm check:content\` | A rate typed into prose, an em dash, an unanswered heading | Inside \`verify\` |
+| \`pnpm check:headers\` | Security headers still in \`.htaccess\` | Inside \`verify\` |
+| \`pnpm check:schema\` | Structured data references resolve | Inside \`verify:build\` |
+| \`pnpm check:bundle\` | JavaScript size has not crept up | Inside \`verify:build\` |
+| **\`pnpm check:citations\`** | **Opens every source URL, reports dead ones** | **Monthly, by hand** |
+| \`pnpm export:facts\` | Regenerates this file | After any change to data or the engine |
+
+**Working on the engine alone:**
+
+\`\`\`
+cd packages/engine
+pnpm test:unit       run the tests once
+pnpm test:watch      re-run as you edit
+pnpm test:coverage   with coverage
+pnpm typecheck       types only
+\`\`\`
+
+\`syncdata\` runs automatically before build, typecheck and test. You do not call
+it yourself.
+
+**Faking the date:**
+
+\`\`\`
+SGO_TODAY=2027-04-12 pnpm check:staleness
+\`\`\`
+
+Overrides today's date for \`check:staleness\` and \`check:content\`. Changes nothing
+on the built site. Use it to rehearse next April.
+
+### 13.9 The two things most likely to be got wrong
 
 **The means test order.** The 20% disregard comes off income BEFORE expenditure
-is subtracted. Inverting it roughly doubles the answer. A property test exists
-solely to catch that, and section 4 shows both arithmetics side by side.
+is subtracted. Inverting it roughly doubles the answer. Section 4 shows both
+arithmetics side by side, and a property test exists solely to catch it.
 
 **The rate table order.** \`RATE_TABLES\` in \`referenceData.ts\` must be newest
 first, because \`selectRateTable\` takes the first table whose range contains the
-date. Put a year in the wrong place and old carers silently get new rates.
+date. Put a year in the wrong place and carers asking about an old order
+silently get this year's rates.
 
-### How to be sure a change is safe
+### 13.10 How to know a change is safe
 
 \`\`\`
 pnpm test:unit       the engine's own tests
-pnpm verify          everything that can be checked without a build
+pnpm verify          everything checkable without a build
 pnpm verify:build    build, bundle budget, structured data
+cd apps/web && npx playwright test
 \`\`\`
 
 The guardrails in \`guardrails.ts\` are the real safety net. They run on every
-result, in production, and throw rather than show a figure that breaks a rule.
-A change that makes the calculator wrong in a way the tests miss will usually
+result in production and throw rather than show a figure that breaks a rule. A
+change that makes the calculator wrong in a way the tests miss will usually
 still trip one of them.
+
+If you are about to disable a guardrail to make something pass, the guardrail
+is right and the change is wrong.
 `);
 
 writeFileSync(outFile, parts.join('\n') + '\n');

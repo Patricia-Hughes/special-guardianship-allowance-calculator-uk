@@ -648,19 +648,32 @@ affects their figure.
 
 ---
 
-## 13. For a developer: where the logic lives
+## 13. For a developer: how it all works
 
-Sections 1 to 12 say what the calculator does. This one says where.
+Sections 1 to 12 say what the calculator does. This section says how, and where.
 
-**The engine is pure TypeScript.** No DOM, no network, integer pence
-arithmetic throughout. It is a separate package from the website on purpose, so
-it can be tested on its own and embedded elsewhere.
+Everything below is read from the source when this file is generated, so it
+cannot describe code that no longer exists.
 
-**Money is never a float.** Everything is whole pence, as integers. `money.ts`
-owns that, and a rounding rule applied in the wrong place is the easiest way to
-produce a figure that is quietly wrong.
+### 13.1 The shape of the whole thing
 
-### One calculation, start to finish
+Four parts. Only the first one calculates anything.
+
+| Part | What it is |
+|---|---|
+| `packages/engine` | The calculator. Pure TypeScript: no DOM, no network, no dates from the system clock unless you pass them in |
+| `packages/letters` | The letters a carer sends their council. Takes a result, returns text |
+| `apps/web` | The website. Next.js, exported as static HTML. Calls the engine, never does arithmetic itself |
+| `/data` | Every figure. Rates, benefits, councils, sources. No number lives in code |
+
+The engine is a separate package on purpose. It can be tested on its own, and
+an advice charity could embed it without taking the website.
+
+**Money is never a float.** Everything is whole pence as integers, and
+`money.ts` brands the type so a raw `number` is a compile error. Rounding in the
+wrong place is the easiest way to produce a figure that is quietly wrong.
+
+### 13.2 One calculation, start to finish
 
 Entry point: `calculate()` in `packages/engine/src/engine.ts`.
 
@@ -671,94 +684,435 @@ Entry point: `calculate()` in `packages/engine/src/engine.ts`.
 | 3 | Route by nation. Scotland has no special guardianship in law, so it leaves here | `regimes/scotland.ts` | `scotlandPath` |
 | 4 | Route to the Kinship Zones pilot, where eligible. Full fostering rate, no means test | `regimes/kinshipZone.ts` | `kinshipZonePath` |
 | 5 | Everything else: England, Wales and Northern Ireland | `regimes/sgo.ts` | `sgoPath` |
-| 6 | Per child, find the age band, then the national rate for nation and region | `rates.ts` | `resolveAgeBand` |
-| 7 | Look the rate up, and record the citation it came from | `rates.ts` | `lookupRate` |
-| 8 | Add the warnings that are true of every result, regardless of the numbers | `standingFlags.ts` | `standingFlags` |
+| 6 | Per child, find the age band from date of birth or stated age | `rates.ts` | `resolveAgeBand` |
+| 7 | Look up the rate for that nation, region and band, and record the citation it came from | `rates.ts` | `lookupRate` |
+| 8 | Add the warnings that are true of every result, whatever the numbers | `standingFlags.ts` | `standingFlags` |
 | 9 | Add the warnings that come from the council's own recorded policy | `councilPolicy.ts` | `councilPolicyFlags` |
-| 10 | Run the means test, but only if the carer gave finances. Order matters: the 20% disregard comes off income first | `meansTest.ts` | `runMeansTest` |
+| 10 | Run the means test, but only if the carer gave finances. The 20% disregard comes off income FIRST | `meansTest.ts` | `runMeansTest` |
 | 11 | Apply the taper to disposable income | `meansTest.ts` | `applyTaper` |
 | 12 | Apply the regulation 7 floor, on the household total, inside the 24 month window | `resolve.ts` | `withinReg7Window` |
 | 13 | Order the warnings and remove duplicates | `flags.ts` | `sortFlags` |
 | 14 | Assemble the result | `result.ts` | `finalise` |
 | 15 | The last gate. Every rule in section 6 is asserted here. A violation throws instead of showing a figure | `guardrails.ts` | `assertGuardrails` |
 
-This table is generated and checked. If somebody renames a file or deletes a
-function, `pnpm export:facts` fails until the map is corrected.
+This table is checked, not typed. Rename a file or delete a function and
+`pnpm export:facts` refuses to run until the map is corrected.
 
-### Every file in the engine
+### 13.3 Every engine file: what it does, what it exports, what it needs
 
-| File | Purpose |
-|---|---|
-| `backdating.ts` | Backdating module, spec §16. |
-| `councilPolicy.ts` | What we hold about an individual council, and what it is safe to say. |
-| `dates.ts` | Dates and financial years, spec §11 [HARD]. |
-| `deps.ts` | The reference data the engine calculates against. |
-| `engine.ts` | The calculation entry point, spec §13. |
-| `errors.ts` | Engine error taxonomy. |
-| `featureFlags.ts` | Feature flags and rollout — spec §39. |
-| `flagCatalogue.ts` | The 34 warnings, spec §17. |
-| `flagTypes.ts` | What a warning is, separately from what the warnings say. |
-| `flags.ts` | Assembling and ordering the warnings, spec §17. |
-| `guardrails.ts` | Guardrails, spec §15. |
-| `index.ts` | @sgo/engine — the Special Guardianship allowance calculation engine. |
-| `meansTest.ts` | Means test module, spec §14. |
-| `money.ts` | Money handling, spec §10 [HARD]. |
-| `rates.ts` | Looking up what a nation, region and age band are worth. |
-| `referenceData.ts` | Reference data access. |
-| `regimes/kinshipZone.ts` | The Kinship Zones pilot, spec §13.5. |
-| `regimes/scotland.ts` | Scotland, spec §13.4. |
-| `regimes/sgo.ts` | England, Wales and Northern Ireland, spec §13. |
-| `resolve.ts` | Working out where a carer stands, from whichever answer they gave. |
-| `result.ts` | Assembling the final result, and the last gate before it leaves the engine. |
-| `schema.ts` | Zod schemas, spec §6 and the validation table at §20.1. |
-| `standingFlags.ts` | The flags that are true of an SGO result regardless of the numbers. |
-| `types.ts` | Domain types — spec §7. Vocabulary is defined in spec §3 and is not interchangeable. |
+Read this as a dependency list. A file can only be understood alongside the
+files in its **Imports** column, and can only be changed with care if its
+**Used by** column is long.
 
-### The letters
 
-| File | Purpose |
-|---|---|
-| `index.ts` | @sgo/letters, spec §18. |
-| `templates.ts` | The nine letters, spec §18. |
-| `types.ts` | The shape of a letter and what it needs to fill itself in. |
+#### `backdating.ts`
 
-### Where the numbers come from
+Backdating module, spec §16.
 
-Nothing above contains a figure. Every rate, benefit amount and council policy
-is read from `/data` at build time.
+- **Exports:** `BACKDATING_CAVEATS`, `BackdatingInput`, `BackdatingResult`, `BackdatingSegment`, `SegmentReason`, `calculateBackdating`, `nthBirthday`, `pence`, `segmentBoundaries`
+- **Imports:** `dates`, `deps`, `errors`, `money`, `rates`, `resolve`, `types`
+- **Used by:** `index`
+
+#### `councilPolicy.ts`
+
+What we hold about an individual council, and what it is safe to say.
+
+- **Exports:** `capitalFor`, `councilNameFor`, `councilPolicyFlags`, `isInKinshipZone`, `isKinshipZoneEligible`, `livingCostsMultiplierFor`, `taperFor`
+- **Imports:** `deps`, `errors`, `flags`, `meansTest`, `referenceData`, `types`
+- **Used by:** `engine`, `regimes/kinshipZone`, `regimes/sgo`, `standingFlags`
+
+#### `dates.ts`
+
+Dates and financial years, spec §11 [HARD].
+
+- **Exports:** `addDays`, `addMonths`, `ageAt`, `ageBandChangeDates`, `daysBetween`, `financialYearBoundaries`, `financialYearOf`, `isoDate`, `monthsBetween`, `nthBirthday`, `onOrAfter`, `onOrBefore`, `selectBenefitTable`, `selectRateTable`, `todayUtc`
+- **Imports:** `errors`, `types`
+- **Used by:** `backdating`, `engine`, `guardrails`, `index`, `resolve`
+
+#### `deps.ts`
+
+The reference data the engine calculates against.
+
+- **Exports:** `EngineDeps`, `defaultDeps`, `resolveDeps`
+- **Imports:** `referenceData`, `types`
+- **Used by:** `backdating`, `councilPolicy`, `engine`, `rates`, `regimes/kinshipZone`, `regimes/scotland`, `regimes/sgo`, `standingFlags`
+
+#### `engine.ts`
+
+The calculation entry point, spec §13.
+
+- **Exports:** `EngineDeps`, `ageOf`, `calculate`, `defaultDeps`, `isKinshipZoneEligible`, `lookupRate`, `monthsSinceOrder`, `regimeFor`, `resolveAgeBand`, `resolveEnglandRegion`
+- **Imports:** `councilPolicy`, `dates`, `deps`, `rates`, `regimes/kinshipZone`, `regimes/scotland`, `regimes/sgo`, `resolve`, `schema`, `types`
+- **Used by:** `index`
+
+#### `errors.ts`
+
+Engine error taxonomy.
+
+- **Exports:** `DataError`, `EngineError`, `MoneyError`, `ValidationError`
+- **Imports:** nothing. This file is a leaf
+- **Used by:** `backdating`, `councilPolicy`, `dates`, `guardrails`, `index`, `meansTest`, `money`, `rates`, `referenceData`, `regimes/sgo`, `schema`
+
+#### `featureFlags.ts`
+
+Feature flags and rollout — spec §39.
+
+- **Exports:** `FLAGS`, `FeatureFlags`
+- **Imports:** nothing. This file is a leaf
+- **Used by:** `index`
+
+#### `flagCatalogue.ts`
+
+The 34 warnings, spec §17.
+
+- **Exports:** `FLAG_CATALOGUE`
+- **Imports:** `flagTypes`, `money`, `types`
+- **Used by:** `flags`
+
+#### `flagTypes.ts`
+
+What a warning is, separately from what the warnings say.
+
+- **Exports:** `FlagContext`, `FlagSpec`
+- **Imports:** `types`
+- **Used by:** `flagCatalogue`, `flags`
+
+#### `flags.ts`
+
+Assembling and ordering the warnings, spec §17.
+
+- **Exports:** `FLAG_CATALOGUE`, `FLAG_ORDER`, `FlagContext`, `FlagSpec`, `dedupeFlags`, `makeFlag`, `sortFlags`
+- **Imports:** `flagCatalogue`, `flagTypes`, `referenceData`, `types`
+- **Used by:** `councilPolicy`, `index`, `regimes/kinshipZone`, `regimes/scotland`, `regimes/sgo`, `result`, `standingFlags`
+
+#### `guardrails.ts`
+
+Guardrails, spec §15.
+
+- **Exports:** `GuardrailViolation`, `assertGuardrails`
+- **Imports:** `dates`, `errors`, `resolve`, `types`
+- **Used by:** `index`, `result`
+
+#### `index.ts`
+
+@sgo/engine — the Special Guardianship allowance calculation engine.
+
+- **Exports:** `BACKDATING_CAVEATS`, `BENEFIT_TABLES`, `BackdatingInput`, `BackdatingResult`, `BackdatingSegment`, `CORE_LIVING_COSTS_MULTIPLIER`, `COUNTABLE_INCOME`, `DEFAULT_CAPITAL`, `DEFAULT_TAPER`, `DISREGARDED_INCOME`, `DISREGARD_RATE`, `DataError`, `ENGINE_VERSION`, `EngineDeps`, `EngineError`, `FLAGS`, `FLAG_CATALOGUE`, `FeatureFlags`, `FlagContext`, `GuardrailViolation`, `KINSHIP_ZONES`, `LA_NAMES`, `LA_OVERRIDES_ALL`, `LA_REGION_MAP`, `LA_REGION_MAP_META`, `MAX_MONEY_PENCE`, `MoneyError`, `RATE_TABLES`, `REG7_WINDOW_MONTHS`, `SegmentReason`, `ValidationError`, `ZERO`, `add`, `addDays`, `addMonths`, `ageAt`, `ageBandChangeDates`, `ageOf`, `allCitationIds`, `applyTaper`, `apportion`, `assertGuardrails`, `calculate`, `calculateBackdating`, `calculatorInputSchema`, `carerInputSchema`, `childInputSchema`, `cite`, `clampMin0`, `daysBetween`, `dedupeFlags`, `defaultDeps`, `financesInputSchema`, `financialYearBoundaries`, `financialYearOf`, `formatMoney`, `hasUnpublishableLaOverride`, `hasUnpublishableLaOverrideIn`, `incomeSupportApplicableAmountWeekly`, `isKinshipZoneEligible`, `isPublishable`, `isoDate`, `lookupRate`, `makeFlag`, `max`, `meansTestAvailable`, `min`, `monthlyToWeekly`, `monthsBetween`, `monthsSinceOrder`, `mul`, `nthBirthday`, `parseCalculatorInput`, `parseMoney`, `pence`, `publishableLaOverride`, `publishableLaOverrideIn`, `regimeFor`, `resolveAgeBand`, `resolveEnglandRegion`, `runMeansTest`, `segmentBoundaries`, `selectBenefitTable`, `selectRateTable`, `sortFlags`, `sub`, `taperConfigSchema`, `tariffIncome`, `todayUtc`, `weeklyToAnnual`, `weeklyToMonthly`, `withinReg7Window`
+- **Imports:** `backdating`, `dates`, `engine`, `errors`, `featureFlags`, `flags`, `guardrails`, `meansTest`, `money`, `referenceData`, `resolve`, `schema`, `types`
+- **Used by:** nothing inside the engine
+
+#### `meansTest.ts`
+
+Means test module, spec §14.
+
+- **Exports:** `CORE_LIVING_COSTS_MULTIPLIER`, `COUNTABLE_INCOME`, `CountableIncomeKind`, `DEFAULT_CAPITAL`, `DEFAULT_TAPER`, `DISREGARDED_INCOME`, `DISREGARD_RATE`, `DisregardedIncomeKind`, `applyTaper`, `incomeSupportApplicableAmountWeekly`, `meansTestAvailable`, `runMeansTest`, `tariffIncome`
+- **Imports:** `errors`, `money`, `types`
+- **Used by:** `councilPolicy`, `index`, `regimes/sgo`
+
+#### `money.ts`
+
+Money handling, spec §10 [HARD].
+
+- **Exports:** `Pence`, `ZERO`, `add`, `apportion`, `clampMin0`, `formatMoney`, `max`, `min`, `monthlyToWeekly`, `mul`, `parseMoney`, `pence`, `sub`, `weeklyToAnnual`, `weeklyToMonthly`
+- **Imports:** `errors`
+- **Used by:** `backdating`, `flagCatalogue`, `index`, `meansTest`, `rates`, `regimes/kinshipZone`, `regimes/scotland`, `regimes/sgo`, `result`, `types`
+
+#### `rates.ts`
+
+Looking up what a nation, region and age band are worth.
+
+- **Exports:** `citeRateSource`, `lookupRate`, `regimeFor`, `resolveAgeBand`, `resolveEnglandRegion`
+- **Imports:** `deps`, `errors`, `money`, `referenceData`, `resolve`, `types`
+- **Used by:** `backdating`, `engine`, `regimes/kinshipZone`, `regimes/scotland`, `regimes/sgo`, `result`
+
+#### `referenceData.ts`
+
+Reference data access.
+
+- **Exports:** `BENEFIT_TABLES`, `ENGINE_VERSION`, `KINSHIP_ZONES`, `LA_NAMES`, `LA_OVERRIDES_ALL`, `LA_REGION_MAP`, `LA_REGION_MAP_META`, `RATE_TABLES`, `allCitationIds`, `cite`, `hasUnpublishableLaOverride`, `hasUnpublishableLaOverrideIn`, `isPublishable`, `publishableLaOverride`, `publishableLaOverrideIn`
+- **Imports:** `errors`, `types`
+- **Used by:** `councilPolicy`, `deps`, `flags`, `index`, `rates`, `regimes/kinshipZone`, `regimes/sgo`, `result`, `standingFlags`
+
+#### `regimes/kinshipZone.ts`
+
+The Kinship Zones pilot, spec §13.5.
+
+- **Exports:** `kinshipZonePath`
+- **Imports:** `councilPolicy`, `deps`, `flags`, `money`, `rates`, `referenceData`, `resolve`, `result`, `standingFlags`, `types`
+- **Used by:** `engine`
+
+#### `regimes/scotland.ts`
+
+Scotland, spec §13.4.
+
+- **Exports:** `scotlandPath`
+- **Imports:** `deps`, `flags`, `money`, `rates`, `resolve`, `result`, `types`
+- **Used by:** `engine`
+
+#### `regimes/sgo.ts`
+
+England, Wales and Northern Ireland, spec §13.
+
+- **Exports:** `sgoPath`
+- **Imports:** `councilPolicy`, `deps`, `errors`, `flags`, `meansTest`, `money`, `rates`, `referenceData`, `resolve`, `result`, `standingFlags`, `types`
+- **Used by:** `engine`
+
+#### `resolve.ts`
+
+Working out where a carer stands, from whichever answer they gave.
+
+- **Exports:** `REG7_WINDOW_MONTHS`, `ageOf`, `monthsSinceOrder`, `withinReg7Window`
+- **Imports:** `dates`, `types`
+- **Used by:** `backdating`, `engine`, `guardrails`, `index`, `rates`, `regimes/kinshipZone`, `regimes/scotland`, `regimes/sgo`, `standingFlags`
+
+#### `result.ts`
+
+Assembling the final result, and the last gate before it leaves the engine.
+
+- **Exports:** `FinaliseOptions`, `finalise`
+- **Imports:** `flags`, `guardrails`, `money`, `rates`, `referenceData`, `types`
+- **Used by:** `regimes/kinshipZone`, `regimes/scotland`, `regimes/sgo`
+
+#### `schema.ts`
+
+Zod schemas, spec §6 and the validation table at §20.1.
+
+- **Exports:** `MAX_MONEY_PENCE`, `calculatorInputSchema`, `carerInputSchema`, `childInputSchema`, `englandRegionSchema`, `financesInputSchema`, `meansTestedBenefitSchema`, `nationSchema`, `parseCalculatorInput`, `taperConfigSchema`
+- **Imports:** `errors`, `types`
+- **Used by:** `engine`, `index`
+
+#### `standingFlags.ts`
+
+The flags that are true of an SGO result regardless of the numbers.
+
+- **Exports:** `standingFlags`
+- **Imports:** `councilPolicy`, `deps`, `flags`, `referenceData`, `resolve`, `types`
+- **Used by:** `regimes/kinshipZone`, `regimes/sgo`
+
+#### `types.ts`
+
+Domain types — spec §7. Vocabulary is defined in spec §3 and is not interchangeable.
+
+- **Exports:** `AgeBand`, `BenefitTable`, `BreakdownStep`, `CalculatorInput`, `CalculatorResult`, `CapitalConfig`, `CarerInput`, `ChildInput`, `Citation`, `EnglandRegion`, `FinancesInput`, `Flag`, `FlagCode`, `FlagSeverity`, `FlatNationRates`, `FloorReason`, `IncomeSupportApplicableAmounts`, `IsoDate`, `KinshipZones`, `LaOverride`, `LawfulnessFlag`, `MeansTestBreakdown`, `MeansTestedBenefit`, `Nation`, `Pence`, `PerChildResult`, `RateTable`, `Regime`, `RegionalRates`, `TaperConfig`
+- **Imports:** `money`
+- **Used by:** `backdating`, `councilPolicy`, `dates`, `deps`, `engine`, `flagCatalogue`, `flagTypes`, `flags`, `guardrails`, `index`, `meansTest`, `rates`, `referenceData`, `regimes/kinshipZone`, `regimes/scotland`, `regimes/sgo`, `resolve`, `result`, `schema`, `standingFlags`
+
+### 13.4 How the files connect
+
+The same information as a single table, for when you want to see the shape
+rather than one file at a time.
+
+| File | Imports | Used by |
+|---|---|---|
+| `backdating.ts` | dates, deps, errors, money, rates, resolve, types | index |
+| `councilPolicy.ts` | deps, errors, flags, meansTest, referenceData, types | engine, regimes/kinshipZone, regimes/sgo, standingFlags |
+| `dates.ts` | errors, types | backdating, engine, guardrails, index, resolve |
+| `deps.ts` | referenceData, types | backdating, councilPolicy, engine, rates, regimes/kinshipZone, regimes/scotland, regimes/sgo, standingFlags |
+| `engine.ts` | councilPolicy, dates, deps, rates, regimes/kinshipZone, regimes/scotland, regimes/sgo, resolve, schema, types | index |
+| `errors.ts` | (none) | backdating, councilPolicy, dates, guardrails, index, meansTest, money, rates, referenceData, regimes/sgo, schema |
+| `featureFlags.ts` | (none) | index |
+| `flagCatalogue.ts` | flagTypes, money, types | flags |
+| `flagTypes.ts` | types | flagCatalogue, flags |
+| `flags.ts` | flagCatalogue, flagTypes, referenceData, types | councilPolicy, index, regimes/kinshipZone, regimes/scotland, regimes/sgo, result, standingFlags |
+| `guardrails.ts` | dates, errors, resolve, types | index, result |
+| `index.ts` | backdating, dates, engine, errors, featureFlags, flags, guardrails, meansTest, money, referenceData, resolve, schema, types | (none) |
+| `meansTest.ts` | errors, money, types | councilPolicy, index, regimes/sgo |
+| `money.ts` | errors | backdating, flagCatalogue, index, meansTest, rates, regimes/kinshipZone, regimes/scotland, regimes/sgo, result, types |
+| `rates.ts` | deps, errors, money, referenceData, resolve, types | backdating, engine, regimes/kinshipZone, regimes/scotland, regimes/sgo, result |
+| `referenceData.ts` | errors, types | councilPolicy, deps, flags, index, rates, regimes/kinshipZone, regimes/sgo, result, standingFlags |
+| `regimes/kinshipZone.ts` | councilPolicy, deps, flags, money, rates, referenceData, resolve, result, standingFlags, types | engine |
+| `regimes/scotland.ts` | deps, flags, money, rates, resolve, result, types | engine |
+| `regimes/sgo.ts` | councilPolicy, deps, errors, flags, meansTest, money, rates, referenceData, resolve, result, standingFlags, types | engine |
+| `resolve.ts` | dates, types | backdating, engine, guardrails, index, rates, regimes/kinshipZone, regimes/scotland, regimes/sgo, standingFlags |
+| `result.ts` | flags, guardrails, money, rates, referenceData, types | regimes/kinshipZone, regimes/scotland, regimes/sgo |
+| `schema.ts` | errors, types | engine, index |
+| `standingFlags.ts` | councilPolicy, deps, flags, referenceData, resolve, types | regimes/kinshipZone, regimes/sgo |
+| `types.ts` | money | backdating, councilPolicy, dates, deps, engine, flagCatalogue, flagTypes, flags, guardrails, index, meansTest, rates, referenceData, regimes/kinshipZone, regimes/scotland, regimes/sgo, resolve, result, schema, standingFlags |
+
+**Reading it.** `types.ts`, `errors.ts` and `money.ts` sit at the bottom, and
+almost everything depends on them, so a change there reaches the whole engine.
+Test it hard.
+
+At the other end, `engine.ts` is used only by `index.ts`, and the three files in
+`regimes/` only by `engine.ts`. Nothing else depends on them, so a new route for
+a new nation or scheme goes there without disturbing anything underneath.
+
+A file with a long **Used by** column is load-bearing. A file with an empty one
+can be changed freely.
+
+### 13.5 The letters
+
+
+#### `index.ts`
+
+@sgo/letters, spec §18.
+
+- **Exports:** `GeneratedLetter`, `LETTER_TEMPLATES`, `LetterContext`, `LetterTemplate`, `TemplateSpec`, `generateLetter`, `letterAsPlainText`, `letterTitle`, `lettersRequiredFirst`, `suggestLetters`
+
+#### `templates.ts`
+
+The nine letters, spec §18.
+
+- **Exports:** `LETTER_TEMPLATES`
+
+#### `types.ts`
+
+The shape of a letter and what it needs to fill itself in.
+
+- **Exports:** `GeneratedLetter`, `LetterContext`, `LetterTemplate`, `TemplateSpec`
+
+### 13.6 Where the website plugs in
+
+The website never calculates. It collects answers, hands them to the engine, and
+renders what comes back.
+
+**`calculate()` is called in 1 place:**
+- `apps/web/components/calculator/CalculatorShell.tsx`
+
+Everything else reads the result. 28 files in `apps/web` import
+from `@sgo/engine` or `@sgo/letters`:
+
+- `apps/web/app/about/page.tsx`
+- `apps/web/app/guidance/[slug]/page.tsx`
+- `apps/web/app/rates/page.tsx`
+- `apps/web/components/calculator/CalculatorShell.tsx`
+- `apps/web/components/calculator/CouncilPicker.tsx`
+- `apps/web/components/calculator/MoneyInput.tsx`
+- `apps/web/components/calculator/formState.ts`
+- `apps/web/components/calculator/steps/BenefitsStep.tsx`
+- `apps/web/components/calculator/steps/CouncilStep.tsx`
+- `apps/web/components/calculator/steps/WhereStep.tsx`
+- `apps/web/components/flags/FlagCard.tsx`
+- `apps/web/components/flags/FlagList.tsx`
+- `apps/web/components/results/ArithmeticPanel.tsx`
+- `apps/web/components/results/BackdatingPanel.tsx`
+- `apps/web/components/results/EstimateCard.tsx`
+- `apps/web/components/results/LettersPanel.tsx`
+- `apps/web/components/results/MaximumHero.tsx`
+- `apps/web/components/results/NextSteps.tsx`
+- `apps/web/components/results/PerChildTable.tsx`
+- `apps/web/components/results/PrintedInputs.tsx`
+- `apps/web/components/results/ResultsPanel.tsx`
+- `apps/web/components/ui/BenefitAmount.tsx`
+- `apps/web/components/ui/RateTable.tsx`
+- `apps/web/components/ui/RatesStaleBanner.tsx`
+- `apps/web/components/ui/SourceLink.tsx`
+- `apps/web/components/ui/mdxComponents.tsx`
+- `apps/web/lib/jsonLd.tsx`
+- `apps/web/lib/urlState.ts`
+
+**The flow through the interface:**
+
+```
+steps/*.tsx  ──answers──▶  formState.ts  ──built input──▶  CalculatorShell.tsx
+                                                                   │
+                                                            calculate()
+                                                                   │
+                                                                   ▼
+                                              ResultsPanel.tsx and the panels beside it
+```
+
+Add a question to the form and you touch `steps/`, `formState.ts` and the input
+schema in `schema.ts`. Change what a result shows and you touch only
+`components/results/`.
+
+### 13.7 Where the numbers come from
+
+Nothing in the engine contains a figure. Every rate, benefit amount and council
+policy is read from `/data`.
 
 ```
 /data/*.json  ──syncdata──▶  packages/engine/src/data/  ──imported by──▶  referenceData.ts
+                                                                              │
+                                                                     RATE_TABLES, BENEFIT_TABLES
+                                                                              │
+                                                                       selectRateTable()
 ```
 
 `/data` is the only real copy. `packages/engine/src/data/` is generated and
-gitignored, and `prebuild`, `pretypecheck` and `pretest:unit` all regenerate
-it. Never edit it by hand.
+gitignored, and `prebuild`, `pretypecheck` and `pretest:unit` all regenerate it.
+Never edit it by hand, and never commit it.
 
-To add a new financial year you edit `/data` and register the year in
-`referenceData.ts`, newest first. That is the whole change. See the maintenance
-runbook.
+To add a financial year: put the file in `/data`, then register it in
+`referenceData.ts`, **newest first**. That is the whole change.
 
-### The two things most likely to be got wrong
+### 13.8 Every command
+
+**The two that matter:**
+
+```
+pnpm verify          before you commit
+pnpm verify:build    before you upload
+```
+
+| Command | What it does | When |
+|---|---|---|
+| `pnpm install` | Installs dependencies. Node 20+, pnpm 10 | First checkout, lockfile changes |
+| `pnpm dev` | Local preview on localhost:3000 | While editing |
+| `pnpm verify` | typecheck, unit tests, data gates, content, headers | Before every commit |
+| `pnpm verify:build` | Build, then bundle budget and structured data | Before every upload |
+| `pnpm build` | Static export into `apps/web/out` | Rarely alone |
+| `pnpm typecheck` | TypeScript, no emit | Inside `verify` |
+| `pnpm lint` | ESLint | By hand |
+| `pnpm test:unit` | The engine and letters tests | Inside `verify` |
+| `pnpm test:e2e` | Playwright, desktop and mobile | Before a release |
+| `pnpm test:a11y` | The accessibility subset | Before a release |
+| `pnpm validate:data` | Falling rates, mad values, missing sources | Inside `verify` |
+| `pnpm check:staleness` | Rate expiry, council review dates, watchlist | Inside `verify` |
+| `pnpm check:content` | A rate typed into prose, an em dash, an unanswered heading | Inside `verify` |
+| `pnpm check:headers` | Security headers still in `.htaccess` | Inside `verify` |
+| `pnpm check:schema` | Structured data references resolve | Inside `verify:build` |
+| `pnpm check:bundle` | JavaScript size has not crept up | Inside `verify:build` |
+| **`pnpm check:citations`** | **Opens every source URL, reports dead ones** | **Monthly, by hand** |
+| `pnpm export:facts` | Regenerates this file | After any change to data or the engine |
+
+**Working on the engine alone:**
+
+```
+cd packages/engine
+pnpm test:unit       run the tests once
+pnpm test:watch      re-run as you edit
+pnpm test:coverage   with coverage
+pnpm typecheck       types only
+```
+
+`syncdata` runs automatically before build, typecheck and test. You do not call
+it yourself.
+
+**Faking the date:**
+
+```
+SGO_TODAY=2027-04-12 pnpm check:staleness
+```
+
+Overrides today's date for `check:staleness` and `check:content`. Changes nothing
+on the built site. Use it to rehearse next April.
+
+### 13.9 The two things most likely to be got wrong
 
 **The means test order.** The 20% disregard comes off income BEFORE expenditure
-is subtracted. Inverting it roughly doubles the answer. A property test exists
-solely to catch that, and section 4 shows both arithmetics side by side.
+is subtracted. Inverting it roughly doubles the answer. Section 4 shows both
+arithmetics side by side, and a property test exists solely to catch it.
 
 **The rate table order.** `RATE_TABLES` in `referenceData.ts` must be newest
 first, because `selectRateTable` takes the first table whose range contains the
-date. Put a year in the wrong place and old carers silently get new rates.
+date. Put a year in the wrong place and carers asking about an old order
+silently get this year's rates.
 
-### How to be sure a change is safe
+### 13.10 How to know a change is safe
 
 ```
 pnpm test:unit       the engine's own tests
-pnpm verify          everything that can be checked without a build
+pnpm verify          everything checkable without a build
 pnpm verify:build    build, bundle budget, structured data
+cd apps/web && npx playwright test
 ```
 
 The guardrails in `guardrails.ts` are the real safety net. They run on every
-result, in production, and throw rather than show a figure that breaks a rule.
-A change that makes the calculator wrong in a way the tests miss will usually
+result in production and throw rather than show a figure that breaks a rule. A
+change that makes the calculator wrong in a way the tests miss will usually
 still trip one of them.
+
+If you are about to disable a guardrail to make something pass, the guardrail
+is right and the change is wrong.
 
