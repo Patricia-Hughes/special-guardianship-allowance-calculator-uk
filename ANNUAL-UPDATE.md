@@ -1,75 +1,140 @@
 # Annual update runbook
 
-For whoever maintains this site. Written so you do not have to read the code
+For whoever maintains this site. Written so nobody has to read the code again
 every April.
 
-The short version: **rates live in `/data`, not in the pages.** Change a data
-file and every figure across the site moves at once. Nothing in the prose needs
-touching. The build refuses to publish a rate typed into a page, so there is no
-second place to look.
+**The one thing to know:** rates live in `/data`, never in the pages. Change a
+data file and every figure across the site moves at once. The build refuses to
+accept a rate typed into prose, so there is no second place to look.
 
 ---
 
-## 1. What to monitor, and what each one breaks
+## Quick version
+
+Every February, when England announces:
+
+1. Copy last year's rates file, edit the numbers
+2. Add the new source to `data/citations.json`
+3. **Register the year in `referenceData.ts`** ← the step people miss
+4. `pnpm verify && pnpm verify:build`
+5. Rebuild, upload `apps/web/out`
+
+Full detail in section 3.
+
+---
+
+## 1. How the site warns you
+
+You do not have to remember the deadline. Two things nag you.
+
+### On your screen, when you run `pnpm check:staleness`
+
+**60 days before rates expire**, it prints:
+
+```
+⚠ The April uprating is approaching: 2026-27 rates end 2027-03-31
+  in 60 days. Open the tracking issue and start the runbook in ANNUAL-UPDATE.md.
+```
+
+**After they expire**, it stops warning and starts **failing**:
+
+```
+✗ Rates are STALE in production: the newest table (2026-27) ended
+  2027-03-31, 12 days ago. Ship the new financial year, or the RATES_STALE
+  banner if the uplift has not been announced. Never interpolate.
+```
+
+A failure means `pnpm verify` exits non-zero. You cannot ship without noticing.
+
+**Current deadline: 31 March 2027.** Warnings start 30 January 2027.
+
+It also warns you when:
+
+- A council in `la-overrides.json` was verified over a year ago
+- Kinship Zones was verified over 90 days ago
+- A `watchlist.json` item has passed its check date
+
+### On the site, for readers
+
+If the rates expire and nobody rebuilds, a **red banner** appears at the top of
+every page telling the reader the figures may be out of date. It checks the
+reader's own clock, so it works even on a site nobody has rebuilt for a year.
+
+---
+
+## 2. What to monitor
 
 Put these in your change-alert tool.
 
 | URL | What changes | What you edit | Pages affected | Calculator |
 |---|---|---|---|---|
-| `gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering` | **England rates.** Announced Jan to Feb, live 1 April | `data/rates.YYYY-YY.json` → `england.regions` (3 regions × 5 age bands) | **6 pages:** `/rates`, home, and the guides for rates, Kinship Zones, what your council must consider, annual reviews | Every England result. Also the Kinship Zones pilot rate, which *is* this figure |
-| `gov.scot/publications/scottish-recommended-allowance-...` | **Scotland rates** | same file → `scotland.rates` | **3 pages:** `/rates`, rates guide, Scotland guide | Every Scotland result |
-| `thefosteringnetwork.org.uk/policy-and-campaigns/.../allowances/` | **Wales rates.** Your weakest data, still `verify: true` | same file → `wales.rates` | **1 page:** `/rates` | Every Wales result |
-| *(find it)* Northern Ireland allowances **listing page** on `health-ni.gov.uk` | **NI rates** | same file → `northern-ireland.rates` | **2 pages:** `/rates`, rates guide | Every NI result |
-| *(find it)* DWP **benefit rates collection** on `gov.uk` | Child Benefit, Guardian's Allowance, benefit cap, Income Support | `data/benefits.YYYY-YY.json` | Benefits guide (Guardian's Allowance amount) | The means test, and the Child Benefit deduction |
-| `gov.uk/government/publications/special-guardianship-guidance` | **The rule everything rests on.** No numbers | Nothing automatic. Read it and check the site still describes it correctly | Potentially all 16 guides | The starting-figure logic |
-| `gov.wales/written-statement-launch-consultation-revisions-part-6-and-special-guardianship-codes-practice` | The Welsh SGO Code of Practice | Wales pages need **rewriting**, not a rates bump | Wales sections everywhere | Possibly the Wales route entirely |
-| `legislation.gov.uk/uksi/2005/1109` | The Special Guardianship Regulations | Prose and citations | Guides citing regs 5, 6, 7, 9, 10, 11, 13, 18 | Regulation 7 two-year floor, regulation 13 Child Benefit |
-| `leedscs.trixonline.co.uk/chapter/applications-for-special-guardianship-orders` | Leeds policy, currently "under review" on screen | `data/la-overrides.json` | Result page for Leeds carers | Leeds-specific warnings |
-| `derbycsc.trixonline.co.uk/chapter/special-guardianship-orders-and-derby-support-scheme` | Derby policy | `data/la-overrides.json` | Result page for Derby carers | Derby-specific warnings |
-| `devoncs.trixonline.co.uk/chapter/applications-for-special-guardianship-orders` | Devon policy | `data/la-overrides.json` | Result page for Devon carers | Devon living-costs multiplier |
+| `https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering` | **England rates.** Announced Jan to Feb, live 1 April | `data/rates.YYYY-YY.json` → `england.regions` | **6 pages:** `/rates`, home, and the guides for rates, Kinship Zones, what your council must consider, annual reviews | Every England result. Also the Kinship Zones pilot rate, which *is* this figure |
+| `https://www.gov.scot/publications/scottish-recommended-allowance-for-foster-and-kinship-carers-information-for-carers-and-professionals/` | **Scotland rates** | same file → `scotland.rates` | **3 pages:** `/rates`, rates guide, Scotland guide | Every Scotland result |
+| `https://www.thefosteringnetwork.org.uk/policy-and-campaigns/empowering-children-and-young-people/allowances/` | **Wales rates.** Your weakest data, still `verify: true` | same file → `wales.rates` | **1 page:** `/rates` | Every Wales result |
+| `https://www.gov.uk/government/publications/special-guardianship-guidance` | **The rule everything rests on.** No numbers | Nothing automatic. Read it, check the site still describes it right | Potentially all 16 guides | The starting-figure logic |
+| `https://www.gov.wales/written-statement-launch-consultation-revisions-part-6-and-special-guardianship-codes-practice` | The Welsh SGO Code of Practice | Wales pages need **rewriting**, not a rates bump | Wales sections everywhere | Possibly the whole Wales route |
+| `https://www.legislation.gov.uk/uksi/2005/1109` | The Special Guardianship Regulations | Prose and citations | Guides citing regs 5, 6, 7, 9, 10, 11, 13, 18 | Reg 7 two-year floor, reg 13 Child Benefit |
+| `https://leedscs.trixonline.co.uk/chapter/applications-for-special-guardianship-orders` | Leeds policy, currently "under review" on screen | `data/la-overrides.json` | Result page for Leeds carers | Leeds warnings |
+| `https://derbycsc.trixonline.co.uk/chapter/special-guardianship-orders-and-derby-support-scheme` | Derby policy | `data/la-overrides.json` | Result page for Derby carers | Derby warnings |
+| `https://devoncs.trixonline.co.uk/chapter/applications-for-special-guardianship-orders` | Devon policy | `data/la-overrides.json` | Result page for Devon carers | Devon living-costs multiplier |
 
-### Two you have to find yourself
+### Not worth monitoring
 
-The Northern Ireland and DWP sources have **the year inside the address**. When
-2027/28 is published it appears at a **new URL** and the old one never changes.
-A monitor pointed at the PDF will never fire. Point it at the page that *links*
-to the PDFs instead.
-
-### Do not monitor
-
-Court judgments, Ombudsman decisions and `web.archive.org` captures. None of them
-change after publication. Watching them only trains you to ignore alerts.
+Court judgments, Ombudsman decisions, and the `web.archive.org` captures. None of
+them change after publication. Watching them only trains you to ignore alerts.
 
 ---
 
-## 2. The April routine
+## 3. The April routine
 
-Roughly February, when England announces.
-
-**Step 1. Copy last year's file.**
+### Step 1. Copy last year's rates file
 
 ```
 cp data/rates.2026-27.json data/rates.2027-28.json
 ```
 
-**Step 2. Edit the new file.**
+### Step 2. Get the new figures
+
+Open each source and read the table. **All four are in section 4 below with the
+URL pattern for finding next year's.**
+
+- England: `https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering`
+- Scotland: `https://www.gov.scot/publications/scottish-recommended-allowance-for-foster-and-kinship-carers-information-for-carers-and-professionals/`
+- Wales: `https://www.thefosteringnetwork.org.uk/policy-and-campaigns/empowering-children-and-young-people/allowances/`
+- Northern Ireland: see section 4, the URL changes every year
+
+### Step 3. Edit the new file
 
 - `financialYear`: `"2027-28"`
-- `effectiveFrom`: `"2027-04-01"` (councils uplift on 1 April)
+- `effectiveFrom`: `"2027-04-01"` — councils uplift on 1 April
 - `effectiveTo`: `"2028-03-31"`
-- `dfeStatedTaxYearFrom` / `To`: 6 April to 5 April (the government states rates
-  on the tax year; councils pay on 1 April; the site models both)
+- `dfeStatedTaxYearFrom` / `To`: 6 April to 5 April. The government states rates
+  on the tax year, councils pay from 1 April, and the site models both
 - `dataVersion`: bump it
-- Each nation's figures, **in pence**. `20500` is £205.00
-- Each nation's `sourceId` must point at a citation that exists
+- The figures, **in pence**. `20500` is £205.00
+- Each nation's `sourceId` must name a citation that exists
 
-**Step 3. Add the citation.** New entry in `data/citations.json` with `label`,
-`url`, `kind: "dataset"`, `retrieved`. If the URL has rotted and you cannot find
-a replacement, **leave `url` out**. The site then prints the reference and says
-it is still sourcing a link. Never paste a dead link.
+### Step 4. Add the citation
 
-**Step 4. Register the year in the engine.** This is the only code change, and
-the step people miss.
+New entry in `data/citations.json`:
+
+```json
+"dfe-nma-2027-28": {
+  "label": "DfE National Minimum Allowance for foster carers, 2027 to 2028",
+  "url": "https://www.gov.uk/support-for-foster-parents/help-with-the-cost-of-fostering",
+  "kind": "dataset",
+  "retrieved": "2027-02-14"
+}
+```
+
+If a URL has rotted and you cannot find a replacement, **leave `url` out
+entirely**. The site prints the reference and says it is still sourcing a link.
+Never paste a dead link.
+
+### Step 5. Register the year in the engine
+
+**This is the only code change, and the step people miss.** Dropping a file into
+`/data` does nothing on its own.
 
 `packages/engine/src/referenceData.ts`:
 
@@ -77,19 +142,20 @@ the step people miss.
 import rates202728 from './data/rates.2027-28.json' with { type: 'json' };
 
 export const RATE_TABLES: RateTable[] = [
-  rates202728 as unknown as RateTable,   // ← add, NEWEST FIRST
+  rates202728 as unknown as RateTable,   // ← add here, NEWEST FIRST
   rates202627 as unknown as RateTable,
-  ...
+  rates202526 as unknown as RateTable,
+  rates202425 as unknown as RateTable,
 ];
 ```
 
-**Order matters.** `selectRateTable` (`packages/engine/src/dates.ts:63`) walks
+**Order matters.** `selectRateTable` in `packages/engine/src/dates.ts:63` walks
 the array and takes the first table whose date range contains the date being
-calculated. Newest first.
+calculated. Newest first, always.
 
 Same pattern for `BENEFIT_TABLES` when the benefits file changes.
 
-**Step 5. Run the checks.**
+### Step 6. Run the checks
 
 ```
 pnpm verify          typecheck, unit tests, data gates, content, headers
@@ -100,64 +166,119 @@ cd apps/web && npx playwright test
 You do **not** need to sync data into the engine by hand. `prebuild`,
 `pretypecheck` and `pretest:unit` all run `syncdata` for you.
 
-**Step 6. Rebuild and upload.** `apps/web/out` is the site. Include the hidden
-`.htaccess`.
+### Step 7. Upload
+
+`apps/web/out` is the site. Include the hidden `.htaccess`.
 
 ---
 
-## 3. What the gates tell you if you get it wrong
+## 4. Finding next year's URL
+
+Two sources put **the year inside the address**. Your alert tool will never fire
+on them, because the old file stays exactly as it was and the new one appears
+somewhere else.
+
+### Northern Ireland
+
+Every year I hold:
+
+```
+2024-25  https://www.health-ni.gov.uk/sites/default/files/publications/health/model-scheme-2024-25.pdf
+2025-26  https://www.health-ni.gov.uk/sites/default/files/2026-05/Foster%20care%20allowances%202025-26.pdf
+2026-27  https://www.health-ni.gov.uk/sites/default/files/2026-05/Foster%20care%20allowances%202026-27.pdf
+```
+
+**The pattern:** the filename is predictable, `Foster care allowances YYYY-YY.pdf`.
+The folder is not: it is the month the file was uploaded, and 2025-26 and 2026-27
+were both uploaded in `2026-05`.
+
+**So:** search `health-ni.gov.uk` for "Foster care allowances", or monitor the
+Department of Health publications listing that links to them. Do not monitor the
+PDF itself.
+
+### DWP benefit rates
+
+```
+2026-27  https://www.gov.uk/government/publications/benefit-and-pension-rates-2026-to-2027/proposed-benefit-and-pension-rates-2026-to-2027
+```
+
+**The pattern is predictable:**
+
+```
+https://www.gov.uk/government/publications/benefit-and-pension-rates-YYYY-to-YYYY/proposed-benefit-and-pension-rates-YYYY-to-YYYY
+```
+
+So 2027/28 should be at `benefit-and-pension-rates-2027-to-2028/...`. Note the
+word **proposed**: once the rates are confirmed the page sometimes drops it. Try
+both.
+
+### Wales, if you ever get the real letter
+
+The Fostering Network media URLs use a random ID (`rzzgloqq`) that cannot be
+guessed. But the 2024/25 letter also exists at a **predictable** path:
+
+```
+https://www.thefosteringnetwork.org.uk/sites/default/files/2024-05/NMA%20Letter%202024-25%20-%20English%20(E)_0.pdf
+```
+
+**The pattern:** `/sites/default/files/YYYY-MM/NMA%20Letter%20YYYY-YY%20-%20English%20(E)_0.pdf`
+
+Try `2025-04/`, `2025-05/`, `2025-06/` with the year changed. `watchlist.json`
+records this, along with the two email addresses that would get you the letter
+directly, which is more likely to work.
+
+---
+
+## 5. What the gates catch
 
 | Gate | Catches |
 |---|---|
-| `check:staleness` | **Warns at 60 days** before the current rates expire. **Fails the build** once today is past the newest `effectiveTo`. This is your deadline alarm |
-| `validate:data` | Rates that fall as age rises, values outside a sane range, implausible year-on-year jumps, a `sourceId` pointing at a citation that does not exist |
+| `check:staleness` | Warns 60 days before rates expire. **Fails** once they have. Your deadline alarm |
+| `validate:data` | Rates that fall as age rises, values outside a sane range, implausible year-on-year jumps, a `sourceId` naming a citation that does not exist |
 | `check:content` | A rate typed into a page instead of read from data. An em dash. A heading answered by a warning box |
-| `check:citations` | **HEADs every citation URL.** Run this monthly. It is what would have caught the four dead links |
+| `check:citations` | **HEADs every citation URL.** Run monthly. This is what catches dead links |
 | `check:schema` | Structured data with a broken reference |
 
-If `validate:data` complains about a figure you are confident is right, it wants
-a note explaining why, not an override.
+If `validate:data` complains about a figure you are sure is right, it wants a
+note explaining why, not an override.
 
 ---
 
-## 4. Three things that need a decision, not a copy-paste
+## 6. Three things that need a decision, not a copy-paste
 
 **Wales is still unverified.** `wales.verify: true` in the 2026/27 file. The
 figures come from The Fostering Network reproducing a Welsh Government letter,
 not the letter itself. The letters go out **by email**, which is why they are not
-on the open web. `data/watchlist.json` has the two addresses that would get you
-the real one. Until then the site says so on screen.
+on the open web. Until you have the letter, the site says so on screen.
 
-**One year of Welsh rates is missing on purpose.** 2025/26 is `null`. Backdating
-for Welsh carers skips that year and names it. Do not fill it by working
-backwards from an uplift percentage. The rounding rules are not published and a
-wrong historic rate produces a wrong arrears claim.
+**One year of Welsh rates is missing on purpose.** 2025/26 is `null`. Welsh
+backdating skips that year and names it. Do not fill it by working backwards from
+an uplift percentage: the rounding rules are not published, and a wrong historic
+rate produces a wrong arrears claim.
 
-**Kinship Zones ends in 2029.** `data/kinship-zones.json` carries `runsUntil`
-and a three-month review interval. When the pilot is evaluated, the guide and the
+**Kinship Zones ends in 2029.** `data/kinship-zones.json` carries `runsUntil` and
+a three-month review interval. When the pilot is evaluated, the guide and the
 warnings need rewriting, not a number change.
 
 ---
 
-## 5. What `data/watchlist.json` is for
+## 7. `watchlist.json`, and how it differs from your alert tool
 
-Documents you are **waiting for**, with a date to check again. Five items now.
-`check:staleness` reads it and warns once a check date passes, so a known gap
-cannot quietly rot in someone's head.
+`watchlist.json` is a list of documents you are **waiting for**, each with a date
+to check again. Five items now. `check:staleness` reads it and warns once a date
+passes, so a known gap cannot quietly rot in someone's head.
 
-Your change-alert tool watches what **already exists**. The watchlist tracks what
-**does not exist yet**. Both are needed.
+Your alert tool watches what **already exists**. The watchlist tracks what **does
+not exist yet**. You need both.
 
 ---
 
-## 6. The two safety nets, and why they are different
+## 8. Why there are two safety nets
 
-**Your alert tool** watches other people's sites. It tells you *"GOV.UK changed
-this page."* That is the early warning.
+**Your alert tool** watches other people's sites. It says *"GOV.UK changed this
+page."* That is the early warning.
 
-**`check:staleness`** watches your own data. It tells you *"your figures have
-expired"* and fails the build, and a red banner appears on every page for
-readers.
+**`check:staleness`** watches your own data. It says *"your figures have
+expired"*, fails the build, and puts a red banner in front of readers.
 
-The alert can miss a change. The date check cannot miss its own expiry. Keep
-both.
+An alert can miss a change. A date check cannot miss its own expiry. Keep both.

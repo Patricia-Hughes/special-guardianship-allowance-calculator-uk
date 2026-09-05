@@ -53,7 +53,7 @@ if (!newest) {
   } else if (daysLeft <= 60) {
     warnings.push(
       `The April uprating is approaching: ${String(newest.doc.financialYear)} rates end ${effectiveTo} ` +
-        `in ${daysLeft} days. Open the tracking issue and start §37's runbook.`,
+        `in ${daysLeft} days. Open the tracking issue and start the runbook in ANNUAL-UPDATE.md.`,
     );
   }
 }
