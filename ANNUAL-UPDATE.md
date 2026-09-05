@@ -57,8 +57,92 @@ It also warns you when:
 ### On the site, for readers
 
 If the rates expire and nobody rebuilds, a **red banner** appears at the top of
-every page telling the reader the figures may be out of date. It checks the
-reader's own clock, so it works even on a site nobody has rebuilt for a year.
+every page. It checks the reader's own clock, so it works even on a site nobody
+has rebuilt for a year.
+
+**The next one appears on 1 April 2027.** Section 1a explains how to clear it.
+
+---
+
+## 1a. The red banner, and how to clear it
+
+### What the reader sees
+
+Not a crash and not an error page. A red bar above the content on every page:
+
+> **These rates may be out of date.** My newest figures ran to 2027-03-31. New
+> rates take effect on 1 April each year. Please check the current national
+> minimum allowance before using anything here in a letter.
+
+The calculator still works. Every page still loads. Nothing is broken.
+
+### Why it appears, and why it goes
+
+`apps/web/components/ui/StaleWatch.tsx` compares today's date against the last
+day of the newest rates file. Today that is `2027-03-31`.
+
+| Condition | Banner |
+|---|---|
+| Today is after `effectiveTo` | Shows |
+| Today is on or before `effectiveTo` | Hidden |
+
+Add the 2027-28 file and `effectiveTo` becomes `2028-03-31`. Today is no longer
+after it, so the banner is gone. You change nothing else. There is no flag to
+set and no line to delete.
+
+### How to clear it
+
+Publish the new financial year. That is the whole fix, and it is the April
+routine in section 3:
+
+1. `cp data/rates.2026-27.json data/rates.2027-28.json`
+2. Enter the new figures, and set `effectiveTo` to `"2028-03-31"`
+3. Add the new source to `data/citations.json`
+4. Register the year in `packages/engine/src/referenceData.ts`, newest first
+5. `pnpm verify && pnpm verify:build`, then upload `apps/web/out`
+
+### There is no dismiss button, on purpose
+
+Do not add one, and do not comment out the banner to make a deadline. The banner
+is only ever on screen because the figures really have expired. Hiding it leaves
+a carer quoting a dead rate to their council in a letter, which is the one
+outcome this site exists to prevent.
+
+### Proof that publishing the year is enough
+
+Run with a faked date, before the new year is registered:
+
+```
+$ SGO_TODAY=2027-04-12 pnpm check:staleness
+✗ Rates are STALE in production: the newest table (2026-27) ended
+  2027-03-31, 12 days ago.
+```
+
+Same date, after registering a 2027-28 table:
+
+```
+$ SGO_TODAY=2027-04-12 pnpm check:staleness
+check-staleness: passed with 6 warning(s) (as at 2027-04-12).
+```
+
+`SGO_TODAY` is a date override read by `check-staleness` and `check-content`. It
+changes nothing on the built site, so you can rehearse next April's failure today
+without touching the data. Use it to test your work before 1 April arrives.
+
+### If 1 April arrives and the figures are not published yet
+
+Leave the banner up. It is telling the truth. Do not work out next year's rates
+from an uplift percentage to silence it: a guessed rate produces a wrong arrears
+claim. Publish when the real numbers land, and it clears the same day.
+
+### Where the code lives, if you ever need it
+
+| File | Does |
+|---|---|
+| `apps/web/components/ui/StaleWatch.tsx` | The banner. Re-checks the reader's clock hourly |
+| `apps/web/components/ui/RatesStaleBanner.tsx` | Reads the newest `effectiveTo` and decides at build time |
+| `apps/web/app/layout.tsx` | Places it above every page |
+| `scripts/check-staleness.ts` | The build-time version of the same check |
 
 ---
 
@@ -106,7 +190,7 @@ URL pattern for finding next year's.**
 ### Step 3. Edit the new file
 
 - `financialYear`: `"2027-28"`
-- `effectiveFrom`: `"2027-04-01"` — councils uplift on 1 April
+- `effectiveFrom`: `"2027-04-01"`. Councils uplift on 1 April
 - `effectiveTo`: `"2028-03-31"`
 - `dfeStatedTaxYearFrom` / `To`: 6 April to 5 April. The government states rates
   on the tax year, councils pay from 1 April, and the site models both
