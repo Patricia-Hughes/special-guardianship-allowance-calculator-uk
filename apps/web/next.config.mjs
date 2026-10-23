@@ -5,6 +5,9 @@ const nextConfig = {
   // Static export: there is no server to secure, and no backend that could
   // receive a carer's financial or family data [R8].
   output: 'export',
+  // The upload ZIP supplies the public origin so copied HTML can still find
+  // its CSS and JavaScript. Ordinary local builds keep same-origin paths.
+  assetPrefix: process.env.SGO_ASSET_ORIGIN || undefined,
   trailingSlash: false,
   reactStrictMode: true,
   images: { unoptimized: true },

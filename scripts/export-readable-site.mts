@@ -9,11 +9,22 @@ import { parse, type DefaultTreeAdapterMap } from 'parse5';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, 'apps', 'web', 'out');
 const destination = join(root, 'live-site-file.zip');
+const assetUrl = new URL(process.env.SGO_ASSET_ORIGIN ?? 'https://specialguardianshipallowance.uk');
+if (
+  !['http:', 'https:'].includes(assetUrl.protocol) ||
+  assetUrl.username || assetUrl.password ||
+  assetUrl.pathname !== '/' || assetUrl.search || assetUrl.hash
+) {
+  throw new Error(
+    'SGO_ASSET_ORIGIN must be an HTTP(S) origin without a path, credentials, query or fragment',
+  );
+}
+const assetOrigin = assetUrl.origin;
 
 for (const name of ['@sgo/engine', '@sgo/letters', '@sgo/web']) {
   const result = spawnSync('pnpm', ['--filter', name, 'build'], {
     cwd: root,
-    env: { ...process.env, SGO_READABLE_BUILD: '1' },
+    env: { ...process.env, SGO_READABLE_BUILD: '1', SGO_ASSET_ORIGIN: assetOrigin },
     stdio: 'inherit',
   });
   if (result.error) throw result.error;
@@ -84,10 +95,26 @@ async function readableHtml(html: string): Promise<string> {
 const files = await filesIn(out);
 const archive: Zippable = {};
 let htmlCount = 0;
+let absoluteAssetCount = 0;
 for (const file of files) {
   // Do not rewrite .txt files: they contain Next's routing protocol, not source.
   if (extname(file) === '.html') {
-    await writeFile(file, await readableHtml(await readFile(file, 'utf8')));
+    const html = await readableHtml(await readFile(file, 'utf8'));
+    function checkAssets(node: DefaultTreeAdapterMap['node']): void {
+      if ('tagName' in node && ['link', 'script'].includes(node.tagName)) {
+        const attributes = Object.fromEntries(node.attrs.map(({ name, value }) => [name, value]));
+        const url = node.tagName === 'script' ? attributes.src : attributes.href;
+        if (url?.includes('/_next/static/')) {
+          if (!url.startsWith(`${assetOrigin}/_next/static/`)) {
+            throw new Error(`Asset URL is not absolute in ${relative(out, file)}: ${url}`);
+          }
+          absoluteAssetCount += 1;
+        }
+      }
+      if ('childNodes' in node) node.childNodes.forEach(checkAssets);
+    }
+    checkAssets(parse(html));
+    await writeFile(file, html);
     htmlCount += 1;
   } else if (/[/\\]_(?:build|ssg)Manifest\.js$/.test(file)) {
     // Next writes these after webpack. Their parent is the unique build ID,
@@ -116,4 +143,5 @@ for (const file of files) {
 }
 await writeFile(destination, bytes, { mode: 0o644 });
 console.log(`Readable static export: ${htmlCount} HTML pages, ${files.length} files.`);
+console.log(`Verified ${absoluteAssetCount} CSS/JavaScript links using ${assetOrigin}.`);
 console.log(`Verified ${destination} (${(bytes.length / 1024 / 1024).toFixed(2)} MiB).`);

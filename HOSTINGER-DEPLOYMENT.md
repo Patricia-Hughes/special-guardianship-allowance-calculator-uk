@@ -67,6 +67,22 @@ minification disabled, formats the assets before their final content hashes are
 calculated, and formats HTML while preserving significant whitespace. It writes
 `live-site-file.zip` at the repository root and verifies every file in the archive.
 
+The upload ZIP uses absolute CSS and JavaScript URLs on
+`https://specialguardianshipallowance.uk`. HTML copied from Search Console or
+saved elsewhere can therefore load its styles from the published website.
+Upload the complete ZIP, including `_next/`, before previewing a copied page;
+the new asset filenames must be available on the live domain. A saved HTML file
+still requires an internet connection, and opening it locally does not reproduce
+the website's navigation or hosting behavior. This is a preview convenience;
+Google can already render the live site's relative asset URLs.
+
+For a different deployment origin, run
+`SGO_ASSET_ORIGIN=https://your-domain.example pnpm export:readable` instead.
+Ordinary `pnpm build` and development builds keep local asset paths by default.
+When updating the live site, upload new assets
+before replacing HTML and retain older hashed assets while caches or saved crawl
+copies may still reference them.
+
 Upload that ZIP to `public_html` and extract it there. `index.html`, `.htaccess`
 and `_next/` must be directly inside `public_html`. ZIP entries are stored without
 compression. The web server may still use HTTP compression, which browsers and
