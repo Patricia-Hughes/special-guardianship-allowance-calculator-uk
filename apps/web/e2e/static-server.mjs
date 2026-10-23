@@ -25,7 +25,10 @@ const port = Number(process.argv[2] ?? 4321);
 /** Parse the `/*` block of a Cloudflare/Netlify `_headers` file. */
 function productionHeaders() {
   const out = {};
+  let section = '';
   for (const line of readFileSync(headersFile, 'utf8').split('\n')) {
+    if (line.startsWith('/')) section = line.trim();
+    if (section !== '/*') continue;
     if (/^\s*#/.test(line) || !/^\s+\S/.test(line)) continue;
     const m = /^\s+([A-Za-z-]+):\s*(.+?)\s*$/.exec(line);
     if (m) out[m[1]] = m[2];
@@ -93,6 +96,7 @@ createServer((req, res) => {
   const send = (status, path) => {
     res.writeHead(status, {
       ...HEADERS,
+      ...(path === join(root, 'site-config.js') ? { 'Cache-Control': 'no-store' } : {}),
       'Content-Type': TYPES[extname(path)] ?? 'application/octet-stream',
     });
     createReadStream(path).pipe(res);

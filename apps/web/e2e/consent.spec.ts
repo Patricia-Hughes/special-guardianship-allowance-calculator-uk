@@ -6,9 +6,8 @@
  * the failure mode is silent: a tag loaded one line too early looks identical
  * on screen and breaks the promise completely.
  *
- * These tests hold both halves of the contract. In a build with no measurement
- * ID there is no banner and no tag at all, which is also correct, so each test
- * states which case it is in rather than skipping quietly.
+ * The configured tests supply a fake ID through the editable config file and
+ * intercept every Google request. Placeholder behavior is tested separately.
  */
 import { expect, test, type Page } from '@playwright/test';
 
@@ -19,86 +18,145 @@ async function watchGoogle(page: Page): Promise<string[]> {
   const hits: string[] = [];
   await page.route(GOOGLE, (route) => {
     hits.push(route.request().url());
-    return route.fulfill({ status: 200, contentType: 'application/javascript', body: '' });
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: '',
+    });
   });
   return hits;
 }
 
 const banner = (page: Page) => page.getByRole('region', { name: 'Cookies on this site' });
 
-test('@consent nothing reaches Google before an answer is given', async ({ page }) => {
-  const hits = await watchGoogle(page);
-  await page.goto('/');
-  await page.waitForLoadState('networkidle');
+const TEST_ID = 'G-TEST123456';
 
-  expect(hits, 'a tag loaded before the reader was asked').toEqual([]);
+test.describe('configured analytics', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route('**/site-config.js', (route) =>
+      route.fulfill({
+        contentType: 'application/javascript',
+        body: `window.SGO_GOOGLE_CONFIG = { ga4MeasurementId: "${TEST_ID}" };`,
+      })
+    );
+  });
 
-  if (await banner(page).isVisible()) {
+  test('@consent nothing reaches Google before an answer is given', async ({ page }) => {
+    const hits = await watchGoogle(page);
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    expect(hits, 'a tag loaded before the reader was asked').toEqual([]);
+
     await expect(banner(page).getByRole('button', { name: 'Yes, that is fine' })).toBeVisible();
     await expect(banner(page).getByRole('button', { name: 'No thank you' })).toBeVisible();
-  }
+  });
+
+  test('@consent saying no keeps it that way, including after a reload', async ({ page }) => {
+    const hits = await watchGoogle(page);
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await expect(banner(page)).toBeVisible();
+
+    await banner(page).getByRole('button', { name: 'No thank you' }).click();
+    await expect(banner(page)).toBeHidden();
+
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    await expect(banner(page), 'the question came back after it was answered').toBeHidden();
+    expect(hits, 'a tag loaded despite the reader saying no').toEqual([]);
+  });
+
+  test('@consent saying yes loads the tag, and only then', async ({ page }) => {
+    const hits = await watchGoogle(page);
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await expect(banner(page)).toBeVisible();
+
+    expect(hits).toEqual([]);
+    await banner(page).getByRole('button', { name: 'Yes, that is fine' }).click();
+    await expect(banner(page)).toBeHidden();
+
+    await expect
+      .poll(() => hits.length, {
+        message: 'consent was given but no tag was requested',
+      })
+      .toBeGreaterThan(0);
+    expect(hits[0]).toContain('googletagmanager.com/gtag/js');
+  });
+
+  test('@consent the answer can be changed on the privacy page', async ({ page }) => {
+    await watchGoogle(page);
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await expect(banner(page)).toBeVisible();
+
+    await banner(page).getByRole('button', { name: 'No thank you' }).click();
+    await page.goto('/privacy');
+    await expect(page.getByText('You have said no to analytics cookies')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Turn analytics on' }).click();
+    await expect(page.getByText('You have said yes to analytics cookies')).toBeVisible();
+  });
+
+  test('@consent turning analytics off and on clears opt-out without a duplicate tag', async ({
+    page,
+  }) => {
+    const hits = await watchGoogle(page);
+    await page.goto('/privacy');
+    await expect(banner(page)).toBeVisible();
+    await page.getByRole('button', { name: 'Turn analytics on' }).click();
+    await expect(banner(page)).toBeHidden();
+    await expect.poll(() => hits.length).toBe(1);
+    await page.getByRole('button', { name: 'Turn analytics off' }).click();
+    expect(
+      await page.evaluate(
+        (id) => (window as unknown as Record<string, unknown>)[`ga-disable-${id}`],
+        TEST_ID
+      )
+    ).toBe(true);
+    await page.getByRole('button', { name: 'Turn analytics on' }).click();
+    expect(
+      await page.evaluate(
+        (id) => (window as unknown as Record<string, unknown>)[`ga-disable-${id}`],
+        TEST_ID
+      )
+    ).toBe(false);
+    await expect(page.locator('#ga-tag')).toHaveCount(1);
+    expect(hits).toHaveLength(1);
+  });
+
+  test('@consent page view commands exclude shared query strings and fragments', async ({
+    page,
+  }) => {
+    await watchGoogle(page);
+    await page.goto('/?private=child-age-12#income-2000');
+    await banner(page).getByRole('button', { name: 'Yes, that is fine' }).click();
+    const commands = await page.evaluate(() =>
+      (window.dataLayer ?? []).map((value) => Array.from(value as ArrayLike<unknown>))
+    );
+    expect(commands.find((command) => command[0] === 'config')).toEqual([
+      'config',
+      TEST_ID,
+      expect.objectContaining({
+        send_page_view: false,
+        page_location: new URL(page.url()).origin + '/',
+      }),
+    ]);
+    expect(commands.filter((command) => command[1] === 'page_view')).toHaveLength(1);
+    expect(JSON.stringify(commands)).not.toMatch(/child-age|income-2000/);
+  });
 });
 
-test('@consent saying no keeps it that way, including after a reload', async ({ page }) => {
+test('@consent an unreplaced placeholder loads no Google tag and shows analytics as off', async ({
+  page,
+}) => {
   const hits = await watchGoogle(page);
   await page.goto('/');
   await page.waitForLoadState('networkidle');
-  test.skip(!(await banner(page).isVisible()), 'this build carries no analytics');
-
-  await banner(page).getByRole('button', { name: 'No thank you' }).click();
-  await expect(banner(page)).toBeHidden();
-
-  await page.reload();
-  await page.waitForLoadState('networkidle');
-  await expect(banner(page), 'the question came back after it was answered').toBeHidden();
-  expect(hits, 'a tag loaded despite the reader saying no').toEqual([]);
-});
-
-test('@consent saying yes loads the tag, and only then', async ({ page }) => {
-  const hits = await watchGoogle(page);
-  await page.goto('/');
-  await page.waitForLoadState('networkidle');
-  test.skip(!(await banner(page).isVisible()), 'this build carries no analytics');
-
+  await expect(banner(page)).toHaveCount(0);
+  await expect(page.locator('#ga-tag')).toHaveCount(0);
+  await page.goto('/privacy');
+  await expect(page.getByText('Analytics are currently off on this site.')).toBeVisible();
   expect(hits).toEqual([]);
-  await banner(page).getByRole('button', { name: 'Yes, that is fine' }).click();
-  await expect(banner(page)).toBeHidden();
-
-  await expect
-    .poll(() => hits.length, { message: 'consent was given but no tag was requested' })
-    .toBeGreaterThan(0);
-  expect(hits[0]).toContain('googletagmanager.com/gtag/js');
-});
-
-test('@consent the answer can be changed on the privacy page', async ({ page }) => {
-  await watchGoogle(page);
-  await page.goto('/');
-  await page.waitForLoadState('networkidle');
-  test.skip(!(await banner(page).isVisible()), 'this build carries no analytics');
-
-  await banner(page).getByRole('button', { name: 'No thank you' }).click();
-  await page.goto('/privacy');
-  await expect(page.getByText('You have said no to analytics cookies')).toBeVisible();
-
-  await page.getByRole('button', { name: 'Turn analytics on' }).click();
-  await expect(page.getByText('You have said yes to analytics cookies')).toBeVisible();
-});
-
-test('@consent the privacy notice matches what the build actually does', async ({ page }) => {
-  await page.goto('/');
-  // The banner is drawn by an effect, so asking before hydration reports it
-  // absent and sends this test down the no-analytics branch. Every other test
-  // here already waits; this one did not, and flaked once in a full parallel
-  // run because of it.
-  await page.waitForLoadState('networkidle');
-  const hasBanner = await banner(page).isVisible();
-  await page.goto('/privacy');
-
-  if (hasBanner) {
-    await expect(page.getByRole('heading', { name: 'Changing your mind' })).toBeVisible();
-    await expect(page.getByText('I do not run analytics on this site')).toHaveCount(0);
-  } else {
-    await expect(page.getByText('I do not run analytics on this site')).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Changing your mind' })).toHaveCount(0);
-  }
 });

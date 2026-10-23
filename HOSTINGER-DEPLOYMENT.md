@@ -58,6 +58,14 @@ develop on it. Source stays on `claude/tool-from-markdown-gremik`.
 Make sure hidden files come across — `.htaccess` is what applies the security
 headers and makes `/about` work. Most FTP clients hide dotfiles by default.
 
+### Google Analytics and Search Console
+
+See [GOOGLE-SETUP.md](./GOOGLE-SETUP.md) for the two editable placeholders.
+After extraction, put your GA4 Measurement ID in `public_html/site-config.js`
+and your Search Console verification token in `public_html/index.html`.
+No Node build is needed for these edits. Analytics remains off until a real ID
+is configured, and then loads only after the visitor agrees.
+
 ### A ZIP with readable HTML, CSS and JavaScript
 
 Run `pnpm export:readable` from the repository root after installing dependencies.

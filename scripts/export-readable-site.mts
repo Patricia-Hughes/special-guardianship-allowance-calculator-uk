@@ -128,7 +128,7 @@ for (const file of files) {
   archive[name] = [await readFile(file), { level: 0, os: 3, attrs: 0o100644 << 16 }];
 }
 
-for (const name of ['index.html', '.htaccess', '404.html', 'robots.txt', 'sitemap.xml']) {
+for (const name of ['index.html', '.htaccess', '404.html', 'robots.txt', 'sitemap.xml', 'site-config.js']) {
   if (!archive[name]) throw new Error(`Missing required export file: ${name}`);
 }
 

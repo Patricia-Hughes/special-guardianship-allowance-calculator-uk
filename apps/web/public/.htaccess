@@ -146,6 +146,10 @@ ErrorDocument 404 /404.html
   <FilesMatch "\.html$">
     Header set Cache-Control "public, max-age=0, must-revalidate"
   </FilesMatch>
+  # This file is edited after upload; never freeze an old measurement ID.
+  <Files "site-config.js">
+    Header set Cache-Control "no-store"
+  </Files>
 </IfModule>
 
 # ---------------------------------------------------------------------------

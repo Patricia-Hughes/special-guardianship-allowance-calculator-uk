@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import '../styles/globals.css';
 import '../styles/print.css';
 import { SITE_NAME, SITE_URL } from '../lib/jsonLd';
@@ -27,6 +28,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-GB">
       <body>
+        <Script
+          id="site-google-config"
+          src={`${process.env.SGO_ASSET_ORIGIN || ''}/site-config.js`}
+          strategy="beforeInteractive"
+        />
         <a className="skip-link" href="#main">
           Skip to the main content
         </a>

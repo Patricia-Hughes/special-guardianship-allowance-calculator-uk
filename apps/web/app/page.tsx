@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description:
     'Work out the maximum special guardianship allowance your council should be starting from, in under a minute. Free, private, and with the law behind every figure.',
   alternates: { canonical: '/' },
+  // Replace the content token with the value from Google's verification meta
+  // tag. In the upload ZIP, replace every occurrence of this token in index.html.
+  verification: { google: 'REPLACE_WITH_YOUR_GOOGLE_SITE_VERIFICATION_CODE' },
 };
 
 export default function HomePage() {
@@ -25,7 +28,7 @@ export default function HomePage() {
         })}
       />
 
-      <h1>What should your special guardianship allowance be?</h1>
+      <h1>Special guardianship allowance calculator</h1>
 
       <p className="lede">
         Under the statutory guidance, your council is supposed to start from the fostering allowance

@@ -1,14 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import {
-  ANALYTICS_CONFIGURED,
-  disableAnalytics,
-  loadAnalytics,
-  readConsent,
-  writeConsent,
-  type Consent,
-} from '../../lib/analytics';
+import { useAnalyticsConsent } from './useAnalyticsConsent';
 
 /**
  * Changing your mind, on the privacy page.
@@ -18,21 +10,9 @@ import {
  * banner uses, not a second implementation that could drift.
  */
 export function ConsentControls() {
-  const [consent, setConsent] = useState<Consent | null>(null);
-
-  useEffect(() => {
-    if (!ANALYTICS_CONFIGURED) return;
-    setConsent(readConsent());
-  }, []);
-
-  if (!ANALYTICS_CONFIGURED || consent === null) return null;
-
-  const answer = (value: Exclude<Consent, 'unset'>): void => {
-    writeConsent(value);
-    setConsent(value);
-    if (value === 'granted') loadAnalytics();
-    else disableAnalytics();
-  };
+  const { consent, configured, answer } = useAnalyticsConsent();
+  if (configured === null || consent === null) return null;
+  if (!configured) return <p>Analytics are currently off on this site.</p>;
 
   const said = {
     granted: 'You have said yes to analytics cookies.',
@@ -59,7 +39,7 @@ export function ConsentControls() {
       </div>
       <p className="hint">
         Turning it off stops any further counting straight away. Anything already counted has gone
-        to Google and I cannot reach into it, though it holds nothing that identifies you.
+        to Google; turning analytics off cannot remove past data.
       </p>
     </div>
   );

@@ -1,19 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import {
-  ANALYTICS_CONFIGURED,
-  disableAnalytics,
-  loadAnalytics,
-  readConsent,
-  writeConsent,
-  type Consent,
-} from '../../lib/analytics';
+import { useAnalyticsConsent } from './useAnalyticsConsent';
 
 /**
  * The cookie consent bar.
  *
- * Renders nothing on the server and nothing at all in a build with no
+ * Renders nothing on the server and nothing without a configured
  * measurement ID, so a site without analytics has no banner and nothing to
  * consent to, exactly as before.
  *
@@ -23,25 +15,8 @@ import {
  * choice, and this audience is the wrong one to play that game with.
  */
 export function ConsentBanner() {
-  const [consent, setConsent] = useState<Consent | null>(null);
-
-  useEffect(() => {
-    if (!ANALYTICS_CONFIGURED) return;
-    const stored = readConsent();
-    setConsent(stored);
-    if (stored === 'granted') loadAnalytics();
-  }, []);
-
-  if (!ANALYTICS_CONFIGURED) return null;
-  // null means the effect has not run: server render, and the first paint.
-  if (consent === null || consent !== 'unset') return null;
-
-  const answer = (value: Exclude<Consent, 'unset'>): void => {
-    writeConsent(value);
-    setConsent(value);
-    if (value === 'granted') loadAnalytics();
-    else disableAnalytics();
-  };
+  const { consent, configured, answer } = useAnalyticsConsent();
+  if (!configured || consent !== 'unset') return null;
 
   return (
     <section className="consent print-hide" aria-label="Cookies on this site">

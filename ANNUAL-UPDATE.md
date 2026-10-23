@@ -162,40 +162,25 @@ domain ever changes. Set it once, in the environment, not in twenty files.
 
 ### The Google Analytics ID
 
-Already set, and nothing to remember. It lives in `apps/web/.env.production`,
-which is committed:
+Configure `ga4MeasurementId` in `apps/web/public/site-config.js`, or edit
+`public_html/site-config.js` after uploading the ZIP. The upload file is read at
+runtime, so changing it does not require a rebuild. `NEXT_PUBLIC_GA_ID` is no
+longer used. Follow [GOOGLE-SETUP.md](./GOOGLE-SETUP.md) for the exact placeholder,
+GA4 settings, and Search Console verification instructions.
 
-```
-NEXT_PUBLIC_GA_ID=G-M4VRDKT4YE
-```
+The template contains a placeholder and does not track visits. Preserve your
+configured file when uploading future releases, or set the ID again afterward.
+The measurement ID is public; never put secrets in this file.
 
-Every build picks it up. `pnpm build` is enough.
-
-It is committed on purpose. A GA4 measurement ID is not a secret: it ships
-inside the page and anyone can read it in view-source. Keeping it in the repo
-removes the only failure mode that matters, which is a release built without
-it. That build is not broken, it just quietly stops counting, and the privacy
-notice correctly stops mentioning analytics, so nothing on screen tells you the
-release was wrong.
-
-**Never put a real secret in that file.** A `NEXT_PUBLIC_` name is a promise
-that the value is public.
-
-| With the ID set | Without it |
+| With a real ID set | With a placeholder or empty ID |
 |---|---|
-| Consent banner appears | No banner |
-| Google Analytics loads, but only after the reader presses yes | No tag at all |
-| Privacy notice describes analytics and offers an on/off control | Privacy notice says the site runs no analytics |
+| Consent banner appears until the visitor chooses | No banner |
+| Google Analytics loads only with a saved or newly given Yes | No Google tag |
+| Privacy page offers on/off controls | Privacy page says analytics are currently off |
 
-Both are correct and both are tested. The privacy notice is generated from the
-same flag as the behaviour, so it cannot describe something the build does not
-do.
-
-**To turn analytics off for good:** delete the line from
-`apps/web/.env.production`, then remove the Google hosts from
-`apps/web/public/_headers`, `apps/web/public/.htaccess` and
-`scripts/check-security-headers.ts` in one change. Leaving them behind is not
-dangerous, but a policy wider than the site needs is a policy doing less work.
+Both configurations are tested. To disable analytics for future page loads,
+set `ga4MeasurementId` to an empty string. Visitors can withdraw their own
+consent immediately using the privacy-page controls.
 
 ### One address, not four
 
@@ -837,7 +822,7 @@ note explaining why, not an override.
 | Add a dismiss button to the stale banner | It is only ever showing because the figures expired |
 | Work out a missing rate from an uplift percentage | The rounding rules are not published. A wrong historic rate produces a wrong arrears claim |
 | Copy `packages/engine/src/data/` by hand | It is generated and gitignored. `prebuild`, `pretypecheck` and `pretest:unit` all run `syncdata` |
-| Add analytics | A build gate blocks it. This audience did not consent to being measured |
+| Load analytics before consent | Google Analytics must wait for the visitor's Yes; the consent tests check this |
 | Use an em dash | A build gate blocks it. House style |
 
 ---
