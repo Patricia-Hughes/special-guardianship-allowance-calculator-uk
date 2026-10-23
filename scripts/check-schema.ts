@@ -24,6 +24,7 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parse, type DefaultTreeAdapterMap } from 'parse5';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = join(root, 'apps', 'web', 'out');
@@ -42,6 +43,20 @@ function htmlFiles(dir: string, acc: string[] = []): string[] {
     } else if (entry.name.endsWith('.html')) acc.push(full);
   }
   return acc;
+}
+
+/** Read script text as an HTML parser does, including multiline closing tags. */
+function structuredDataBlocks(html: string): string[] {
+  const blocks: string[] = [];
+  function visit(node: DefaultTreeAdapterMap['node']): void {
+    if ('tagName' in node && node.tagName === 'script' &&
+        node.attrs.some((attr) => attr.name === 'type' && attr.value === 'application/ld+json')) {
+      blocks.push(node.childNodes.map((child) => 'value' in child ? child.value : '').join(''));
+    }
+    if ('childNodes' in node) node.childNodes.forEach(visit);
+  }
+  visit(parse(html));
+  return blocks;
 }
 
 /** Every node in a graph, including nested ones. */
@@ -71,9 +86,7 @@ const references: Array<{ rel: string; id: string }> = [];
 for (const file of htmlFiles(outDir)) {
   const rel = relative(outDir, file);
   const html = readFileSync(file, 'utf8');
-  const blocks = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].map(
-    (m) => m[1].replace(/\\u003c/g, '<'),
-  );
+  const blocks = structuredDataBlocks(html);
 
   if (blocks.length === 0) {
     if (!NO_SCHEMA.has(rel)) {

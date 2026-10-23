@@ -58,6 +58,35 @@ develop on it. Source stays on `claude/tool-from-markdown-gremik`.
 Make sure hidden files come across — `.htaccess` is what applies the security
 headers and makes `/about` work. Most FTP clients hide dotfiles by default.
 
+### A ZIP with readable HTML, CSS and JavaScript
+
+Run `pnpm export:readable` from the repository root after installing dependencies.
+Stop the development server first, because it shares Next's build directory.
+This rebuilds the original source in production mode with JavaScript and CSS
+minification disabled, formats the assets before their final content hashes are
+calculated, and formats HTML while preserving significant whitespace. It writes
+`live-site-file.zip` at the repository root and verifies every file in the archive.
+
+Upload that ZIP to `public_html` and extract it there. `index.html`, `.htaccess`
+and `_next/` must be directly inside `public_html`. ZIP entries are stored without
+compression. The web server may still use HTTP compression, which browsers and
+crawlers automatically decode; that is separate from code minification.
+
+The readable build is larger than the normal optimized build and exceeds the
+optimized JavaScript size baseline checked by `pnpm check:bundle`. That budget
+is unchanged; use the normal `pnpm build` when checking the optimized release.
+Third-party
+production libraries can retain shortened names supplied by their authors; this
+does not restore their original development source. Next's `.txt` routing data
+retains its required protocol format. The original application TypeScript/React
+source is available separately in this repository.
+
+Minified CSS is valid CSS and supported by rendering crawlers. Readability alone
+does not fix crawling. If a crawler sees an unstyled page, check that its
+stylesheet URL returns HTTP 200 with `Content-Type: text/css`, that `robots.txt`
+allows it, and that the hosting firewall permits the crawler. Some crawlers only
+read HTML and do not render styles at all.
+
 ## Route 3 — build on Hostinger anyway
 
 Only if you have SSH and a reason to. Bypass corepack entirely by installing

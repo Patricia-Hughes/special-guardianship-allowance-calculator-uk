@@ -20,6 +20,7 @@
     "check:headers": "tsx scripts/check-security-headers.ts",
     "check:bundle": "tsx scripts/check-bundle-budget.ts",
     "export:content": "tsx scripts/export-content-pack.ts",
+    "export:readable": "tsx scripts/export-readable-site.mts",
     "export:review": "tsx scripts/export-review-pack.mts",
     "test:e2e": "pnpm --filter @sgo/web test:e2e",
     "test:a11y": "pnpm --filter @sgo/web test:a11y",
@@ -35,6 +36,9 @@
     "@types/node": "^22.10.2",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
+    "fflate": "0.8.3",
+    "parse5": "7.3.0",
+    "prettier": "3.9.10",
     "tsx": "^4.19.2",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2"
