@@ -66,6 +66,12 @@ and your Search Console verification token in `public_html/index.html`.
 No Node build is needed for these edits. Analytics remains off until a real ID
 is configured, and then loads only after the visitor agrees.
 
+### Google AdSense ads.txt
+
+Upload `apps/web/public/ads.txt` as `public_html/ads.txt`. The full deployment ZIP
+also includes it at its root. See [ADSENSE-SETUP.md](./ADSENSE-SETUP.md) for the
+verification steps and the remaining requirements before enabling ads.
+
 ### A ZIP with readable HTML, CSS and JavaScript
 
 Run `pnpm export:readable` from the repository root after installing dependencies.
