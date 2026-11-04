@@ -16,6 +16,8 @@ export interface Frontmatter {
   title: string;
   slug: string;
   description: string;
+  /** Original publication date, preserved when a guide is edited. */
+  datePublished?: string;
   lastUpdated: string;
   lastReviewed: string;
   /** ISO 8601 duration, e.g. P6M. */

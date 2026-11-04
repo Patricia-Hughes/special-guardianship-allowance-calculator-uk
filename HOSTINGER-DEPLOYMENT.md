@@ -50,21 +50,21 @@ develop on it. Source stays on `claude/tool-from-markdown-gremik`.
 
 ## Route 2 — upload a zip (no Git setup)
 
-1. **Actions → "Deploy static site" → Run workflow**.
-2. When it finishes, download the **`static-site`** artifact from the run page.
-3. Unzip and upload the *contents* into `public_html` via hPanel's File Manager
-   or FTP.
+1. Open `live-site-file.zip` on the `claude/tool-from-markdown-gremik` branch
+   in GitHub and choose **Download raw file**. This is the readable build.
+2. Back up your existing `public_html` files and Google settings.
+3. Extract the ZIP's *contents* directly into `public_html` via hPanel's File
+   Manager or FTP, including `.htaccess` and `_next/`. Upload new assets before
+   replacing HTML, and retain older hashed assets for cached pages.
 
 Make sure hidden files come across — `.htaccess` is what applies the security
 headers and makes `/about` work. Most FTP clients hide dotfiles by default.
 
 ### Google Analytics and Search Console
 
-See [GOOGLE-SETUP.md](./GOOGLE-SETUP.md) for the two editable placeholders.
-After extraction, put your GA4 Measurement ID in `public_html/site-config.js`
-and your Search Console verification token in `public_html/index.html`.
-No Node build is needed for these edits. Analytics remains off until a real ID
-is configured, and then loads only after the visitor agrees.
+This ZIP preserves your live GA4 Measurement ID and Search Console token.
+See [GOOGLE-SETUP.md](./GOOGLE-SETUP.md) to change either later. No Node build
+is needed for those edits. Analytics loads only after the visitor agrees.
 
 ### Google AdSense ads.txt
 
@@ -148,7 +148,7 @@ public_html/
 ├── index.html
 ├── 404.html
 ├── about.html         ← served at /about
-├── guidance/          ← 16 guidance pages
+├── guidance/          ← 18 guidance pages
 ├── _next/static/      ← hashed JS and CSS
 ├── sitemap.xml
 └── robots.txt

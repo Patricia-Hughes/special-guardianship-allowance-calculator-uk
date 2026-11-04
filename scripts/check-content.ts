@@ -73,6 +73,11 @@ for (const kind of ['guidance', 'la'] as const) {
         failures.push(`${rel}: cites "${id}", which is not in citations.json`);
       }
     }
+    if (fm.datePublished !== undefined &&
+        (typeof fm.datePublished !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(fm.datePublished) ||
+         !Number.isFinite(Date.parse(fm.datePublished)) || fm.datePublished > String(fm.lastUpdated))) {
+      failures.push(`${rel}: datePublished must be a valid date no later than lastUpdated`);
+    }
 
     // ── Review dates ───────────────────────────────────────────────────────
     const reviewEvery = String(fm.reviewEvery ?? '');
@@ -296,7 +301,7 @@ for (const file of [
 // guide, a component or the layout still fails the build. Deleting the gate
 // would have given up that protection to buy nothing.
 const TRACKERS =
-  /\b(gtag|googletagmanager|google-analytics|dataLayer|plausible\.io|matomo|piwik|fathom|posthog|mixpanel|hotjar|clarity\.ms|doubleclick|facebook\.net|sendBeacon)\b/i;
+  /\b(gtag|googletagmanager|google-analytics|dataLayer|adsbygoogle|googlesyndication|fundingchoicesmessages|plausible\.io|matomo|piwik|fathom|posthog|mixpanel|hotjar|clarity\.ms|doubleclick|facebook\.net|sendBeacon)\b/i;
 for (const file of [
   ...walkFiles(join(root, 'apps', 'web', 'app')),
   ...walkFiles(join(root, 'apps', 'web', 'components')),
@@ -308,6 +313,8 @@ for (const file of [
   const ALLOWED = [
     join('app', 'privacy'),
     join('lib', 'analytics.ts'),
+    // Owner-approved 4 November 2026. Separate certified-CMP gate, off by default.
+    join('lib', 'advertising.ts'),
     join('components', 'ui', 'ConsentBanner.tsx'),
     join('components', 'ui', 'ConsentControls.tsx'),
   ];
@@ -320,10 +327,9 @@ for (const file of [
       if (!hit) return;
       failures.push(
         `${rel}:${i + 1} looks like visitor tracking ("${hit[0]}").\n` +
-          '      Analytics on this site live in lib/analytics.ts and the two consent components,\n' +
-          '      behind an explicit yes from the reader. A tracker anywhere else runs before\n' +
-          '      consent, which is the thing the consent banner exists to prevent. Route it\n' +
-          '      through lib/analytics.ts, or if this is a new third party, update the privacy\n' +
+          '      Analytics live in lib/analytics.ts; optional advertising lives in lib/advertising.ts.\n' +
+          '      Each has its own consent gate. A tracker pasted elsewhere can bypass consent.\n' +
+          '      Route the existing service through its module, or for a new third party update the privacy\n' +
           '      notice and this gate in the same commit.',
       );
     });

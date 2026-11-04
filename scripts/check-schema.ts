@@ -59,6 +59,19 @@ function structuredDataBlocks(html: string): string[] {
   return blocks;
 }
 
+function elements(node: DefaultTreeAdapterMap['node'], tag?: string): DefaultTreeAdapterMap['element'][] {
+  const found: DefaultTreeAdapterMap['element'][] = [];
+  if ('tagName' in node && (!tag || node.tagName === tag)) found.push(node);
+  if ('childNodes' in node) for (const child of node.childNodes) found.push(...elements(child, tag));
+  return found;
+}
+function visibleText(node: DefaultTreeAdapterMap['node']): string {
+  if ('value' in node) return node.value;
+  if ('childNodes' in node) return node.childNodes.map(visibleText).join('');
+  return '';
+}
+const normalise = (value: string): string => value.replace(/\s+/g, ' ').trim();
+
 /** Every node in a graph, including nested ones. */
 function walk(value: unknown, fn: (node: Record<string, unknown>) => void): void {
   if (Array.isArray(value)) {
@@ -95,6 +108,7 @@ for (const file of htmlFiles(outDir)) {
     continue;
   }
   pagesWithGraph += 1;
+  const pageNodes: Record<string, unknown>[] = [];
 
   for (const raw of blocks) {
     let parsed: unknown;
@@ -107,6 +121,7 @@ for (const file of htmlFiles(outDir)) {
 
     // ── Collect what this graph defines, and what it points at ─────────────
     walk(parsed, (node) => {
+      if ('@type' in node) pageNodes.push(node);
       const id = node['@id'];
       if (typeof id !== 'string') return;
       // A node carrying an @type DEFINES that id. A bare {"@id": x} only
@@ -156,6 +171,39 @@ for (const file of htmlFiles(outDir)) {
         }
       }
     });
+  }
+
+  if (rel.startsWith('guidance/')) {
+    const tree = parse(html);
+    const articles = pageNodes.filter((node) => node['@type'] === 'Article');
+    if (articles.length !== 1) failures.push(`${rel}: expected exactly one Article, found ${articles.length}.`);
+    const article = articles[0];
+    const h1 = elements(tree, 'h1');
+    if (article && (h1.length !== 1 || article.headline !== normalise(visibleText(h1[0]!)))) {
+      failures.push(`${rel}: Article headline does not match the visible H1.`);
+    }
+    if (article) {
+      const published = String(article.datePublished);
+      const modified = String(article.dateModified);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(published) || !/^\d{4}-\d{2}-\d{2}$/.test(modified) ||
+          !Number.isFinite(Date.parse(published)) || !Number.isFinite(Date.parse(modified)) || published > modified) {
+        failures.push(`${rel}: Article publication and modification dates are invalid or reversed.`);
+      }
+    }
+    const faq = pageNodes.filter((node) => node['@type'] === 'FAQPage');
+    const section = elements(tree, 'section').find((node) =>
+      node.attrs.some((attr) => attr.name === 'aria-labelledby' && attr.value === 'faq-heading'));
+    const visible = section ? elements(section, 'details').map((detail) => ({
+      question: normalise(visibleText(elements(detail, 'summary')[0]!)),
+      answer: normalise(elements(detail, 'p').map(visibleText).join(' ')),
+    })) : [];
+    const structured = faq.flatMap((node) => (node.mainEntity as Array<Record<string, unknown>> ?? []).map((item) => ({
+      question: normalise(String(item.name)),
+      answer: normalise(String((item.acceptedAnswer as Record<string, unknown>)?.text)),
+    })));
+    if (faq.length !== (visible.length > 0 ? 1 : 0) || JSON.stringify(visible) !== JSON.stringify(structured)) {
+      failures.push(`${rel}: FAQ schema differs from the visible questions and answers.`);
+    }
   }
 }
 

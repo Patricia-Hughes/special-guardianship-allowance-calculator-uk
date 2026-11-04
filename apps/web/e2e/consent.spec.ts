@@ -151,6 +151,10 @@ test.describe('configured analytics', () => {
 test('@consent an unreplaced placeholder loads no Google tag and shows analytics as off', async ({
   page,
 }) => {
+  await page.route('**/site-config.js', (route) => route.fulfill({
+    contentType: 'application/javascript',
+    body: 'window.SGO_GOOGLE_CONFIG = { ga4MeasurementId: "REPLACE_WITH_YOUR_GA4_MEASUREMENT_ID" };',
+  }));
   const hits = await watchGoogle(page);
   await page.goto('/');
   await page.waitForLoadState('networkidle');

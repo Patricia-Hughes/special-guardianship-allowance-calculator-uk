@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   description:
     'Work out the maximum special guardianship allowance your council should be starting from, in under a minute. Free, private, and with the law behind every figure.',
   alternates: { canonical: '/' },
-  // Replace the content token with the value from Google's verification meta
+  // This preserves the live token. To change it, use Google's verification meta
   // tag. In the upload ZIP, replace every occurrence of this token in index.html.
-  verification: { google: 'REPLACE_WITH_YOUR_GOOGLE_SITE_VERIFICATION_CODE' },
+  verification: { google: 'hHIyhvz6mm9dPR0GIX7ACKfC6iGduOaakQUoAqrJFbA' },
 };
 
 export default function HomePage() {

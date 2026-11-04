@@ -240,7 +240,7 @@ export const calculatorNode = {
   applicationSubCategory: 'Benefits and allowance calculator',
   operatingSystem: 'Any',
   browserRequirements:
-    'Requires JavaScript. The rate tables and all 16 guides work without it.',
+    'Requires JavaScript. The rate tables and all guides work without it.',
   isAccessibleForFree: true,
   inLanguage: LANG,
   countriesSupported: 'GB',

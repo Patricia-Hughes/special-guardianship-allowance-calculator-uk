@@ -62,19 +62,10 @@ for (const { label, path, parse } of sources) {
   parsed.push({ label, headers: parse(readFileSync(path, 'utf8')) });
 }
 
-// The Google hosts are here because the site runs Google Analytics behind
-// consent. They are the only third party besides the postcode lookup, and they
-// earn their place only while analytics is wanted: if it is ever removed, take
-// them out of both header files and out of this constant in the same change,
-// or the policy stays wider than the site needs.
+// Google Analytics plus the owner-approved, consent-gated AdSense/CMP hosts.
+// Keep both deployment formats identical. Real delivery still needs live CMP verification.
 const CSP =
-  "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; " +
-  "style-src 'self' 'unsafe-inline'; " +
-  "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com; " +
-  "connect-src 'self' https://api.postcodes.io https://www.google-analytics.com " +
-  "https://*.google-analytics.com https://*.analytics.google.com " +
-  "https://www.googletagmanager.com; " +
-  "frame-ancestors 'none'; base-uri 'self'; form-action 'none'";
+  "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://*.googlesyndication.com https://fundingchoicesmessages.google.com https://www.googletagservices.com https://adservice.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://*.doubleclick.net https://*.googlesyndication.com https://fundingchoicesmessages.google.com https://www.google.com https://www.gstatic.com; connect-src 'self' https://api.postcodes.io https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.doubleclick.net https://*.googlesyndication.com https://fundingchoicesmessages.google.com https://www.google.com; frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://fundingchoicesmessages.google.com https://www.google.com; frame-ancestors 'none'; base-uri 'self'; form-action 'none'";
 
 const REQUIRED: Array<[string, string]> = [
   ['Content-Security-Policy', CSP],
@@ -164,7 +155,7 @@ const FORBIDDEN_IN_HTACCESS = [
 
 // connect-src must not have quietly grown a new host, in either file.
 // Every host the browser may talk to: the postcode lookup, and Google
-// Analytics. [R8] still holds. Nothing a carer types reaches either of them.
+// Analytics, AdSense and its CMP. Calculator answers must never reach them.
 const allowedHosts = new Set([
   "'self'",
   'https://api.postcodes.io',
@@ -172,6 +163,10 @@ const allowedHosts = new Set([
   'https://*.google-analytics.com',
   'https://*.analytics.google.com',
   'https://www.googletagmanager.com',
+  'https://*.doubleclick.net',
+  'https://*.googlesyndication.com',
+  'https://fundingchoicesmessages.google.com',
+  'https://www.google.com',
 ]);
 for (const { label, headers } of parsed) {
   const connectSrc = /connect-src ([^;]+);/.exec(headers.get('Content-Security-Policy') ?? '')?.[1] ?? '';

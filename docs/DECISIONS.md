@@ -212,6 +212,23 @@ revisiting if LCP on a real low-end Android device (§32 asks for one) misses th
 
 To move the baseline deliberately: `SGO_WRITE_BASELINE=1 pnpm check:bundle`.
 
+### 4 November 2026: approved consent and advertising preparation
+
+The owner approved the SEO/AdSense remediation, including separate certified-CMP
+integration and privacy controls. The optimized build now measures 165.6KB on
+the calculator and 104.8KB on the two editorial hub routes (gzip), compared with
+the recorded 162.6KB / 102.2KB baseline. This includes the Google consent/settings
+work added since that baseline and the optional advertising bootstrap. The
+advertising runtime is a separate asynchronous chunk: it is not downloaded when
+the feature is disabled or when the visitor uses the calculator. The calculator
+itself is not deferred to make the measurement smaller.
+
+Accept this explicit baseline update for the approved feature. Keep the existing
+2% regression tolerance and total-page-weight gate unchanged. These measurements
+apply to the optimized build. The owner's requested readable ZIP disables
+minification and is larger; it is tested separately and does not replace this
+optimized-build baseline.
+
 ---
 
 ## ADR-0006: The council picker is a select, not an ARIA combobox

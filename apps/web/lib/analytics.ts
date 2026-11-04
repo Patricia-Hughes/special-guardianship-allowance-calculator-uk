@@ -6,7 +6,7 @@ let pageConsent: Consent | undefined;
 
 declare global {
   interface Window {
-    SGO_GOOGLE_CONFIG?: { ga4MeasurementId?: string };
+    SGO_GOOGLE_CONFIG?: { ga4MeasurementId?: string; adsenseEnabled?: boolean };
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
   }

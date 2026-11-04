@@ -20,7 +20,7 @@ export function LastUpdated({
     <p className="muted small">
       {author && (
         <>
-          Written and reviewed by <strong>{author}</strong>
+          Written and reviewed by <a href="/about"><strong>{author}</strong></a>
           {' · '}
         </>
       )}

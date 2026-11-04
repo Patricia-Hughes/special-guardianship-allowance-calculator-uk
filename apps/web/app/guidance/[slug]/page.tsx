@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { cite } from '@sgo/engine';
-import { allContent, contentSlugs, readContent, relatedPages } from '../../../lib/content';
+import { allContent, readContent, relatedPages } from '../../../lib/content';
 import { mdxComponents } from '../../../components/ui/mdxComponents';
 import { LastUpdated } from '../../../components/ui/LastUpdated';
 import { Disclaimer } from '../../../components/ui/Disclaimer';
@@ -11,7 +11,7 @@ import { CitationsList } from '../../../components/ui/SourceLink';
 import { AUTHOR_NAME, ID, JsonLd, articleNode, faqNode, pageGraph } from '../../../lib/jsonLd';
 
 export function generateStaticParams(): Array<{ slug: string }> {
-  return contentSlugs('guidance').map((slug) => ({ slug }));
+  return allContent('guidance').map(({ frontmatter }) => ({ slug: frontmatter.slug }));
 }
 
 export async function generateMetadata({
@@ -50,7 +50,7 @@ export default async function GuidancePage({ params }: { params: Promise<{ slug:
             { name: 'Guides', url: '/guidance' },
             { name: fm.title, url: `/guidance/${slug}` },
           ],
-          datePublished: fm.lastUpdated,
+          datePublished: fm.datePublished ?? fm.lastUpdated,
           dateModified: fm.lastUpdated,
           lastReviewed: fm.lastReviewed,
           mainEntity: ID.article(slug),
@@ -59,7 +59,7 @@ export default async function GuidancePage({ params }: { params: Promise<{ slug:
               slug,
               title: fm.title,
               description: fm.description,
-              published: fm.lastUpdated,
+              published: fm.datePublished ?? fm.lastUpdated,
               modified: fm.lastUpdated,
               citations,
               about: ['Special guardianship allowance', fm.title],

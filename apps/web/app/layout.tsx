@@ -5,6 +5,7 @@ import '../styles/print.css';
 import { SITE_NAME, SITE_URL } from '../lib/jsonLd';
 import { RatesStaleBanner } from '../components/ui/RatesStaleBanner';
 import { ConsentBanner } from '../components/ui/ConsentBanner';
+import { Advertising } from '../components/ui/Advertising';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
     'Find out the most your council should be paying you as a special guardian, what the law says it must consider, and what you can do if the figure looks wrong.',
   alternates: { canonical: '/' },
   robots: { index: true, follow: true },
+  other: { 'google-adsense-account': 'ca-pub-4267137695035041' },
   openGraph: {
     type: 'website',
     locale: 'en_GB',
@@ -87,6 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </footer>
 
         <ConsentBanner />
+        <Advertising />
       </body>
     </html>
   );

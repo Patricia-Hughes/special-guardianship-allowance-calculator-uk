@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import { JsonLd, pageGraph } from '../../lib/jsonLd';
 import { ConsentControls } from '../../components/ui/ConsentControls';
+import { AdvertisingPreferences } from '../../components/ui/Advertising';
 
 export const metadata: Metadata = {
   title: 'Privacy notice',
-  description: 'What this site does and does not do with your information. Short version: it never receives it.',
+  description: 'How calculator answers stay on your device, how optional analytics and advertising work, and how to change your privacy choices.',
   alternates: { canonical: '/privacy' },
 };
 
@@ -69,8 +70,8 @@ export default function PrivacyPage() {
       <h2>Analytics</h2>
       <p>
         <strong>Only if you agree.</strong> When analytics are enabled, I use Google Analytics to see which pages people
-        find useful and which ones they leave. It is the only third party on this site apart
-        from the postcode lookup above.
+        find useful and which ones they leave. Analytics consent is separate from advertising
+        consent, described below.
       </p>
       <p>What Google receives when you have agreed:</p>
       <ul>
@@ -92,8 +93,8 @@ export default function PrivacyPage() {
         <li>Your full postcode, which never leaves your browser at all.</li>
       </ul>
       <p>
-        Advertising features and Google Signals are switched off, so nothing here feeds ad
-        targeting. Google is the data controller for what it receives, and its own notice
+        Google Analytics advertising features and Google Signals are switched off. The site
+        does not use Analytics data to personalise ads. Google&apos;s own notice
         explains what it does with it:{' '}
         <a href="https://policies.google.com/privacy">policies.google.com/privacy</a>.
       </p>
@@ -109,6 +110,43 @@ export default function PrivacyPage() {
         ask you again.
       </p>
       <ConsentControls />
+
+      <h2>Advertising and your choices</h2>
+      <p>
+        This site can show Google AdSense advertisements on guides and rate pages.
+        The status below shows whether it has been enabled. The calculator does not load AdSense
+        or its advertising consent service. Pages opened with information after a question mark
+        or a hash in their address do not load those services either.
+      </p>
+      <p>
+        When advertising is enabled, Google&apos;s consent service presents the advertising choices
+        and remembers your decision. It needs to communicate with Google to display those choices,
+        which exposes connection information such as your IP address and browser type. AdSense
+        is requested only after the consent service reports consent to Google and to storing or
+        accessing information on your device. A missing or failed consent response does not enable ads.
+      </p>
+      <p>
+        If you consent, Google and the advertising partners identified in the consent message may
+        use cookies or similar storage, device information, IP address and the editorial page you
+        visit to deliver, personalise and measure advertising, subject to your choices. This may
+        involve processing outside the UK. The consent message identifies the purposes and partners;
+        Google&apos;s policies explain its processing and safeguards. Calculator answers are not sent
+        to the advertising service. Declining advertising consent does not restrict the guides or calculator.
+      </p>
+      <AdvertisingPreferences />
+      <p>
+        Advertising choices are separate from the analytics controls above. Use the advertising
+        choices here to withdraw consent when the service is enabled. A different browser or cleared
+        storage may require another choice. Withdrawal stops future use on this site; it does not
+        undo processing that has already happened.
+      </p>
+      <ul>
+        <li><a href="https://policies.google.com/technologies/ads">How Google uses information for advertising</a></li>
+        <li><a href="https://myadcenter.google.com/">Google Ads Settings (My Ad Center)</a></li>
+        <li><a href="https://optout.aboutads.info/">AboutAds advertising choices</a></li>
+        <li><a href="https://www.youronlinechoices.com/uk/your-ad-choices">Your Online Choices</a></li>
+      </ul>
+      <p>These external preference services supplement the consent controls on this site.</p>
 
       <h2>Sharing a result</h2>
       <p>
@@ -126,12 +164,15 @@ export default function PrivacyPage() {
       <h2>Your rights</h2>
       <p>
         Data protection law gives you rights over personal data an organisation holds about you.
-        I hold none, so there is nothing for me to give you access to, correct, or delete.
+        I do not receive or hold your calculator answers. The hosting provider receives connection
+        information when serving a page, and optional services process the information described
+        above. If you contact me, I receive the information you include in your message. Do not
+        send a child&apos;s identifying details or sensitive financial documents.
       </p>
       <p>
-        If you agreed to analytics, Google holds what is described above. You can stop any further
-        collection here at any time, and Google&apos;s own notice explains how to ask it about
-        what it already has.
+        If you agreed to analytics or advertising, Google may hold information as described above.
+        You can change those choices here, and Google&apos;s privacy notice explains how to exercise
+        rights over information it holds. Contact me about information you sent directly to me.
       </p>
       <p>
         If you think any of this is wrong, please <a href="/contact">get in touch</a> and I will
